@@ -1,0 +1,10 @@
+__pycache__
+# Ignora todos los archivos en cualquier directorio llamado 'migrations'
+**/migrations/*
+# Pero no ignores los archivos __init__.py
+!**/migrations/__init__.py
+
+venv
+.venv
+
+.env

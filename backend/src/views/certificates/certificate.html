@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link
+            rel="stylesheet"
+            href="{{ base_url + url_for('static', filename='node_modules/bootstrap/dist/css/bootstrap.min.css') }}"
+        />
+        <script src="{{ base_url + url_for('static', filename='node_modules/jquery/dist/jquery.js') }}"></script>
+        <script src="{{ base_url + url_for('static', filename='node_modules/bootstrap/dist/js/bootstrap.min.js') }}"></script>
+        <style>
+            .table.bg-transparent,
+            .table.bg-transparent th,
+            .table.bg-transparent td {
+                background-color: transparent !important;
+            }
+            @font-face {
+                font-family: "Tahoma";
+                src: url("{{ base_url + url_for('static', filename='fonts/tahoma.ttf') }}")
+                    format("truetype");
+                font-weight: normal;
+                font-style: normal;
+            }
+
+            @font-face {
+                font-family: "Tahoma";
+                src: url("{{ base_url + url_for('static', filename='fonts/tahoma-bold.ttf') }}")
+                    format("truetype");
+                font-weight: bold;
+                font-style: normal;
+            }
+
+            @page {
+                size: A4 landscape;
+                margin: 10mm;
+            }
+
+            body {
+                font-family: "Tahoma", "Arial", sans-serif;
+                margin: 0;
+                padding: 0;
+            }
+
+            .page {
+                page-break-after: always;
+                width: 100%;
+                height: 960px;
+                position: relative;
+            }
+
+            .page-background-front {
+                background-image: url("{{ base_url + url_for('static', filename='img/certificado/background.png') }}");
+                background-size: cover;
+                background-position: center;
+                background-repeat: no-repeat;
+                top: 25px;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                width: 100%;
+                height: 100%;
+                position: absolute;
+                z-index: -1;
+            }
+
+            .page-background-back {
+                background-image: url("{{ base_url + url_for('static', filename='img/certificado/background.png') }}");
+                background-size: cover;
+                background-position: center;
+                background-repeat: no-repeat;
+                top: 25px;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                width: 100%;
+                height: 100%;
+                position: absolute;
+                z-index: -1;
+            }
+
+            .content {
+                padding: 80px;
+                position: relative;
+                z-index: 1;
+            }
+
+            .orange {
+                color: #ffa500;
+            }
+
+            .control-head {
+                color: black;
+                font-size: 15px;
+            }
+
+            .control-number {
+                color: black;
+                font-size: 18px;
+            }
+
+            .control-table {
+                font-size: 17px;
+            }
+
+            hr {
+                border: 2px solid #ff7300 !important;
+            }
+
+            .no-border table,
+            .no-border th,
+            .no-border td {
+                border: none !important;
+            }
+
+            .no-background table,
+            .no-background th,
+            .no-background td {
+                background-color: transparent !important;
+            }
+
+            th {
+                font-weight: bold !important;
+                font-size: 18px;
+            }
+
+            .title-certifica {
+                font-size: 55px;
+                font-weight: bold;
+            }
+
+            .title-ortoga {
+                font-size: 28px;
+            }
+
+            .fullnames {
+                font-size: 40px;
+                font-weight: bold;
+            }
+
+            .foid {
+                font-size: 26px;
+                font-weight: bold;
+            }
+
+            .fs2 {
+                font-size: 30px;
+            }
+
+            .fs-5 {
+                font-size: 18px;
+            }
+
+            .fwbold {
+                font-weight: bolder;
+            }
+
+            .sign {
+                height: 185px;
+                font-size: 20px;
+                padding-left: 120px;
+                padding-right: 120px;
+            }
+
+            .signature-float {
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+                border-radius: 8px;
+            }
+
+            footer {
+                position: relative;
+                bottom: 0;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="page">
+            <div class="page-background-front"></div>
+            <div class="content p-5">
+                <hr />
+                <div class="row justify-content-center">
+                    <img
+                        src="{{ base_url + url_for('static', filename='img/certificado/Logo.png') }}"
+                        alt="Logo"
+                        class="img-fluid"
+                        style="max-width: 600px"
+                    />
+                </div>
+                <div class="row text-center" style="margin-top: 30px">
+                    <div class="title-certifica text-uppercase">
+                        Certificado
+                    </div>
+                    <div class="title-ortoga">que se otorga a</div>
+                </div>
+                <div class="row text-center" style="margin-top: 20px">
+                    <div class="fullnames text-uppercase">
+                        Andres Benitez 
+                    </div>
+                    <div class="foid text-uppercase">
+                        C.I: {{ '15328487' |format_cedula }}
+                    </div>
+                </div>
+                <div class="row text-center" style="margin-top: 10px">
+                    <div class="fs2">
+                        Por haber aprobado satisfactoriamente el <br />
+                        Adiestramiento
+                        <span class="fwbold">Nombre de Curso</span>
+                    </div>
+                    <div style="font-size: larger">
+                        Contenido en el Manual de Instrución CONVIASA,
+                        debidamente aprobado por el Instituto Nacional de
+                        Aeronáutica Civil (INAC)
+                    </div>
+                </div>
+            </div>
+            <div class="row text-start" style="padding-left: 120px">
+                <div class="fs-5" tyle="font-size:larger;">
+                    <span class="fwbold">Maiquetía</span>, Fecha
+                </div>
+            </div>
+            <div class="row sign" style="margin-top: 40px">
+                <div class="d-flex justify-content-between">
+                    <div class="align-self-center text-center">
+                        <img
+                            src="data:image/png;base64,{{ signature_inst }}"
+                            alt="Firma Instructor"
+                            class="img-fluid signature-float"
+                            style="
+                                max-width: 200px;
+                                max-height: 100px;
+                                position: absolute;
+                                left: 10%;
+                                top: 75%;
+                                z-index: 2;
+                            "
+                        />
+                        <div class="fs-5">
+                            Firmas
+                        </div>
+                        <div class="fs-5">Instructor</div>
+                    </div>
+
+                    <div class="align-self-end text-center">
+                        <img
+                            src="data:image/png;base64,{{ signature_inst }}"
+                            alt="Firma Instructor"
+                            class="img-fluid signature-float"
+                            style="
+                                max-width: 200px;
+                                max-height: 100px;
+                                position: absolute;
+                                left: 50%;
+                                bottom: 8%;
+                                transform: translateX(-50%);
+                                z-index: 2;
+                            "
+                        />
+                        <div class="fs-5">
+                           Firmas
+                        </div>
+                        <div class="fs-5">
+                            Gerente General de Entrenamiento e Instrucción
+                        </div>
+                    </div>
+
+                    <div class="align-self-center text-center">
+                        <img
+                            src="data:image/png;base64,{{ signature_gte_inst }}"
+                            alt="Firma Instructor"
+                            class="img-fluid signature-float"
+                            style="
+                                max-width: 200px;
+                                max-height: 100px;
+                                position: absolute;
+                                right: 10%;
+                                top: 75%;
+                                z-index: 2;
+                            "
+                        />
+                        <div class="fs-5">
+                            Firmas
+                        </div>
+                        <div class="fs-5">Gerente de Instrucción</div>
+                    </div>
+                </div>
+            </div>
+            <footer
+                style="
+                    position: absolute;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    width: 100%;
+                    padding: 0 40px;
+                "
+            >
+                <hr class="mt-0" />
+                <div class="d-flex justify-content-between">
+                    <div class="small fwbold">GGEI-CIOA-051</div>
+                    <div class="small fwbold">VCV-GGEI-F003 14/06/2024</div>
+                </div>
+            </footer>
+        </div>
+
+        <div class="page">
+            <div class="page-background-back"></div>
+            <div class="content p-5">
+                <hr />
+                <div class="row justify-content-center">
+                    <img
+                        src="{{ base_url + url_for('static', filename='img/certificado/Logo.png') }}"
+                        alt="Logo"
+                        class="img-fluid"
+                        style="max-width: 600px"
+                    />
+                </div>
+                <div class="row text-center" style="margin-top: 50px">
+                    <div class="fs2">
+                        Adiestramiento
+                        <span class="fwbold">Nombre de Curso</span>
+                    </div>
+                </div>
+            </div>
+            <div class="row text-start" style="padding-left: 120px">
+                <div class="col-8 d-flex justify-content-center">
+                    <table
+                        class="table table-bordered border-dark rounded bg-transparent"
+                        style="width: 950px; font-size: 18px; border-radius: 8px; overflow: hidden;"
+                    >
+                        <thead>
+                            <tr>
+                                <th scope="col" style="width: 75%">
+                                    CONTENIDOS
+                                </th>
+                                <th scope="col" class="text-center">
+                                    HORAS / MINUTOS
+                                </th>
+                            </tr>
+                        </thead>
+                       
+                        <tr>
+                            <td>CONTENIDOS/td>
+                            <td class="text-center align-middle">
+                                horas
+                            </td>
+                        </tr>
+                        
+                        <tr>
+                            <th scope="row" class="text-end">TOTAL HORAS</th>
+                            <td class="text-center">horas</td>
+                        </tr>
+                        <tr>
+                            <th scope="row" class="text-end">CALIFICACIÓN</th>
+                            <td class="text-center">calificación</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="col-4 d-flex justify-content-center">
+                    <img
+                        width="200"
+                        height="200"
+                        src="{{ qrcode('You can see a icon in QR code.', error_correction='H', icon_img=base_url + url_for('static', filename='img/certificado/favicon.ico')) }}"
+                    />
+                </div>
+            </div>
+            <footer
+                style="
+                    position: absolute;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    width: 100%;
+                    padding: 0 40px;
+                "
+            >
+                <hr class="mt-0" />
+                <div class="d-flex justify-content-between">
+                    <div class="small fwbold">GGEI-CIOA-051</div>
+                    <div class="small fwbold">VCV-GGEI-F003 14/06/2024</div>
+                </div>
+            </footer>
+        </div>
+    </body>
+</html>

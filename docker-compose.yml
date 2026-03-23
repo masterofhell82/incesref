@@ -1,0 +1,45 @@
+services:
+    frontend_nextjs:
+        build:
+            context: .
+            dockerfile: ${DOCKERFILE_FRONTEND}
+        container_name: inces_web_app
+        depends_on:
+            - backend_flask
+        restart: always
+        ports:
+            - "${DOCKER_PORT_FRONTEND}:3000"
+        volumes:
+            - ./frontend:/app
+        environment:
+            - HOST=0.0.0.0
+            - PORT=3000
+            - NODE_ENV=${NODE_ENV}
+            - NEXT_PUBLIC_URL_API_BACKEND=${URL_API_BACKEND}
+            - TZ=America/Caracas
+        networks:
+            - incesnet
+
+    backend_flask:
+        build:
+            context: .
+            dockerfile: ${DOCKERFILE_BACKEND}
+        container_name: inces_flask_app
+        restart: always
+        ports:
+            - "${DOCKER_PORT_BACKEND}:3010"
+        environment:
+            DATABASE_URL: ${DATABASE_URL}
+            TZ: America/Caracas
+        volumes:
+            - ./backend:/app
+        command: /start.sh
+        networks:
+            - incesnet
+            - streams_streamnet
+
+networks:
+    incesnet:
+        driver: bridge
+    streams_streamnet:
+        external: true
