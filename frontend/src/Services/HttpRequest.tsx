@@ -60,8 +60,6 @@ export const post = async (
             config.headers["Content-Type"] = "multipart/form-data";
             req = await axios.post(endpoint, payload, config);
         } else {
-            console.log(config);
-            
             req = await axios.post(endpoint, payload, config);
         }
         return req.data;
