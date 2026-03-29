@@ -26,7 +26,7 @@ const navItems: NavItem[] = [
     name: 'Organizaciones',
     icon: <LuFolderGit2 size={25} />,
     subItems: [
-      { name: 'Ambitos', path: '/centers/fields', pro: false },
+      { name: 'Ambitos', path: '/centers/scopes', pro: false },
       { name: 'Organizaciones', path: '/centers/cores', pro: false },
     ],
   },
