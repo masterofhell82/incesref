@@ -1,8 +1,20 @@
 import './globals.css';
-import { Providers } from "@/context/provider";
+import { Providers } from '@/context/provider';
 import { SidebarProvider } from '@/context/SidebarContext';
 import { ThemeProvider } from '@/context/ThemeContext';
-import '@ant-design/v5-patch-for-react-19';
+import { AntdRegistry } from '@ant-design/nextjs-registry';
+import { Montserrat, Outfit } from 'next/font/google';
+
+const montserrat = Montserrat({
+  subsets: ['latin'],
+  display: 'swap',
+});
+
+const outfit = Outfit({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-outfit-next',
+});
 
 export default function RootLayout({
   children,
@@ -14,12 +26,14 @@ export default function RootLayout({
       <head>
         <link rel="icon" type="image/x-icon" href="/images/favicon.svg" />
       </head>
-      <body className={` dark:bg-gray-900`}>
-        <Providers>
-          <ThemeProvider>
-            <SidebarProvider>{children}</SidebarProvider>
-          </ThemeProvider>
-        </Providers>
+      <body className={`${montserrat.className} ${outfit.variable} dark:bg-gray-900`}>
+        <AntdRegistry>
+          <Providers>
+            <ThemeProvider>
+              <SidebarProvider>{children}</SidebarProvider>
+            </ThemeProvider>
+          </Providers>
+        </AntdRegistry>
       </body>
     </html>
   );
