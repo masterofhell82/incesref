@@ -11,8 +11,17 @@ export const user = `${Config.API_URL}/usuario/`;
 
 export const userChangePassword = `${Config.API_URL}/usuarios/cambiar-contraseña/`;
 
+// Geografia
+export const estados = `${Config.API_URL}/estados`;
+export const municipios = `${Config.API_URL}/municipios`;
+export const parroquias = `${Config.API_URL}/parroquias`;
+export const ciudades = `${Config.API_URL}/ciudades`;
+
 // organizaciones
 export const cfs = `${Config.API_URL}/cfs`;
+
+//Ambitos (Scopes)
+export const scopes = `${Config.API_URL}/ambitos`;
 
 // Routers to Person
 export const getPerson = `${Config.API_URL}/person`;

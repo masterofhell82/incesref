@@ -22,6 +22,7 @@ QRcode(app)
 if __name__ == '__main__':
     from src.helpers.filters import *
     from src.controllers.authcontroller import *
+    from src.controllers.ambitocontroller import *
     from src.controllers.certificadocontroller import *
     from src.controllers.cfscontroller import *
     from src.controllers.geografiacontroller import *

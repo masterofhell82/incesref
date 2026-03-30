@@ -3,33 +3,47 @@ import React, { useState, useEffect } from 'react';
 import { get } from '@/Services/HttpRequest';
 import { cfs } from '@/Services/EndPoints';
 
-import { Button, Select } from 'antd';
+import { Button, Select, notification } from 'antd';
+
 import Datatable from '@/components/tables/DataTable/Datatable';
 import type { TableProps } from 'antd';
 
-import type { Cores } from '@/interface/CoreInterfaces';
+import type { Cores, Option, NotificationType } from '@/interface/CoreInterfaces';
 
 import { AiOutlineCloudUpload } from 'react-icons/ai';
 import { RiMenuAddLine } from 'react-icons/ri';
+import { TbEdit } from 'react-icons/tb';
+import FormCores from './FormCores';
 
 const Cores = () => {
+  const [api, contextHolder] = notification.useNotification();
   const [loading, setLoading] = useState(false);
+  const [openFormCores, setOpenFormCores] = useState(false);
+  const [dataUpdate, setDataUpdate] = useState<Cores | null>(null);
 
   //Data to show in table.
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<Cores[]>([]);
 
   //Filters
-  const [dataFilter, setDataFilter] = useState([]);
-
-  const [estados, setEstados] = useState([]);
+  const [dataFilter, setDataFilter] = useState<Cores[]>([]);
+  const [estados, setEstados] = useState<Option[]>([]);
   const [selectState, setSelectState] = useState('');
-
-  const [ambitos, setAmbitos] = useState([]);
   const [selectScope, setSelectScope] = useState('');
+  const [ambitos, setAmbitos] = useState<Option[]>([]);
+
+  const isValidOption = (option: {
+    id: number | undefined;
+    value: string | undefined;
+  }): option is Option => option.id !== undefined && option.value !== undefined;
+
+  const uniqueOptions = (options: { id: number | undefined; value: string | undefined }[]) =>
+    options.filter(isValidOption).filter((option: Option, index: number, self: Option[]) => {
+      return index === self.findIndex((item: Option) => item.value === option.value);
+    });
 
   const columns: TableProps<Cores>['columns'] = [
     { title: '#', align: 'center', width: '5%', dataIndex: 'id', key: 'id' },
-    { title: 'Codigo', width: '15%', dataIndex: 'codigo', key: 'codigo' },
+    { title: 'Codigo', width: '10%', dataIndex: 'codigo', key: 'codigo' },
     { title: 'Nombre', dataIndex: 'nombre', key: 'nombre' },
     { title: 'Direccion', dataIndex: 'direccion', key: 'direccion' },
     {
@@ -38,16 +52,15 @@ const Cores = () => {
       dataIndex: 'action',
       key: 'action',
       align: 'center',
-      render: (/* data: unknown */) => {
+      render: (_: unknown, record: Cores) => {
         return (
           <>
             <button
               className="btn btn-info btn-sm ms-2"
-              /* onClick={() => dataUpdate(data)} */
-              style={{ color: '#fff' }}
+              onClick={() => handleEdit(record)}
               title="Editar"
             >
-              <i className="fas fa-pencil-alt"></i>
+              <TbEdit className="text-2xl" />
             </button>
           </>
         );
@@ -57,22 +70,111 @@ const Cores = () => {
 
   const loadData = async () => {
     try {
-
-        /* let scopes = []; */
       setLoading(true);
       const response = await get(cfs);
-      console.log(response);
-      setData(response.data);
-      const states = states.some(i => i.value === core.estado)) ? [...states, { id: core.id_stados, value: core.estado }] : states;
+      const cores = response.data;
+      const states = uniqueOptions(
+        cores.map((core: Cores) => ({ id: core.id_estado, value: core.estado }))
+      );
 
-               /*  if (!scopes.some(i => i.value === core.ambito)) {
-                    scopes.push({ id: core.id_ambito, value: core.ambito });
-                } */
+      const scopesBase = selectState
+        ? cores.filter((core: Cores) => core.id_estado === parseInt(selectState))
+        : cores;
 
+      const scopes = uniqueOptions(
+        scopesBase.map((core: Cores) => ({ id: core.id_ambito, value: core.ambito }))
+      );
+
+      let filteredData = cores;
+      if (selectState) {
+        filteredData = filteredData.filter(
+          (core: Cores) => core.id_estado === parseInt(selectState)
+        );
+      }
+      if (selectScope) {
+        filteredData = filteredData.filter(
+          (core: Cores) => core.id_ambito === parseInt(selectScope)
+        );
+      }
+
+      setEstados(states);
+      setAmbitos(scopes);
+      setData(filteredData);
+      setDataFilter(cores);
       setLoading(false);
     } catch (error) {
       console.log(error);
+      setLoading(false);
     }
+  };
+
+  const handleStatesFilter = (value: string | undefined) => {
+    setLoading(true);
+    if (value !== undefined) {
+      setSelectState(value);
+      const filteredData = dataFilter.filter((core: Cores) => core.id_estado === parseInt(value));
+      const scopes = uniqueOptions(
+        filteredData.map((core: Cores) => ({ id: core.id_ambito, value: core.ambito }))
+      );
+      setAmbitos(scopes);
+      setData(filteredData);
+    } else {
+      const scopes = uniqueOptions(
+        dataFilter.map((core: Cores) => ({ id: core.id_ambito, value: core.ambito }))
+      );
+      setSelectState('');
+      setAmbitos(scopes);
+      setData(dataFilter);
+    }
+    setLoading(false);
+  };
+
+  const handleScopesFilter = (value: string | undefined) => {
+    setLoading(true);
+    let filteredData = dataFilter;
+    if (value !== undefined && value !== '') {
+      setSelectScope(value);
+      if (selectState && selectState !== '') {
+        // Si hay estado seleccionado, filtra por ambos
+        filteredData = dataFilter.filter(
+          (core: Cores) =>
+            core.id_ambito === parseInt(value) && core.id_estado === parseInt(selectState)
+        );
+      } else {
+        // Solo filtra por ámbito
+        filteredData = dataFilter.filter((core: Cores) => core.id_ambito === parseInt(value));
+      }
+    } else {
+      setSelectScope('');
+      if (selectState && selectState !== '') {
+        // Si solo hay estado seleccionado, filtra por estado
+        filteredData = dataFilter.filter((core: Cores) => core.id_estado === parseInt(selectState));
+      } else {
+        // Sin filtros
+        filteredData = dataFilter;
+      }
+    }
+    setData(filteredData);
+    setLoading(false);
+  };
+
+  const handleEdit = (data: Cores) => {
+    setDataUpdate(data);
+    setOpenFormCores(true);
+  };
+
+  const handleClosed = () => {
+    setDataUpdate(null);
+    setOpenFormCores(false);
+    loadData();
+  };
+
+  const openNotificationWithIcon = (type: NotificationType, title: string, description: string) => {
+    api[type]({
+      title,
+      description,
+      showProgress: true,
+    });
   };
 
   useEffect(() => {
@@ -81,23 +183,58 @@ const Cores = () => {
 
   return (
     <>
+      {contextHolder}
       <Datatable<Cores>
         columns={columns}
         data={data}
         loading={loading}
+        startContent={
+          <div className="flex items-center gap-4">
+            <Select
+              allowClear={true}
+              size="large"
+              placeholder="Seleccionar Estado"
+              style={{ width: 150 }}
+              onChange={(value) => handleStatesFilter(value)}
+              options={estados.map((state: Option) => ({ label: state.value, value: state.id }))}
+            />
+            <Select
+              allowClear={true}
+              size="large"
+              placeholder="Seleccionar Ámbito"
+              style={{ width: 200 }}
+              onChange={(value) => handleScopesFilter(value)}
+              options={ambitos.map((scope: Option) => ({ label: scope.value, value: scope.id }))}
+            />
+          </div>
+        }
         endContent={
           <div className="flex items-center gap-2">
             <Button color="purple" variant="outlined" size="large">
               Cargar Masivo
               <AiOutlineCloudUpload className="ml-2 text-2xl" />
             </Button>
-            <Button color="green" variant="outlined" size="large">
+            <Button
+              color="green"
+              variant="outlined"
+              size="large"
+              onClick={() => setOpenFormCores(true)}
+            >
               Agregar
               <RiMenuAddLine className="ml-2 text-2xl" />
             </Button>
           </div>
         }
       />
+
+      {openFormCores && (
+        <FormCores
+          isOpen={openFormCores}
+          action={handleClosed}
+          data={dataUpdate}
+          notify={openNotificationWithIcon}
+        />
+      )}
     </>
   );
 };

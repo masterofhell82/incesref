@@ -44,3 +44,28 @@ def get_cfs():
         return jsonify({'data': cfs_result}), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 400
+
+
+@app.route('/api/cfs/<int:id>', methods=['PUT'])
+@token_required
+def update_cfs(id):
+    try:
+        cfs = CFS.query.get(id)
+        if not cfs:
+            return jsonify({'error': 'CFS no encontrado'}), 404
+
+        dataPut = request.json
+
+        cfs.id_estado = dataPut.get('id_estado', cfs.id_estado)
+        cfs.id_municipios = dataPut.get('id_municipios', cfs.id_municipios)
+        cfs.id_parroquias = dataPut.get('id_parroquias', cfs.id_parroquias)
+        cfs.codigo = dataPut.get('codigo', cfs.codigo)
+        cfs.nombre = dataPut.get('nombre', cfs.nombre)
+        cfs.direccion = dataPut.get('direccion', cfs.direccion)
+        cfs.id_ambito = dataPut.get('id_ambito', cfs.id_ambito)
+
+        cfs.save()
+
+        return jsonify(cfs.serialize()), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
