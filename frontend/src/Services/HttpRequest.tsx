@@ -42,7 +42,12 @@ export const get = async (endpoint = '', payload = '') => {
   }
 };
 
-export const post = async (endpoint = '', payload = '', multipart = false, download = false) => {
+export const post = async (
+  endpoint = '',
+  payload: unknown = '',
+  multipart = false,
+  download = false
+) => {
   try {
     let req;
     const config: AxiosRequestConfig = getConfig();
