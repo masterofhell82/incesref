@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { post } from '@/Services/HttpRequest';
 import { cfs } from '@/Services/EndPoints';
 import Modals from '@/components/Modals/Modals';
-import type { NotificationType } from '@/interface/CoreInterfaces';
+import type { NotificationType } from '@/interface/NotificationInterface';
 import type { UploadFile, UploadProps } from 'antd';
 import { message, Upload } from 'antd';
 const { Dragger } = Upload;

@@ -7,7 +7,8 @@ import { cfs, scopes, estados, municipios, parroquias } from '@/Services/EndPoin
 import { Modal, Input, Button, Select } from 'antd';
 const { TextArea } = Input;
 import type { ModalProps } from 'antd';
-import type { Cores, NotificationType } from '@/interface/CoreInterfaces';
+import type { Cores } from '@/interface/CoreInterfaces';
+import { NotificationType } from '@/interface/NotificationInterface';
 
 const stylesFn: ModalProps['styles'] = (info) => {
   if (info.props.footer) {
