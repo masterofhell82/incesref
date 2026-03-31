@@ -1,6 +1,7 @@
 from app import app
 from flask import request, jsonify
 from decorators import token_required
+from datetime import datetime
 
 from src.models.ambitosmodel import AmbitosModel as Ambitos
 
@@ -46,7 +47,7 @@ def update_ambito(id):
         ambito.nombre = dataPut.get('nombre', ambito.nombre)
         ambito.descripcion = dataPut.get('descripcion', ambito.descripcion)
         ambito.shortname = dataPut.get('shortname', ambito.shortname)
-
+        ambito.update_at = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         ambito.save()
 
         return jsonify(ambito.serialize()), 200

@@ -5,6 +5,7 @@ from werkzeug.utils import secure_filename
 import os
 import uuid
 import csv
+from datetime import datetime
 
 from src.models.cfsmodel import CFSModel as CFS
 from src.models.geografiamodel import EstadosModel as Estados
@@ -136,7 +137,7 @@ def update_cfs(id):
         cfs.nombre = dataPut.get('nombre', cfs.nombre)
         cfs.direccion = dataPut.get('direccion', cfs.direccion)
         cfs.id_ambito = dataPut.get('id_ambito', cfs.id_ambito)
-
+        cfs.updated_at = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         cfs.save()
 
         return jsonify(cfs.serialize()), 200
