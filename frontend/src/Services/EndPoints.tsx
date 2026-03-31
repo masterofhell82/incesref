@@ -23,6 +23,9 @@ export const cfs = `${Config.API_URL}/cfs`;
 //Ambitos (Scopes)
 export const scopes = `${Config.API_URL}/ambitos`;
 
+// Formaciones
+export const tiposFormaciones = `${Config.API_URL}/tipoformacion`;
+
 // Routers to Person
 export const getPerson = `${Config.API_URL}/person`;
 export const getPersonById = (id: string) => `${Config.API_URL}/person/${id}`;

@@ -33,17 +33,15 @@ const navItems: NavItem[] = [
   {
     name: 'Formaciones',
     icon: <LuClipboardList size={25} />,
-    subItems: [{ name: 'Maestra General', path: '#', pro: false }],
+    subItems: [
+      { name: 'Tipo de Formación', path: '/formaciones/types-training', pro: false },
+      { name: 'Maestra General', path: '/formaciones/matriculados', pro: false },
+    ],
   },
   {
     name: 'Matriculados',
     icon: <LuLayoutList size={25} />,
     subItems: [{ name: 'Matriculados', path: '/admin/matriculados', pro: false }],
-  },
-  {
-    name: 'Usuarios',
-    icon: <LuUsers size={25} />,
-    path: '/admin/usuarios',
   },
   {
     name: 'Certificados',
@@ -53,6 +51,11 @@ const navItems: NavItem[] = [
       { name: 'Carga Masiva', path: '/admin/certificados/cargamasiva', pro: false },
       { name: 'Formatos', path: '/admin/certificados/formatos', pro: false },
     ],
+  },
+  {
+    name: 'Usuarios',
+    icon: <LuUsers size={25} />,
+    path: '/admin/usuarios',
   },
 ];
 
