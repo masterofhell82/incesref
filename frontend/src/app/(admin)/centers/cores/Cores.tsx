@@ -14,11 +14,13 @@ import { AiOutlineCloudUpload } from 'react-icons/ai';
 import { RiMenuAddLine } from 'react-icons/ri';
 import { TbEdit } from 'react-icons/tb';
 import FormCores from './FormCores';
+import FormMasiveCore from './FormMasiveCore';
 
 const Cores = () => {
   const [api, contextHolder] = notification.useNotification();
   const [loading, setLoading] = useState(false);
   const [openFormCores, setOpenFormCores] = useState(false);
+  const [openMasiveForm, setOpenMasiveForm] = useState(false);
   const [dataUpdate, setDataUpdate] = useState<Cores | null>(null);
 
   //Data to show in table.
@@ -177,6 +179,15 @@ const Cores = () => {
     });
   };
 
+  const handleOpenMasiveForm = () => {
+    setOpenMasiveForm(true);
+  };
+
+  const handleClosedMasiveForm = () => {
+    setOpenMasiveForm(false);
+    loadData();
+  }
+
   useEffect(() => {
     loadData();
   }, []);
@@ -210,7 +221,7 @@ const Cores = () => {
         }
         endContent={
           <div className="flex items-center gap-2">
-            <Button color="purple" variant="outlined" size="large">
+            <Button color="purple" variant="outlined" size="large" onClick={handleOpenMasiveForm}>
               Cargar Masivo
               <AiOutlineCloudUpload className="ml-2 text-2xl" />
             </Button>
@@ -232,6 +243,14 @@ const Cores = () => {
           isOpen={openFormCores}
           action={handleClosed}
           data={dataUpdate}
+          notify={openNotificationWithIcon}
+        />
+      )}
+
+      {openMasiveForm && (
+        <FormMasiveCore
+          isOpen={openMasiveForm}
+          action={handleClosedMasiveForm}
           notify={openNotificationWithIcon}
         />
       )}

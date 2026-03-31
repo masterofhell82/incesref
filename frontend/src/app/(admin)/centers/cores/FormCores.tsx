@@ -82,7 +82,6 @@ const FormCores = ({
     initialValues: dataForm,
     validationSchema: Schema,
     onSubmit: async (values) => {
-      console.log(values);
       try {
         if (dataForm.id) {
           await put(`${cfs}/${dataForm.id}`, JSON.stringify(values));
