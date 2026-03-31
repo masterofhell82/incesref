@@ -25,5 +25,3 @@ export interface CoreCsvColumn {
   direccion: string;
   id_ambito: number;
 }
-
-export type NotificationType = 'success' | 'info' | 'warning' | 'error';
