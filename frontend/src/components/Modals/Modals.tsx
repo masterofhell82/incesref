@@ -50,6 +50,7 @@ const Modals = ({
     <Modal
       title={title}
       closable={{ 'aria-label': 'Custom Close Button' }}
+      mask={{ enabled: true, blur: true }}
       open={isModalOpen}
       onOk={handleOk}
       onCancel={handleCancel}
