@@ -8,7 +8,8 @@ import { Button, Select, notification } from 'antd';
 import Datatable from '@/components/tables/DataTable/Datatable';
 import type { TableProps } from 'antd';
 
-import type { Cores, Option, NotificationType } from '@/interface/CoreInterfaces';
+import type { Cores, Option } from '@/interface/CoreInterfaces';
+import { NotificationType } from '@/interface/NotificationInterface';
 
 import { AiOutlineCloudUpload } from 'react-icons/ai';
 import { RiMenuAddLine } from 'react-icons/ri';
