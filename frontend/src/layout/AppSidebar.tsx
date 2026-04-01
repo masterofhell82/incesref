@@ -35,7 +35,7 @@ const navItems: NavItem[] = [
     icon: <LuClipboardList size={25} />,
     subItems: [
       { name: 'Tipo de Formación', path: '/formaciones/types-training', pro: false },
-      { name: 'Maestra General', path: '/formaciones/matriculados', pro: false },
+      { name: 'Maestra General', path: '/formaciones/maestra', pro: false },
     ],
   },
   {
@@ -55,7 +55,7 @@ const navItems: NavItem[] = [
   {
     name: 'Usuarios',
     icon: <LuUsers size={25} />,
-    path: '/admin/usuarios',
+    path: '/usuarios',
   },
 ];
 
