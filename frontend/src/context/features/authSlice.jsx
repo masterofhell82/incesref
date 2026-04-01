@@ -1,8 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-const storageAuth = typeof sessionStorage !== 'undefined' ? sessionStorage.getItem('parameters') : null;
-
-const initialUser = storageAuth ? JSON.parse(storageAuth) : {
+const initialUser = {
     username: '',
     token: '',
     person: {},

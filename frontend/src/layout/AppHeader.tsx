@@ -2,8 +2,6 @@
 import { ThemeToggleButton } from "@/components/common/ThemeToggleButton";
 import UserDropdown from "@/components/header/UserDropdown";
 import { useSidebar } from "@/context/SidebarContext";
-import Image from "next/image";
-import Link from "next/link";
 import React, { useState ,useEffect,useRef} from "react";
 import { HiBars3CenterLeft } from "react-icons/hi2";
 import { GoKebabHorizontal } from "react-icons/go";
@@ -59,24 +57,6 @@ const AppHeader: React.FC = () => {
             )}
             {/* Cross Icon */}
           </button>
-
-          <Link href="/" className="lg:hidden">
-            <Image
-              width={154}
-              height={30}
-              className="dark:hidden"
-              src="./images/logo/logo3.svg"
-              alt="Logo"
-            />
-            <Image
-              width={154}
-              height={30}
-              className="hidden dark:block"
-              src="./images/logo/logo3.svg"
-              alt="Logo"
-            />
-          </Link>
-
           <button
             onClick={toggleApplicationMenu}
             className="flex items-center justify-center w-10 h-10 text-gray-900 rounded-lg z-99999 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800 lg:hidden"
@@ -96,8 +76,7 @@ const AppHeader: React.FC = () => {
             {/* <!-- Dark Mode Toggler --> */}
           </div>
           {/* <!-- User Area --> */}
-          <UserDropdown /> 
-    
+          <UserDropdown />
         </div>
       </div>
     </header>

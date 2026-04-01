@@ -64,10 +64,6 @@ const SignInForm = () => {
         }
       } else {
         message.error('Please fill in all fields.');
-        /* api.error({
-                    message: 'Error',
-                    description: 'Please fill in all fields.',
-                }); */
       }
     } catch (error) {
       if (typeof error === 'object' && error !== null) {
