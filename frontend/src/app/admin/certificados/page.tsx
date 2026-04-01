@@ -1,8 +1,8 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Datatable from '@/components/tables/DataTable/Datatable';
 import { get } from '@/Services/HttpRequest';
-import { getCertificatesByPreimpress, viewCertificate } from '@/Services/EndPoints';
+import { getCertificatesByPreimpress } from '@/Services/EndPoints';
 import type { TableProps } from 'antd';
 import { Input } from 'antd';
 
@@ -12,7 +12,11 @@ const Certificados = () => {
 
   interface Certificate {
     id: number;
+    cedula: string;
+    nombres: string;
+    apellidos: string;
     modalidad: string;
+    idCertificate: string;
     pre_comentario: string;
     svg_cara_a: string;
     svg_cara_b: string;
