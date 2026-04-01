@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { get } from '@/Services/HttpRequest';
 import { cfs } from '@/Services/EndPoints';
 
@@ -17,6 +17,16 @@ import { TbEdit } from 'react-icons/tb';
 import FormCores from './FormCores';
 import FormMasiveCore from './FormMasiveCore';
 
+const isValidOption = (option: {
+  id: number | undefined;
+  value: string | undefined;
+}): option is Option => option.id !== undefined && option.value !== undefined;
+
+const uniqueOptions = (options: { id: number | undefined; value: string | undefined }[]) =>
+  options.filter(isValidOption).filter((option: Option, index: number, self: Option[]) => {
+    return index === self.findIndex((item: Option) => item.value === option.value);
+  });
+
 const Cores = () => {
   const [api, contextHolder] = notification.useNotification();
   const [loading, setLoading] = useState(false);
@@ -33,16 +43,6 @@ const Cores = () => {
   const [selectState, setSelectState] = useState('');
   const [selectScope, setSelectScope] = useState('');
   const [ambitos, setAmbitos] = useState<Option[]>([]);
-
-  const isValidOption = (option: {
-    id: number | undefined;
-    value: string | undefined;
-  }): option is Option => option.id !== undefined && option.value !== undefined;
-
-  const uniqueOptions = (options: { id: number | undefined; value: string | undefined }[]) =>
-    options.filter(isValidOption).filter((option: Option, index: number, self: Option[]) => {
-      return index === self.findIndex((item: Option) => item.value === option.value);
-    });
 
   const columns: TableProps<Cores>['columns'] = [
     { title: '#', align: 'center', width: '5%', dataIndex: 'id', key: 'id' },
@@ -71,7 +71,7 @@ const Cores = () => {
     },
   ];
 
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     try {
       setLoading(true);
       const response = await get(cfs);
@@ -109,7 +109,7 @@ const Cores = () => {
       console.log(error);
       setLoading(false);
     }
-  };
+  }, [selectState, selectScope]);
 
   const handleStatesFilter = (value: string | undefined) => {
     setLoading(true);
@@ -191,7 +191,7 @@ const Cores = () => {
 
   useEffect(() => {
     loadData();
-  }, []);
+  }, [loadData]);
 
   return (
     <>

@@ -1,12 +1,33 @@
 import { NextResponse } from 'next/server';
 import { NextRequest } from 'next/server';
-import { verifyTokenUser } from './Services/Authentications';
+
+const verifyTokenInMiddleware = async (token: string) => {
+  if (!token) return false;
+
+  try {
+    const url = `${process.env.NEXT_PUBLIC_URL_API_BACKEND}/api/verifytoken`;
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `${token}`,
+      },
+      body: JSON.stringify({ token }),
+      cache: 'no-store',
+    });
+
+    return response.ok;
+  } catch (error) {
+    console.error('Error in middleware token verification:', error);
+    return false;
+  }
+};
 
 export async function middleware(req: NextRequest) {
   try {
     const res = NextResponse.next();
     const auth = req.cookies.get('session')?.value ?? '';
-    const isValid = await verifyTokenUser(auth);
+    const isValid = await verifyTokenInMiddleware(auth);
 
     // Si el usuario accede a /signin
     if (req.nextUrl.pathname === '/signin') {

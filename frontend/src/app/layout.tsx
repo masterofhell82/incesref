@@ -1,4 +1,5 @@
 import './globals.css';
+import 'antd/dist/reset.css';
 import { Providers } from '@/context/provider';
 import { SidebarProvider } from '@/context/SidebarContext';
 import { ThemeProvider } from '@/context/ThemeContext';
@@ -27,13 +28,13 @@ export default function RootLayout({
         <link rel="icon" type="image/x-icon" href="/images/favicon.svg" />
       </head>
       <body className={`${montserrat.className} ${outfit.variable} dark:bg-gray-900`}>
-        <AntdRegistry>
-          <Providers>
-            <ThemeProvider>
+        <Providers>
+          <ThemeProvider>
+            <AntdRegistry>
               <SidebarProvider>{children}</SidebarProvider>
-            </ThemeProvider>
-          </Providers>
-        </AntdRegistry>
+            </AntdRegistry>
+          </ThemeProvider>
+        </Providers>
       </body>
     </html>
   );

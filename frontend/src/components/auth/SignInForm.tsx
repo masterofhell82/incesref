@@ -4,6 +4,9 @@ import Image from 'next/image';
 import { notification, Form, Input, Button, message } from 'antd';
 import { getLogin } from '@/Services/EndPoints';
 import { post } from '@/Services/HttpRequest';
+import bg165944 from '@/app/assets/imgs/165944.jpg';
+import bg165796 from '@/app/assets/imgs/165796.jpg';
+import bg165859 from '@/app/assets/imgs/165859.jpg';
 
 //Redux
 import { useDispatch } from 'react-redux';
@@ -14,15 +17,19 @@ import { AiOutlineUser } from 'react-icons/ai';
 import { FaRegEye, FaRegEyeSlash } from 'react-icons/fa6';
 
 const listBg = [
-  'https://getwallpapers.com/wallpaper/full/2/c/a/165944.jpg',
-  'https://getwallpapers.com/wallpaper/full/0/e/6/165796.jpg',
-  'https://getwallpapers.com/wallpaper/full/c/d/6/165859.jpg',
+  bg165944.src,
+  bg165796.src,
+  bg165859.src,
 ];
 
 const SignInForm = () => {
   const dispatch = useDispatch();
   const [api, contextHolder] = notification.useNotification();
-  const [background, setBackground] = useState('');
+  const [background, setBackground] = useState(listBg[0]);
+
+  useEffect(() => {
+    setBackground(listBg[Math.floor(Math.random() * listBg.length)]);
+  }, []);
 
   const handleLogin = async (values: { username: string; password: string }) => {
     const { username, password } = values;
@@ -82,10 +89,6 @@ const SignInForm = () => {
     });
     return false;
   };
-
-  useEffect(() => {
-    setBackground(listBg[Math.floor(Math.random() * listBg.length)]);
-  }, []);
 
   return (
     <>
