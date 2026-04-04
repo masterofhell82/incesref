@@ -1,10 +1,10 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { get } from '@/Services/HttpRequest';
-import { tiposFormaciones } from '@/Services/EndPoints';
+import { roles } from '@/Services/EndPoints';
 import { Button, notification } from 'antd';
 
-import type { TypesTraining } from '@/interface/TypesTrainingInterfaces';
+import type { Roles } from '@/interface/RolesInterfaces';
 import { NotificationType } from '@/interface/NotificationInterface';
 
 import Datatable from '@/components/tables/DataTable/Datatable';
@@ -12,18 +12,17 @@ import type { TableProps } from 'antd';
 
 import { RiMenuAddLine } from 'react-icons/ri';
 import { TbEdit } from 'react-icons/tb';
-import FormTypesTraining from './FormTypesTraining';
+import FormRoles from './FormRoles';
 
-const TypesTraining = () => {
+const Roles = () => {
   const [api, contextHolder] = notification.useNotification();
-
-  const [loading, setLoading] = useState(false);
   //Data to show in table.
-  const [data, setData] = useState<TypesTraining[]>([]);
-  const [dataUpdate, setDataUpdate] = useState<TypesTraining | null>(null);
-  const [openFormTypesTraining, setOpenFormTypesTraining] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [data, setData] = useState<Roles[]>([]);
+  const [dataUpdate, setDataUpdate] = useState<Roles | null>(null);
+  const [openFormRoles, setOpenFormRoles] = useState(false);
 
-  const columns: TableProps<TypesTraining>['columns'] = [
+  const columns: TableProps<Roles>['columns'] = [
     { title: '#', align: 'center', width: '5%', dataIndex: 'id', key: 'id' },
     { title: 'Nombre', width: '30%', dataIndex: 'nombre', key: 'nombre' },
     { title: 'Descripción', dataIndex: 'descripcion', key: 'descripcion' },
@@ -33,7 +32,7 @@ const TypesTraining = () => {
       dataIndex: 'action',
       key: 'action',
       align: 'center',
-      render: (_: unknown, record: TypesTraining) => {
+      render: (_: unknown, record: Roles) => {
         return (
           <>
             <button
@@ -60,7 +59,7 @@ const TypesTraining = () => {
   const loadData = async () => {
     setLoading(true);
     try {
-      const response = await get(tiposFormaciones);
+      const response = await get(roles);
       setData(response.data);
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -71,17 +70,17 @@ const TypesTraining = () => {
 
   const handleAdd = () => {
     setDataUpdate(null);
-    setOpenFormTypesTraining(true);
+    setOpenFormRoles(true);
   };
 
-  const handleEdit = (values: TypesTraining) => {
+  const handleEdit = (values: Roles) => {
     setDataUpdate(values);
-    setOpenFormTypesTraining(true);
+    setOpenFormRoles(true);
   };
 
   const handleCloseForm = () => {
-    setOpenFormTypesTraining(false);
     setDataUpdate(null);
+    setOpenFormRoles(false);
     loadData();
   };
 
@@ -89,10 +88,9 @@ const TypesTraining = () => {
     loadData();
   }, []);
 
-  return (
-    <>
-      {contextHolder}
-      <Datatable<TypesTraining>
+  return <>
+  {contextHolder}
+      <Datatable<Roles>
         columns={columns}
         data={data}
         loading={loading}
@@ -105,16 +103,8 @@ const TypesTraining = () => {
           </div>
         }
       />
-      {openFormTypesTraining && (
-        <FormTypesTraining
-          data={dataUpdate}
-          isOpen={openFormTypesTraining}
-          action={handleCloseForm}
-          notify={openNotificationWithIcon}
-        />
-      )}
-    </>
-  );
+        {openFormRoles && (<FormRoles isOpen={openFormRoles} action={handleCloseForm} data={dataUpdate} notify={openNotificationWithIcon} />)}
+  </>;
 };
 
-export default TypesTraining;
+export default Roles;

@@ -52,14 +52,18 @@ const navItems: NavItem[] = [
       { name: 'Formatos', path: '/admin/certificados/formatos', pro: false },
     ],
   },
-  {
-    name: 'Usuarios',
-    icon: <LuUsers size={25} />,
-    path: '/usuarios',
-  },
 ];
 
-const othersItems: NavItem[] = [];
+const configItems: NavItem[] = [
+    {
+    name: 'Usuarios',
+    icon: <LuUsers size={25} />,
+    subItems: [
+      { name: 'Usuarios', path: '/config/users', pro: false },
+      { name: 'Roles', path: '/config/roles', pro: false },
+    ],
+  },
+];
 
 const styleSidebar = {
   transition: 'width,left,right,.3s',
@@ -201,7 +205,7 @@ const AppSidebar: React.FC = () => {
     // Check if the current path matches any submenu item
     let submenuMatched = false;
     ['main', 'others'].forEach((menuType) => {
-      const items = menuType === 'main' ? navItems : othersItems;
+      const items = menuType === 'main' ? navItems : configItems;
       items.forEach((nav, index) => {
         if (nav.subItems) {
           nav.subItems.forEach((subItem) => {
@@ -289,9 +293,19 @@ const AppSidebar: React.FC = () => {
                   !isExpanded && !isHovered ? 'lg:justify-center' : 'justify-start'
                 }`}
               >
-                {isExpanded || isHovered || isMobileOpen ? 'Menu' : <HorizontaLDots />}
+                {isExpanded || isHovered || isMobileOpen ? 'Home' : <HorizontaLDots />}
               </h2>
               {renderMenuItems(navItems, 'main')}
+            </div>
+            <div>
+              <h2
+                className={`mb-4 flex text-xs leading-[20px] text-gray-400 uppercase ${
+                  !isExpanded && !isHovered ? 'lg:justify-center' : 'justify-start'
+                }`}
+              >
+                {isExpanded || isHovered || isMobileOpen ? 'Configuraciones' : <HorizontaLDots />}
+              </h2>
+              {renderMenuItems(configItems, 'others')}
             </div>
           </div>
         </nav>

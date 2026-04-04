@@ -30,6 +30,10 @@ export const tiposFormaciones = `${Config.API_URL}/tipoformacion`;
 export const getPerson = `${Config.API_URL}/person`;
 export const getPersonById = (id: string) => `${Config.API_URL}/person/${id}`;
 
+
+// Roles
+export const roles = `${Config.API_URL}/roles`;
+
 //Routers to Certificates
 export const getCertificates = `${Config.API_URL}/certificate`;
 export const getCertificateById = (id: string) => `${Config.API_URL}/certificate/${id}`;
