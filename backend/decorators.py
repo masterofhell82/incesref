@@ -28,8 +28,6 @@ def token_required(f):
 
             result = verify_token(token)
 
-            print("result: ", result)
-
             if 'error' in result:
                 return jsonify({'error': result['error']}), result['status_code']
 
