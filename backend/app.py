@@ -29,4 +29,5 @@ if __name__ == '__main__':
     from src.controllers.userscontroller import *
     from src.controllers.tipoformacioncontroller import *
     from src.controllers.personcontroller import *
+    from src.controllers.rolcontroller import *
     app.run(host='0.0.0.0', port=3010, debug=app.config['DEBUG'])
