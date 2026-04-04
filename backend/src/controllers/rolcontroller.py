@@ -12,8 +12,6 @@ def create_rol():
     try:
         dataPost = request.json or {}
 
-        print("Datos recibidos para crear rol:", dataPost)  # Debug: Verificar datos recibidos
-
         # Obtener el último ID registrado en la tabla de roles
         last_rol = Rol.query.order_by(Rol.id.desc()).first()
         new_id = last_rol.id + 1 if last_rol else 1
