@@ -1,12 +1,13 @@
 from app import db
 from datetime import datetime
+import uuid
 
 class AuditoriaModel(db.Model):
-    
+
     __tablename__ = 'auditoria'
     __table_args__ = {'schema': 'master'}
 
-    id = db.Column(db.String(36), primary_key=True)
+    id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     usuario_id = db.Column(db.Integer, nullable=False)
     ip_address = db.Column(db.String(20), nullable=False)
     tabla = db.Column(db.String(30), nullable=False)

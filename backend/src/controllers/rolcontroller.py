@@ -1,10 +1,12 @@
 from app import app
-from flask import request, jsonify
+from flask import request, jsonify, g
 from decorators import token_required
 from datetime import datetime
 
-
 from src.models.rolmodel import RolModel as Rol
+
+from src.services.audit_services import register_audit_action
+
 
 @app.route('/api/roles', methods=['POST'])
 @token_required
@@ -29,9 +31,19 @@ def create_rol():
 
         rol.save()
 
+        register_audit_action(
+            usuario_id=request.current_user['id'],
+            ip_address=g.remote_addr,
+            tabla='roles',
+            accion=1,  # Acción de creación
+            valor_old={},
+            valor_new=rol.serialize(),
+        )
+
         return jsonify({'data': rol.serialize()}), 201
     except Exception as e:
         return jsonify({'error': str(e)}), 400
+
 
 @app.route('/api/roles', methods=['GET'])
 @token_required
@@ -42,11 +54,15 @@ def get_rol():
     except Exception as e:
         return jsonify({'error': str(e)}), 400
 
+
 @app.route('/api/roles/<int:id>', methods=['PUT'])
 @token_required
 def update_rol(id):
     try:
         rol = Rol.query.get(id)
+
+        valor_old = str(rol.serialize())
+
         if not rol:
             return jsonify({'error': 'Rol no encontrado'}), 404
 
@@ -57,6 +73,15 @@ def update_rol(id):
         rol.updated_at = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
         rol.save()
+
+        register_audit_action(
+            usuario_id=request.current_user['id'],
+            ip_address=g.remote_addr,
+            tabla='roles',
+            accion=2,  # Acción de actualización
+            valor_old=valor_old,
+            valor_new=str(rol.serialize()),
+        )
 
         return jsonify(rol.serialize()), 200
     except Exception as e:
