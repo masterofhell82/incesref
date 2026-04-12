@@ -100,7 +100,7 @@ const FormRoles = ({
               <Input
                 value={formik.values.nombre}
                 onChange={(e) => {
-                  formik.setFieldValue('nombre', e.target.value.toUpperCase());
+                  formik.setFieldValue('nombre', e.target.value);
                 }}
                 status={formik.touched.nombre && formik.errors.nombre ? 'error' : undefined}
               />
