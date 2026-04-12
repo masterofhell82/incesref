@@ -26,6 +26,7 @@ def login():
         user.update({'token': token})
 
         return jsonify({
+            'userId': user.id,
             'username': user.username,
             'person': persona.serialize(),
             'rol': user.id_rol,

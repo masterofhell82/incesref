@@ -7,9 +7,9 @@ export const setLogout = `${Config.API_URL}/logout/`;
 
 export const verifytoken = `${Config.API_URL}/verifytoken`;
 
-export const user = `${Config.API_URL}/usuario/`;
+export const users = `${Config.API_URL}/users`;
 
-export const userChangePassword = `${Config.API_URL}/usuarios/cambiar-contraseña/`;
+export const userChangePassword = `${users}/cambiar-contraseña/`;
 
 // Geografia
 export const estados = `${Config.API_URL}/estados`;

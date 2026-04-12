@@ -6,8 +6,6 @@ import React, { useState ,useEffect,useRef} from "react";
 import { HiBars3CenterLeft } from "react-icons/hi2";
 import { GoKebabHorizontal } from "react-icons/go";
 
-
-
 const AppHeader: React.FC = () => {
   const [isApplicationMenuOpen, setApplicationMenuOpen] = useState(false);
 
@@ -24,6 +22,7 @@ const AppHeader: React.FC = () => {
   const toggleApplicationMenu = () => {
     setApplicationMenuOpen(!isApplicationMenuOpen);
   };
+
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {

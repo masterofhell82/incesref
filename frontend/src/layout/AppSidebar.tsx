@@ -7,7 +7,8 @@ import { useSidebar } from '../context/SidebarContext';
 import { ChevronDownIcon, HorizontaLDots } from '../icons/index';
 import { RxDashboard } from 'react-icons/rx';
 import { LuFolderGit2, LuClipboardList, LuLayoutList, LuUsers } from 'react-icons/lu';
-import { PiCertificate } from 'react-icons/pi';
+import { PiCertificate, PiStudentDuotone, PiCertificateDuotone } from 'react-icons/pi';
+import { LiaSignatureSolid } from "react-icons/lia";
 
 type NavItem = {
   name: string;
@@ -47,7 +48,6 @@ const navItems: NavItem[] = [
     name: 'Certificados',
     icon: <PiCertificate size={25} />,
     subItems: [
-      { name: 'Certificados', path: '/admin/certificados', pro: false },
       { name: 'Carga Masiva', path: '/admin/certificados/cargamasiva', pro: false },
       { name: 'Formatos', path: '/admin/certificados/formatos', pro: false },
     ],
@@ -55,14 +55,30 @@ const navItems: NavItem[] = [
 ];
 
 const configItems: NavItem[] = [
-    {
+   {
+    name: 'Estudiantes',
+    icon: <PiStudentDuotone size={25} />,
+    path: '/students',
+  },
+  {
+    name: 'Certificados (Templates)',
+    icon: <PiCertificateDuotone size={25} />,
+    path: '/admin/certificados',
+  },
+  {
+    name: 'Firmas',
+    icon: <LiaSignatureSolid size={25} />,
+    path: '/signatures',
+  },
+  {
     name: 'Usuarios',
     icon: <LuUsers size={25} />,
     subItems: [
-      { name: 'Usuarios', path: '/config/users', pro: false },
+      { name: 'Usuarios y Periles', path: '/config/users', pro: false },
       { name: 'Roles', path: '/config/roles', pro: false },
     ],
   },
+  
 ];
 
 const styleSidebar = {

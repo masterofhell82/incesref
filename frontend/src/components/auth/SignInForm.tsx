@@ -16,11 +16,7 @@ import { AiOutlineUser } from 'react-icons/ai';
 
 import { FaRegEye, FaRegEyeSlash } from 'react-icons/fa6';
 
-const listBg = [
-  bg165944.src,
-  bg165796.src,
-  bg165859.src,
-];
+const listBg = [bg165944.src, bg165796.src, bg165859.src];
 
 const SignInForm = () => {
   const dispatch = useDispatch();
@@ -41,6 +37,7 @@ const SignInForm = () => {
         const { created_at, updated_at, ...personRest } = response.person; // eslint-disable-line @typescript-eslint/no-unused-vars
 
         const valueAuth = {
+          userId: response.userId,
           username: response.username,
           token: response.token,
           person: personRest,
@@ -103,7 +100,7 @@ const SignInForm = () => {
           zIndex: -1,
         }}
       />
-      <div className="3xl:w-1/4 3xl:p-14 mx-auto mt-40 flex w-full sm:w-[450px]  flex-col rounded-2xl bg-[#ffffffee] p-8 shadow-xl md:w-1/2 md:p-10 xl:w-2/6 2xl:w-[450px] 2xl:p-12">
+      <div className="3xl:w-1/4 3xl:p-14 mx-auto mt-40 flex w-full flex-col rounded-2xl bg-[#ffffffee] p-8 shadow-xl sm:w-[450px] md:w-1/2 md:p-10 xl:w-2/6 2xl:w-[450px] 2xl:p-12">
         <div className="flex flex-row gap-3 pb-4">
           <div>
             <Image src="/images/logo/logo3.svg" alt="Logo" width={150} height={0} />
