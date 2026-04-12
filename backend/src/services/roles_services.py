@@ -1,82 +1,52 @@
-from app import app
-from datetime import datetime
+from flask import request
 
-from src.models.usuariomodel import UsuarioModel as Users
-from src.models.rolmodel import RolModel as Roles
+from src.models.usuariorolmodel import UsuarioRolModel as UserRole
 
-def set_specific_role(user, role_id):
+from src.services.audit_services import register_audit_action
 
-    pass
 
-    """ print(
-        f"Cambiando el rol del usuario {user.username} (ID: {user.id}) con rol ID: {role_id}")
-    # Solo procesamos si el rol es de Instructor (3)
-    if role_id == 3:
-        instructor = Instructor.query.filter_by(
-            id_persona=user.id_persona).first()
-        if not instructor:
-            Instructor(
-                id_persona=user.id_persona,
-                activo=True
-            ).save()
-        elif instructor and not instructor.activo:
-            instructor.update({'activo': True})
-        elif instructor and instructor.activo:
-            instructor.update({'activo': False})
-        return
+def set_specific_role(user, role_id, estado_id):
 
-    # Solo procesamos roles de Gerente de Linea (5) y Gerente General (8)
-    rectores = (
-        Users.query
-        .with_entities(
-            Rector.id_persona,
-            Users.id,
-            UserRole.role_id
-        )
-        .join(Rector, Rector.id_persona == Users.id_persona)
-        .join(UserRole, Users.id == UserRole.user_id)
-        .filter(Rector.active.is_(True))
-        .all()
-    )
+    try:
+        userRole = UserRole.query.filter_by(user_id=user.id).first()
 
-    if role_id == 8:  # Gerente General
+        if not userRole:
 
-        rector = Rector.query.filter_by(id_persona=user.id_persona).first()
-
-        if not rector:
-            has_active_rector = any(row.role_id == 8 for row in rectores)
-            rector = Rector(
-                id_persona=user.id_persona,
-                active=not has_active_rector
+            new_user_role = UserRole(
+                user_id=user.id,
+                rol_id=role_id,
+                estado_id=estado_id
             )
-            rector.save()
-            return False if has_active_rector else True
-        elif rector and not rector.active:
-            rector.update({'active': True})
-            return True
-        elif rector and rector.active:
-            rector.update({'active': False})
-            return False
 
-    if role_id == 5:  # Gerente de Instrucción
-        rector = Rector.query.filter_by(id_persona=user.id_persona).first()
-        if not rector:
-            has_active_rector = any(row.role_id == 5 for row in rectores)
-            rector = Rector(
-                id_persona=user.id_persona,
-                active=not has_active_rector
+            new_user_role.save()
+
+            register_audit_action(
+                usuario_id=user.id,
+                ip_address=request.remote_addr,
+                tabla='usuario_rol',
+                accion=1,  # Acción de creación
+                valor_old={},
+                valor_new=new_user_role.serialize(),
             )
-            rector.save()
-        elif rector and not rector.active:
-            rector.update({'active': True})
+
             return True
-        elif rector and rector.active:
-            rector.update({'active': False})
-            return False
-
-        # Retorna False si ya había un rector activo, True si se activó uno nuevo
-        return False if has_active_rector else True
-
-    # Para roles que no requieren lógica específica, retornamos True por defecto
-    return True
- """
+        elif userRole and userRole.rol_id != role_id:
+            old_values = userRole.serialize()
+            userRole.update({
+                'rol_id': role_id,
+                'estado_id': estado_id
+            })
+            register_audit_action(
+                usuario_id=user.id,
+                ip_address=request.remote_addr,
+                tabla='usuario_rol',
+                accion=2,  # Acción de actualización
+                valor_old=old_values,
+                valor_new=userRole.serialize(),
+            )
+            return True
+        else:
+            return True  # No se necesita cambiar el rol, pero la función se considera exitosa
+    except Exception as e:
+        print(f"Error al asignar rol específico: {e}")
+        return False

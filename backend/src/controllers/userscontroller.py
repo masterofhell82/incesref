@@ -1,12 +1,17 @@
 from app import app
 from flask import request, jsonify, g
+from datetime import datetime
 from decorators import token_required
+
+from src.helpers.password import hash_password
 
 from src.services.audit_services import register_audit_action
 
 from src.models.usuariomodel import UsuarioModel as Usuarios
+from src.models.usuariorolmodel import UsuarioRolModel as UserRole
 from src.models.rolmodel import RolModel as Roles
 from src.models.personasmodel import PersonasModel as Personas
+from src.models.geografiamodel import EstadosModel as Estados
 
 
 @app.route('/api/users', methods=['GET'])
@@ -19,15 +24,25 @@ def get_users():
 
         persona = Personas.query.filter_by(cedula=user.id_persona).first()
 
-        rol = Roles.query.filter_by(id=user.id_rol).first()
+        user_role = UserRole.query.filter_by(user_id=user.id).first()
+
+        rol = Roles.query.filter_by(
+            id=user_role.rol_id).first() if user_role else None
+
+        estado = Estados.query.filter_by(
+            id=user_role.estado_id).first() if user_role else None
 
         user_data = {
             'id': user.id,
             'cedula': user.id_persona,
             'nombres': f"{persona.nombres} {persona.apellidos}",
+            'correo': persona.correo,
+            'telefono': persona.telefono,
             'username': user.username,
-            'id_rol': user.id_rol,
+            'rolId': rol.id if rol else None,
             'rol': rol.nombre if rol else None,
+            'estadoId': estado.id if estado else None,
+            'estado': estado.estado if estado else None,
             'activado': user.activado
         }
         dataUsers.append(user_data)
@@ -74,7 +89,9 @@ def create_user():
             id_rol=data.get('id_rol'),
             activado=data.get('activado', True)
         )
+
         new_user.save()
+
         register_audit_action(
             usuario_id=request.current_user['id'],
             ip_address=g.remote_addr,
@@ -87,9 +104,9 @@ def create_user():
 
         return jsonify({'message': 'Usuario creado exitosamente'}), 201
 
-
     except Exception as e:
         return jsonify({'message': 'Error al crear el usuario', 'error': str(e)}), 500
+
 
 @app.route('/api/users/<int:user_id>', methods=['PUT'])
 @token_required
@@ -97,6 +114,7 @@ def update_user(user_id):
     data = request.get_json()
 
     user = Usuarios.query.get(user_id)
+
     if not user:
         return jsonify({'message': 'Usuario no encontrado'}), 404
 
@@ -105,6 +123,7 @@ def update_user(user_id):
     user.username = data.get('username', user.username)
     user.id_rol = data.get('id_rol', user.id_rol)
     user.activado = data.get('activado', user.activado)
+    user.updated_at = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     user.save()
 
     register_audit_action(
@@ -114,9 +133,7 @@ def update_user(user_id):
         accion=2,  # Acción de actualización
         valor_old=valor_old,
         valor_new=str(user.serialize()),
-        col_editada=None
     )
-
 
     return jsonify({'message': 'Usuario actualizado exitosamente'}), 200
 
@@ -124,17 +141,20 @@ def update_user(user_id):
 @app.route('/api/users/change-pass/<int:user_id>', methods=['PATCH'])
 @token_required
 def change_password(user_id):
+
     data = request.get_json()
 
-    new_password = data.get('new_password')
+    new_password = data.get('confirmPassword')
 
     user = Usuarios.query.get(user_id)
+
     if not user:
         return jsonify({'message': 'Usuario no encontrado'}), 404
 
     valor_old = str(user.serialize())
 
-    user.password = new_password
+    user.password = hash_password(new_password)
+    user.updated_at = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     user.save()
 
     register_audit_action(
@@ -144,7 +164,6 @@ def change_password(user_id):
         accion=2,  # Acción de actualización
         valor_old=valor_old,
         valor_new=str(user.serialize()),
-        col_editada='password'
     )
 
     return jsonify({'message': 'Contraseña actualizada exitosamente'}), 200

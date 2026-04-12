@@ -12,10 +12,17 @@ import { useSelector } from 'react-redux';
 import store from '@/context/store';
 type RootState = ReturnType<typeof store.getState>;
 
+import { NotificationType } from '@/interface/NotificationInterface';
+import { notification } from 'antd';
+import FormChangePass from '@/app/(admin)/config/users/FormChangePass';
+
 export default function UserDropdown() {
   const [isOpen, setIsOpen] = useState(false);
+  const [api, contextHolder] = notification.useNotification();
+  const [openChangePassModal, setOpenChangePassModal] = useState(false);
 
   const auth = useSelector((state: RootState) => state.auth);
+  const currentUserId = typeof auth?.userId === 'number' ? auth.userId : null;
 
   const person = (auth?.person ?? {}) as {
     nombres?: string;
@@ -32,14 +39,30 @@ export default function UserDropdown() {
     setIsOpen(false);
   }
 
-  console.log('Auth data:', auth); // Debug: Verificar los datos de autenticación
-
   const username = auth?.username ? `@${auth.username}` : '@';
   const fullName = `${person.nombres ?? ''} ${person.apellidos ?? ''}`.trim();
   const email = person.correo ?? '';
 
+  const openNotificationWithIcon = (type: NotificationType, title: string, description: string) => {
+    api[type]({
+      title,
+      description,
+      showProgress: true,
+    });
+  };
+
+  const handleCloseForm = () => {
+    setOpenChangePassModal(false);
+  };
+
+  /* Modal de cambio de contraseña */
+  const handleChangePass = () => {
+    setOpenChangePassModal(true);
+  };
+
   return (
     <>
+      {contextHolder}
       <div className="relative">
         <button
           onClick={toggleDropdown}
@@ -68,9 +91,12 @@ export default function UserDropdown() {
           <ul className="flex flex-col gap-1 border-b border-gray-200 pt-4 pb-3 dark:border-gray-800">
             <li>
               <DropdownItem
-                onItemClick={closeDropdown}
+                onItemClick={() => {
+                  closeDropdown();
+                  handleChangePass();
+                }}
                 tag="a"
-                href="/profile"
+                href="#"
                 className="group text-theme-sm flex items-center gap-3 rounded-lg px-3 py-2 font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
               >
                 <CgArrowsExchange className="fill-gray-500 text-2xl group-hover:fill-gray-700 dark:fill-gray-400 dark:group-hover:fill-gray-300" />
@@ -88,6 +114,14 @@ export default function UserDropdown() {
           </Link>
         </Dropdown>
       </div>
+      {openChangePassModal && currentUserId !== null && (
+        <FormChangePass
+          isOpen={openChangePassModal}
+          action={handleCloseForm}
+          data={{ id: currentUserId }}
+          notify={openNotificationWithIcon}
+        />
+      )}
     </>
   );
 }
