@@ -14,6 +14,7 @@ class UsuarioRolModel(db.Model):
     updated_at = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
 
     def __init__(self, user_id, rol_id, estado_id):
+        self.id = str(uuid.uuid4())
         self.user_id = user_id
         self.rol_id = rol_id
         self.estado_id = estado_id

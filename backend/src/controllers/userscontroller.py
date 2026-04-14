@@ -6,6 +6,7 @@ from decorators import token_required
 from src.helpers.password import hash_password
 
 from src.services.audit_services import register_audit_action
+from src.services.roles_services import set_specific_role
 
 from src.models.usuariomodel import UsuarioModel as Usuarios
 from src.models.usuariorolmodel import UsuarioRolModel as UserRole
@@ -35,10 +36,13 @@ def get_users():
         user_data = {
             'id': user.id,
             'cedula': user.id_persona,
-            'nombres': f"{persona.nombres} {persona.apellidos}",
+            'nombres': persona.nombres,
+            'apellidos': persona.apellidos,
             'correo': persona.correo,
             'telefono': persona.telefono,
             'username': user.username,
+            'sexo': persona.sexo,
+            'fechaNac': persona.fecha_nace,
             'rolId': rol.id if rol else None,
             'rol': rol.nombre if rol else None,
             'estadoId': estado.id if estado else None,
@@ -57,6 +61,7 @@ def create_user():
         data = request.get_json()
         cedula = data.get('cedula')
         persona = Personas.query.filter_by(cedula=cedula).first()
+
         if not persona:
             new_person = Personas(
                 cedula=cedula,
@@ -86,7 +91,7 @@ def create_user():
             id_persona=id_persona,
             username=data.get('username'),
             password=data.get('password'),
-            id_rol=data.get('id_rol'),
+            id_rol=data.get('rolId'),
             activado=data.get('activado', True)
         )
 
@@ -101,6 +106,8 @@ def create_user():
             valor_new=str(new_user.serialize()),
             col_editada=None
         )
+
+        set_specific_role(new_user.id, data.get('rolId'), data.get('estadoId'))
 
         return jsonify({'message': 'Usuario creado exitosamente'}), 201
 
@@ -121,7 +128,7 @@ def update_user(user_id):
     valor_old = str(user.serialize())
 
     user.username = data.get('username', user.username)
-    user.id_rol = data.get('id_rol', user.id_rol)
+    user.id_rol = data.get('rolId', user.id_rol)
     user.activado = data.get('activado', user.activado)
     user.updated_at = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     user.save()
@@ -131,6 +138,37 @@ def update_user(user_id):
         ip_address=g.remote_addr,
         tabla='usuarios',
         accion=2,  # Acción de actualización
+        valor_old=valor_old,
+        valor_new=str(user.serialize()),
+    )
+
+    set_specific_role(user.id, data.get('rolId'), data.get('estadoId'))
+
+    return jsonify({'message': 'Usuario actualizado exitosamente'}), 200
+
+
+@app.route('/api/users/activate/<int:user_id>', methods=['PATCH'])
+@token_required
+def activate_user(user_id):
+
+    data = request.get_json()
+
+    user = Usuarios.query.get(user_id)
+
+    if not user:
+        return jsonify({'message': 'Usuario no encontrado'}), 404
+
+    valor_old = str(user.serialize())
+
+    user.activado = data.get('activado', user.activado)
+    user.updated_at = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    user.save()
+
+    register_audit_action(
+        usuario_id=request.current_user['id'],
+        ip_address=g.remote_addr,
+        tabla='usuarios',
+        accion=4,  # Acción de activación/desactivación
         valor_old=valor_old,
         valor_new=str(user.serialize()),
     )

@@ -5,15 +5,15 @@ from src.models.usuariorolmodel import UsuarioRolModel as UserRole
 from src.services.audit_services import register_audit_action
 
 
-def set_specific_role(user, role_id, estado_id):
+def set_specific_role(user_id, role_id, estado_id):
 
     try:
-        userRole = UserRole.query.filter_by(user_id=user.id).first()
+        userRole = UserRole.query.filter_by(user_id=user_id).first()
 
         if not userRole:
 
             new_user_role = UserRole(
-                user_id=user.id,
+                user_id=user_id,
                 rol_id=role_id,
                 estado_id=estado_id
             )
@@ -21,7 +21,7 @@ def set_specific_role(user, role_id, estado_id):
             new_user_role.save()
 
             register_audit_action(
-                usuario_id=user.id,
+                usuario_id=request.current_user['id'],
                 ip_address=request.remote_addr,
                 tabla='usuario_rol',
                 accion=1,  # Acción de creación
@@ -37,7 +37,7 @@ def set_specific_role(user, role_id, estado_id):
                 'estado_id': estado_id
             })
             register_audit_action(
-                usuario_id=user.id,
+                usuario_id=request.current_user['id'],
                 ip_address=request.remote_addr,
                 tabla='usuario_rol',
                 accion=2,  # Acción de actualización
