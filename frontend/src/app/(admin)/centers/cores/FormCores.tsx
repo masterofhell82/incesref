@@ -9,6 +9,7 @@ const { TextArea } = Input;
 import type { ModalProps } from 'antd';
 import type { Cores } from '@/interface/CoreInterfaces';
 import { NotificationType } from '@/interface/NotificationInterface';
+import { GeoEstados, GeoMunicipios, GeoParroquias } from '@/interface/GeographyInterface';
 
 const stylesFn: ModalProps['styles'] = (info) => {
   if (info.props.footer) {
@@ -59,9 +60,9 @@ const FormCores = ({
   });
 
   const [ambitos, setAmbitos] = useState([]);
-  const [estadosData, setEstadosData] = useState([]);
-  const [municipiosData, setMunicipiosData] = useState([]);
-  const [parroquiasData, setParroquiasData] = useState([]);
+  const [estadosData, setEstadosData] = useState<GeoEstados[]>([]);
+  const [municipiosData, setMunicipiosData] = useState<GeoMunicipios[]>([]);
+  const [parroquiasData, setParroquiasData] = useState<GeoParroquias[]>([]);
   const [dataForm, setDataForm] = useState(getInitialForm(data));
 
   const Schema = Yup.object().shape({
@@ -121,7 +122,7 @@ const FormCores = ({
   const getEstados = async () => {
     try {
       const response = await get(estados);
-      const estadosData = response.data.map((estado: { id: number; estado: string }) => ({
+      const estadosData = response.data.map((estado: GeoEstados) => ({
         value: estado.id,
         label: estado.estado,
       }));
@@ -134,7 +135,7 @@ const FormCores = ({
   const getMunicipios = async (estadoId: number) => {
     try {
       const response = await get(`${municipios}/${estadoId}`);
-      const municipiosData = response.data.map((municipio: { id: number; municipio: string }) => ({
+      const municipiosData = response.data.map((municipio: GeoMunicipios) => ({
         value: municipio.id,
         label: municipio.municipio,
       }));
@@ -147,7 +148,7 @@ const FormCores = ({
   const getParroquias = async (municipioId: number) => {
     try {
       const response = await get(`${parroquias}/${municipioId}`);
-      const parroquiasData = response.data.map((parroquia: { id: number; parroquia: string }) => ({
+      const parroquiasData = response.data.map((parroquia: GeoParroquias) => ({
         value: parroquia.id,
         label: parroquia.parroquia,
       }));
