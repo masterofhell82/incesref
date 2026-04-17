@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
     <head>
         <meta charset="UTF-8" />
@@ -10,34 +10,65 @@
         <script src="{{ base_url + url_for('static', filename='node_modules/jquery/dist/jquery.js') }}"></script>
         <script src="{{ base_url + url_for('static', filename='node_modules/bootstrap/dist/js/bootstrap.min.js') }}"></script>
         <style>
+            @page {
+                size: A4 landscape;
+                margin: 0;
+            }
+
             .table.bg-transparent,
             .table.bg-transparent th,
             .table.bg-transparent td {
                 background-color: transparent !important;
             }
             @font-face {
-                font-family: "Tahoma";
-                src: url("{{ base_url + url_for('static', filename='fonts/tahoma.ttf') }}")
+                font-family: "hellas";
+                src: url("{{ base_url + url_for('static', filename='fonts/HFUNB.TTF') }}")
                     format("truetype");
-                font-weight: normal;
+                font-weight: 500;
+                font-style: normal;
+            }
+            @font-face {
+                font-family: "Spartan-Bold";
+                src: url("{{ base_url + url_for('static', filename='fonts/Spartan-Bold.ttf') }}")
+                    format("truetype");
+                font-weight: 700;
                 font-style: normal;
             }
 
             @font-face {
-                font-family: "Tahoma";
-                src: url("{{ base_url + url_for('static', filename='fonts/tahoma-bold.ttf') }}")
+                font-family: "Fertigo";
+                src: url("{{ base_url + url_for('static', filename='fonts/Fertigo Regular.otf') }}")
+                    format("opentype");
+                font-weight: 400;
+                font-style: normal;
+            }
+
+            @font-face {
+                font-family: "Philosopher";
+                src: url("{{ base_url + url_for('static', filename='fonts/Philosopher-Regular.ttf') }}")
+                    format("truetype");
+                font-weight: 400;
+                font-style: normal;
+            }
+
+            @font-face {
+                font-family: "Philosopher";
+                src: url("{{ base_url + url_for('static', filename='fonts/Philosopher-Bold.ttf') }}")
                     format("truetype");
                 font-weight: bold;
                 font-style: normal;
             }
 
-            @page {
-                size: A4 landscape;
-                margin: 10mm;
+            @font-face {
+                font-family: "clusty";
+                src: url("{{ base_url + url_for('static', filename='fonts/clusty-bold.otf') }}")
+                    format("opentype");
+                font-weight: 700;
+                font-style: normal;
             }
 
             body {
-                font-family: "Tahoma", "Arial", sans-serif;
+                font-family: "Arial", sans-serif;
                 margin: 0;
                 padding: 0;
             }
@@ -50,31 +81,27 @@
             }
 
             .page-background-front {
-                background-image: url("{{ base_url + url_for('static', filename='img/certificado/background.png') }}");
                 background-size: cover;
                 background-position: center;
                 background-repeat: no-repeat;
-                top: 25px;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                width: 100%;
-                height: 100%;
+                background-attachment: fixed;
+                left: 2cm;
+                right: 2cm;
+                height: 100vh;
+                margin: 0;
                 position: absolute;
                 z-index: -1;
             }
 
             .page-background-back {
-                background-image: url("{{ base_url + url_for('static', filename='img/certificado/background.png') }}");
                 background-size: cover;
                 background-position: center;
                 background-repeat: no-repeat;
-                top: 25px;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                width: 100%;
-                height: 100%;
+                background-attachment: fixed;
+                left: 2cm;
+                right: 2cm;
+                height: 100vh;
+                margin: 0;
                 position: absolute;
                 z-index: -1;
             }
@@ -104,7 +131,12 @@
             }
 
             hr {
-                border: 2px solid #ff7300 !important;
+                border: 0 !important;
+                border-top: 3px solid #333565 !important;
+                color: #333565 !important;
+                background-color: #333565 !important;
+                opacity: 1 !important;
+                height: 0;
             }
 
             .no-border table,
@@ -125,22 +157,227 @@
             }
 
             .title-certifica {
-                font-size: 55px;
-                font-weight: bold;
+                font-size: 116px;
+                color: #333565;
+                font-family: "hellas", sans-serif;
+                font-synthesis: weight;
+                letter-spacing: -0.07em;
             }
 
             .title-ortoga {
-                font-size: 28px;
+                margin-top: -50px;
+                font-family: "Fertigo", serif;
+                font-size: 35px;
+                color: #0e78a7;
             }
 
             .fullnames {
-                font-size: 40px;
-                font-weight: bold;
+                font-family: "clusty", sans-serif;
+                font-size: 45px;
+                color: #333565;
             }
 
             .foid {
-                font-size: 26px;
+                font-family: "Philosopher", sans-serif;
+                font-size: 44px;
                 font-weight: bold;
+                color: #0e78a7;
+                margin-top: -20px;
+            }
+
+            .comment {
+                text-align: center;
+                color: #3a3a3b;
+                font-size: 22px;
+                font-family: "Philosopher", sans-serif;
+                white-space: normal;
+                overflow-wrap: break-word;
+                word-break: normal;
+                max-width: 75%;
+                margin: 0 auto;
+            }
+
+            .formation {
+                text-align: center;
+                color: #242425;
+                font-weight: 600;
+                font-family: "clusty", sans-serif;
+                font-size: 26px;
+            }
+
+            .sign {
+                height: 185px;
+                font-size: 20px;
+                padding-left: 120px;
+                padding-right: 120px;
+                margin-top: -25px;
+            }
+
+            .img-signature-float {
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+                border-radius: 8px;
+                z-index: 2;
+                max-width: 200px;
+                max-height: 100px;
+                position: relative;
+                top: 50px;
+                right: -17px;
+            }
+
+            .who-signature {
+                text-align: center;
+                font-size: 18px;
+                color: #5b5b5e;
+                font-family: "clusty", sans-serif;
+            }
+
+            .date_emition {
+                text-align: center;
+                font-size: 20px;
+                color: #2b2b2e;
+                font-family: "Philosopher", sans-serif;
+                margin-top: 20px;
+            }
+
+            .table-content {
+                margin-left: 1cm;
+                padding: 120px;
+                position: relative;
+                z-index: 1;
+            }
+
+            table {
+                --bs-border-width: 1px;
+                --bs-border-color-translucent: rgba(0, 0, 0, 0.175);
+                --bs-border-radius: 0.375rem;
+                caption-side: bottom;
+                width: 100%;
+                margin-bottom: 1rem;
+                vertical-align: top;
+                border: var(--bs-border-width) solid
+                    var(--bs-border-color-translucent) !important;
+                border-radius: var(--bs-border-radius) !important;
+            }
+            
+            .table_matriz table {
+                font-family: "Philosopher", sans-serif;
+                font-size: 18px;
+                border-collapse: collapse;
+            }
+
+            .table_matriz table td {
+                border: 1px solid #000;
+                text-align: justify;
+                padding-left: 10px;
+                padding-right: 10px;
+            }
+
+            .table_matriz table .hours {
+                background-color: #71649e;
+                color: #fff;
+                text-align: center !important;
+                width: 5%;
+                padding-right: 10px;
+            }
+
+            .table_matriz table .hours_d {
+                text-align: center !important;
+            }
+
+            .table_matriz table .colspan {
+                background-color: #71649e;
+                color: #fff;
+                text-align: center;
+            }
+
+            .table_matriz table .codigo {
+                background-color: #71649e;
+                color: #fff;
+                width: 20%;
+            }
+
+            .table_matriz table .numero {
+                background-color: #71649e;
+                color: #fff;
+                width: 5%;
+            }
+
+            .table_matriz table .uc {
+                background-color: #71649e;
+                color: #fff;
+                width: 75%;
+            }
+
+            .table_matriz table .rowspan {
+                padding-left: 10px;
+                padding-right: 10px;
+                width: 1000px;
+                background-color: #71649e;
+                vertical-align: middle;
+                text-align: center;
+                color: #fff;
+            }
+
+            .table_register table {
+                font-family: "Philosopher", sans-serif;
+                font-size: 14px;
+                border-collapse: collapse;
+                width: 350px;
+            }
+
+            .table_register table td {
+                border: 1px solid #000;
+                padding-left: 10px;
+            }
+
+            .table_register table .colspan {
+                background-color: #71649e;
+                color: #fff;
+                height: 2.5%;
+                text-align: center;
+            }
+
+            .descripcion {
+                font-size: 11px;
+            }
+
+            .qrcode {
+                top: 400px;
+                right: 160px;
+                position: absolute;
+                width: 260px;
+            }
+
+            .qrcode img {
+                width: 230px;
+            }
+
+            .qrcode a {
+                font-family: "Philosopher", sans-serif;
+                color: #102638;
+                text-decoration: none;
+            }
+
+            .signature-float {
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+                border-radius: 8px;
+            }
+
+            .single-signature {
+                width: 100%;
+                text-align: center;
+            }
+
+            .single-signature img {
+                display: block;
+                max-width: 200px;
+                max-height: 100px;
+                margin: 0 auto 12px;
+            }
+
+            .single-signature hr {
+                width: 280px;
+                margin: 0 auto 12px;
             }
 
             .fs2 {
@@ -155,18 +392,6 @@
                 font-weight: bolder;
             }
 
-            .sign {
-                height: 185px;
-                font-size: 20px;
-                padding-left: 120px;
-                padding-right: 120px;
-            }
-
-            .signature-float {
-                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-                border-radius: 8px;
-            }
-
             footer {
                 position: relative;
                 bottom: 0;
@@ -176,210 +401,147 @@
 
     <body>
         <div class="page">
-            <div class="page-background-front"></div>
+            <div class="page-background-front">
+                <img
+                    src="{{ base_url + url_for('static', filename='img/certificado/bg.svg') }}"
+                    width="1300"
+                    height="1005"
+                    alt=""
+                />
+            </div>
             <div class="content p-5">
-                <hr />
-                <div class="row justify-content-center">
+                <div class="row justify-content-center mt-5">
                     <img
-                        src="{{ base_url + url_for('static', filename='img/certificado/Logo.png') }}"
+                        src="{{ base_url + url_for('static', filename='img/certificado/logo.svg') }}"
                         alt="Logo"
                         class="img-fluid"
-                        style="max-width: 600px"
+                        style="max-width: 300px"
                     />
                 </div>
-                <div class="row text-center" style="margin-top: 30px">
+                <div class="row text-center">
                     <div class="title-certifica text-uppercase">
-                        Certificado
+                        CERTIFICADO
                     </div>
                     <div class="title-ortoga">que se otorga a</div>
                 </div>
-                <div class="row text-center" style="margin-top: 20px">
+                <div class="row text-center" style="margin-top: 5px">
                     <div class="fullnames text-uppercase">
-                        Andres Benitez 
+                        ANDRÉS ALEJANDRO BENÍTEZ OCHOA
                     </div>
                     <div class="foid text-uppercase">
                         C.I: {{ '15328487' |format_cedula }}
                     </div>
                 </div>
-                <div class="row text-center" style="margin-top: 10px">
-                    <div class="fs2">
-                        Por haber aprobado satisfactoriamente el <br />
-                        Adiestramiento
-                        <span class="fwbold">Nombre de Curso</span>
+                <div class="row text-center">
+                    <div class="comment">
+                        Por haber demostrado en el ejercicio técnico y
+                        profesional, las competencias teóricas - prácticas
+                        exigidas para el desempeño del PERFIL PRODUCTIVO LABORAL
                     </div>
-                    <div style="font-size: larger">
-                        Contenido en el Manual de Instrución CONVIASA,
-                        debidamente aprobado por el Instituto Nacional de
-                        Aeronáutica Civil (INAC)
+                    <div class="formation" style="margin-top: 20px">
+                        AYUDANTE DE ARTESANO CONSTRUCTOR DE EDIFICACIONES DE
+                        TIERRA
                     </div>
                 </div>
             </div>
-            <div class="row text-start" style="padding-left: 120px">
-                <div class="fs-5" tyle="font-size:larger;">
-                    <span class="fwbold">Maiquetía</span>, Fecha
-                </div>
-            </div>
-            <div class="row sign" style="margin-top: 40px">
-                <div class="d-flex justify-content-between">
-                    <div class="align-self-center text-center">
-                        <img
-                            src="data:image/png;base64,{{ signature_inst }}"
-                            alt="Firma Instructor"
-                            class="img-fluid signature-float"
-                            style="
-                                max-width: 200px;
-                                max-height: 100px;
-                                position: absolute;
-                                left: 10%;
-                                top: 75%;
-                                z-index: 2;
-                            "
-                        />
-                        <div class="fs-5">
-                            Firmas
-                        </div>
-                        <div class="fs-5">Instructor</div>
-                    </div>
 
-                    <div class="align-self-end text-center">
-                        <img
-                            src="data:image/png;base64,{{ signature_inst }}"
-                            alt="Firma Instructor"
-                            class="img-fluid signature-float"
-                            style="
-                                max-width: 200px;
-                                max-height: 100px;
-                                position: absolute;
-                                left: 50%;
-                                bottom: 8%;
-                                transform: translateX(-50%);
-                                z-index: 2;
-                            "
-                        />
-                        <div class="fs-5">
-                           Firmas
-                        </div>
-                        <div class="fs-5">
-                            Gerente General de Entrenamiento e Instrucción
-                        </div>
-                    </div>
-
+            <div class="row sign">
+                <div class="single-signature">
                     <div class="align-self-center text-center">
+                        <!-- src="data:image/png;base64,{{ signature_gte_inst }}" -->
                         <img
-                            src="data:image/png;base64,{{ signature_gte_inst }}"
-                            alt="Firma Instructor"
-                            class="img-fluid signature-float"
-                            style="
-                                max-width: 200px;
-                                max-height: 100px;
-                                position: absolute;
-                                right: 10%;
-                                top: 75%;
-                                z-index: 2;
-                            "
+                            src="{{ base_url + url_for('static', filename='img/firma/presidenteInces.png') }}"
+                            alt="Firma"
+                            class="img-fluid img-signature-float"
                         />
-                        <div class="fs-5">
-                            Firmas
-                        </div>
-                        <div class="fs-5">Gerente de Instrucción</div>
+                        <hr />
+                        <div class="who-signature">Wuikelman Angel Paredes</div>
+                        <div class="who-signature">Presidente del Inces</div>
                     </div>
                 </div>
             </div>
-            <footer
-                style="
-                    position: absolute;
-                    left: 0;
-                    right: 0;
-                    bottom: 0;
-                    width: 100%;
-                    padding: 0 40px;
-                "
-            >
-                <hr class="mt-0" />
-                <div class="d-flex justify-content-between">
-                    <div class="small fwbold">GGEI-CIOA-051</div>
-                    <div class="small fwbold">VCV-GGEI-F003 14/06/2024</div>
+            <div class="row text-center">
+                <div class="date_emition">
+                    <span class="fwbold">Caracas</span>, {{ '2024-06-14'
+                    |format_date_long_es }}
                 </div>
-            </footer>
+            </div>
         </div>
 
         <div class="page">
-            <div class="page-background-back"></div>
-            <div class="content p-5">
-                <hr />
-                <div class="row justify-content-center">
-                    <img
-                        src="{{ base_url + url_for('static', filename='img/certificado/Logo.png') }}"
-                        alt="Logo"
-                        class="img-fluid"
-                        style="max-width: 600px"
-                    />
+            <div class="page-background-front">
+                <img
+                    src="{{ base_url + url_for('static', filename='img/certificado/bg_back.svg') }}"
+                    width="1300"
+                    height="1005"
+                    alt=""
+                />
+            </div>
+            <div class="row table-content">
+                <div class="col-8">
+                    <div class="table_matriz">
+                        <table border="1">
+                            <tr>
+                                <td class="colspan">TEMAS</td>
+                                <td class="hours">HORAS</td>
+                            </tr>
+                        </table>
+                    </div>
                 </div>
-                <div class="row text-center" style="margin-top: 50px">
-                    <div class="fs2">
-                        Adiestramiento
-                        <span class="fwbold">Nombre de Curso</span>
+                <div class="col-4">
+                    <div class="table_register">
+                        <table border="1">
+                            <tr>
+                                <td colspan="12" class="colspan">REGISTRO</td>
+                            </tr>
+                            <tr class="text-center">
+                                <td colspan="4" class="col-4 colspan">LIBRO N°</td>
+                                <td colspan="4" class="col-4 colspan">HOJA</td>
+                                <td colspan="4" class="col-4 colspan">CONSECUTIVO</td>
+                            </tr>
+                            <tr class="text-center">
+                                <td colspan="4"></td>
+                                <td colspan="4"></td>
+                                <td colspan="4"></td>
+                            </tr>
+                            <tr class="text-center">
+                                <td colspan="4" class="colspan">CÓDIGO DE EJECUCIÓN</td>
+                                <td colspan="4" class="colspan">CÓDIGO DE FORMACIÓN</td>
+                                <td colspan="4" class="colspan">FECHA DE GENERACIÓN</td>
+                            </tr>
+                            <tr class="text-center">
+                                <td colspan="4"></td>
+                                <td colspan="4"></td>
+                                <td colspan="4"></td>
+                            </tr>
+                            <tr class="text-center">
+                                <td colspan="4" class="colspan">DURACIÓN HORAS</td>
+                                <td colspan="4" class="colspan">FECHA DE INICIO</td>
+                                <td colspan="4" class="colspan">FECHA DE TERMINO</td>
+                            </tr>
+                            <tr class="text-center">
+                                <td colspan="4">    </td>
+                                <td colspan="4"></td>
+                                <td colspan="4"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="12" class="colspan">CORRELATIVO</td>
+                            </tr>
+                            <tr>
+                                <td colspan="12" class="text-center">
+                                    07160101700000182026
+                                </td>
+                            </tr>
+                        </table>
                     </div>
                 </div>
             </div>
-            <div class="row text-start" style="padding-left: 120px">
-                <div class="col-8 d-flex justify-content-center">
-                    <table
-                        class="table table-bordered border-dark rounded bg-transparent"
-                        style="width: 950px; font-size: 18px; border-radius: 8px; overflow: hidden;"
-                    >
-                        <thead>
-                            <tr>
-                                <th scope="col" style="width: 75%">
-                                    CONTENIDOS
-                                </th>
-                                <th scope="col" class="text-center">
-                                    HORAS / MINUTOS
-                                </th>
-                            </tr>
-                        </thead>
-                       
-                        <tr>
-                            <td>CONTENIDOS/td>
-                            <td class="text-center align-middle">
-                                horas
-                            </td>
-                        </tr>
-                        
-                        <tr>
-                            <th scope="row" class="text-end">TOTAL HORAS</th>
-                            <td class="text-center">horas</td>
-                        </tr>
-                        <tr>
-                            <th scope="row" class="text-end">CALIFICACIÓN</th>
-                            <td class="text-center">calificación</td>
-                        </tr>
-                    </table>
-                </div>
-                <div class="col-4 d-flex justify-content-center">
-                    <img
-                        width="200"
-                        height="200"
-                        src="{{ qrcode('You can see a icon in QR code.', error_correction='H', icon_img=base_url + url_for('static', filename='img/certificado/favicon.ico')) }}"
-                    />
-                </div>
+
+
+            <div class="qrcode">
+                <img src="{{ base_url + url_for('static', filename='img/certificado/qrcode.png') }}" alt="QR Code" />
+                <a href="#" target="_blank">https://app.inces.net.ve</a> 
             </div>
-            <footer
-                style="
-                    position: absolute;
-                    left: 0;
-                    right: 0;
-                    bottom: 0;
-                    width: 100%;
-                    padding: 0 40px;
-                "
-            >
-                <hr class="mt-0" />
-                <div class="d-flex justify-content-between">
-                    <div class="small fwbold">GGEI-CIOA-051</div>
-                    <div class="small fwbold">VCV-GGEI-F003 14/06/2024</div>
-                </div>
-            </footer>
         </div>
     </body>
 </html>
