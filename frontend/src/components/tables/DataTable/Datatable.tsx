@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Table, ConfigProvider, theme, Input } from 'antd';
 import { IoIosSearch } from 'react-icons/io';
-import './Datatable.css';
 import { useTheme } from '@/context/ThemeContext';
 
 import type { TableProps } from 'antd';
@@ -91,6 +90,7 @@ const Datatable = <T extends object = RowData>({
                   onChange={(e) => {
                     setQ(e.target.value);
                   }}
+                  allowClear={true}
                   suffix={<IoIosSearch />}
                 />
               </div>
