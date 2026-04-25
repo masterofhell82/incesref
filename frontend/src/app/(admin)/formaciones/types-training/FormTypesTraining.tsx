@@ -3,7 +3,7 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { post, put } from '@/Services/HttpRequest';
 import { tiposFormaciones } from '@/Services/EndPoints';
-import { TypesTraining } from '@/interface/TypesTrainingInterfaces';
+import { TypesTraining } from '@/interface/FormationsInterfaces';
 
 import { Input, Button } from 'antd';
 const { TextArea } = Input;

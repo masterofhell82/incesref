@@ -4,7 +4,7 @@ import { get } from '@/Services/HttpRequest';
 import { tiposFormaciones } from '@/Services/EndPoints';
 import { Button, notification } from 'antd';
 
-import type { TypesTraining } from '@/interface/TypesTrainingInterfaces';
+import type { TypesTraining } from '@/interface/FormationsInterfaces';
 import { NotificationType } from '@/interface/NotificationInterface';
 
 import Datatable from '@/components/tables/DataTable/Datatable';
