@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Table, ConfigProvider, theme, Input } from 'antd';
+import { Table, Input } from 'antd';
 import { IoIosSearch } from 'react-icons/io';
-import { useTheme } from '@/context/ThemeContext';
 
 import type { TableProps } from 'antd';
 
@@ -34,8 +33,6 @@ const Datatable = <T extends object = RowData>({
   loading = false,
   ...props
 }: DatatableProps<T>) => {
-  const { theme: currentTheme } = useTheme();
-
   const [dataSource, setData] = useState<T[]>([...data]);
   const [q, setQ] = useState('');
 
@@ -59,59 +56,45 @@ const Datatable = <T extends object = RowData>({
 
   return (
     <>
-      <ConfigProvider
-        theme={{
-          algorithm: currentTheme === 'dark' ? theme.darkAlgorithm : theme.defaultAlgorithm,
-          components: {
-            Table: {
-              borderColor: currentTheme === 'dark' ? '#444' : '#e2d5c2',
-            },
-            Pagination: {
-              itemActiveBg: '#cb0c9f',
-            },
-          },
-        }}
-      >
-        <div className="flex w-full flex-row items-center justify-between gap-2">
-          <div className="flex flex-row items-center gap-2">
-            {title !== '' ? (
-              <span className="text-md font-light text-gray-800 dark:text-white/90">{title}</span>
-            ) : null}
-          </div>
-          <div className="flex flex-row items-center gap-2">
-            <div>{startContent}</div>
-            {isSearch && (
-              <div>
-                <Input
-                  type="text"
-                  placeholder="Buscar"
-                  value={q}
-                  size="large"
-                  onChange={(e) => {
-                    setQ(e.target.value);
-                  }}
-                  allowClear={true}
-                  suffix={<IoIosSearch />}
-                />
-              </div>
-            )}
-            <div>{apiSearch}</div>
-            <div>{endContent}</div>
-          </div>
+      <div className="flex w-full flex-row items-center justify-between gap-2">
+        <div className="flex flex-row items-center gap-2">
+          {title !== '' ? (
+            <span className="text-md font-light text-gray-800 dark:text-white/90">{title}</span>
+          ) : null}
         </div>
-        <div className="mt-1">
-          <Table
-            {...props}
-            className="custom-table-font"
-            bordered
-            columns={columns as TableProps<T>["columns"]}
-            dataSource={search(dataSource)}
-            size={size}
-            loading={loading}
-            rowKey="id"
-          />
+        <div className="flex flex-row items-center gap-2">
+          <div>{startContent}</div>
+          {isSearch && (
+            <div>
+              <Input
+                type="text"
+                placeholder="Buscar"
+                value={q}
+                size="large"
+                onChange={(e) => {
+                  setQ(e.target.value);
+                }}
+                allowClear={true}
+                suffix={<IoIosSearch />}
+              />
+            </div>
+          )}
+          <div>{apiSearch}</div>
+          <div>{endContent}</div>
         </div>
-      </ConfigProvider>
+      </div>
+      <div className="mt-1">
+        <Table
+          {...props}
+          className="custom-table-font"
+          bordered
+          columns={columns as TableProps<T>['columns']}
+          dataSource={search(dataSource)}
+          size={size}
+          loading={loading}
+          rowKey="id"
+        />
+      </div>
     </>
   );
 };

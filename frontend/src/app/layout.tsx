@@ -5,6 +5,7 @@ import { SidebarProvider } from '@/context/SidebarContext';
 import { ThemeProvider } from '@/context/ThemeContext';
 import { AntdRegistry } from '@ant-design/nextjs-registry';
 import { Montserrat, Outfit } from 'next/font/google';
+import AntdConfigProvider from '@/context/AntdConfigProvider';
 
 const montserrat = Montserrat({
   subsets: ['latin'],
@@ -30,9 +31,11 @@ export default function RootLayout({
       <body className={`${montserrat.className} ${outfit.variable} dark:bg-gray-900`}>
         <Providers>
           <ThemeProvider>
-            <AntdRegistry>
-              <SidebarProvider>{children}</SidebarProvider>
-            </AntdRegistry>
+            <AntdConfigProvider>
+              <AntdRegistry>
+                <SidebarProvider>{children}</SidebarProvider>
+              </AntdRegistry>
+            </AntdConfigProvider>
           </ThemeProvider>
         </Providers>
       </body>

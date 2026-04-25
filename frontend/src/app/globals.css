@@ -374,3 +374,7 @@ body{
   opacity: 0.8;
   cursor: grabbing; /* Changes the cursor to indicate dragging */
 }
+
+.ant-pagination .ant-pagination-item-active{
+    border-color: #cb0c9f !important;
+}  
