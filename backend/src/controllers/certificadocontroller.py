@@ -114,8 +114,6 @@ def get_certificado(id_person):
 @app.route('/api/viewcertificate/<certificate>', methods=['GET'])
 def decode_certificate_id(certificate):
     try:
-        print("Encoded certificate ID:", certificate)
-
         cert = 'Certificado'
 
         namefile = cert + '.pdf'
