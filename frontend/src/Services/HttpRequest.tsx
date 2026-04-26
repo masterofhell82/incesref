@@ -118,7 +118,7 @@ export const patch = async (endpoint = '', payload = '', multipart = false) => {
   }
 };
 
-export const del = async (endpoint = '', payload = '') => {
+export const remove = async (endpoint = '', payload = '') => {
   try {
     const config: AxiosRequestConfig = getConfig();
     if (payload) {
