@@ -25,10 +25,13 @@ if __name__ == '__main__':
     from src.controllers.ambitocontroller import *
     from src.controllers.certificadocontroller import *
     from src.controllers.cfscontroller import *
+    from src.controllers.cursocontroller import *
+    from src.controllers.cursoscontenidocontroller import *
     from src.controllers.geografiacontroller import *
     from src.controllers.userscontroller import *
     from src.controllers.tipoformacioncontroller import *
     from src.controllers.personcontroller import *
+    from src.controllers.programacontroller import *
     from src.controllers.rolcontroller import *
     from src.controllers.userscontroller import *
     app.run(host='0.0.0.0', port=3010, debug=app.config['DEBUG'])
