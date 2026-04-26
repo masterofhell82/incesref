@@ -2,6 +2,7 @@
  * Headers Library
  */
 import axios, { AxiosRequestConfig } from 'axios';
+import { logout } from './Authentications';
 
 /**
  * TODO: Use parameterized configurations.
@@ -26,6 +27,10 @@ const getConfig = () => {
   };
 };
 
+const Unauthorized = () => {
+  logout();
+};
+
 export const get = async (endpoint = '', payload = '') => {
   try {
     let req;
@@ -38,6 +43,9 @@ export const get = async (endpoint = '', payload = '') => {
     }
     return req.data;
   } catch (error) {
+    if (axios.isAxiosError(error) && error.response?.status === 401) {
+      Unauthorized();
+    }
     throw error;
   }
 };
@@ -63,6 +71,9 @@ export const post = async (
     }
     return req.data;
   } catch (error) {
+    if (axios.isAxiosError(error) && error.response?.status === 401) {
+      Unauthorized();
+    }
     throw error;
   }
 };
@@ -80,6 +91,9 @@ export const put = async (endpoint = '', payload = '', multipart = false) => {
     }
     return req.data;
   } catch (error) {
+    if (axios.isAxiosError(error) && error.response?.status === 401) {
+      Unauthorized();
+    }
     throw error;
   }
 };
@@ -97,6 +111,9 @@ export const patch = async (endpoint = '', payload = '', multipart = false) => {
     }
     return req.data;
   } catch (error) {
+    if (axios.isAxiosError(error) && error.response?.status === 401) {
+      Unauthorized();
+    }
     throw error;
   }
 };
@@ -109,6 +126,9 @@ export const del = async (endpoint = '', payload = '') => {
     }
     return await axios.delete(endpoint, config);
   } catch (error) {
+    if (axios.isAxiosError(error) && error.response?.status === 401) {
+      Unauthorized();
+    }
     throw error;
   }
 };
