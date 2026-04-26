@@ -40,11 +40,7 @@ const navItems: NavItem[] = [
       { name: 'Maestra General', path: '/formaciones/maestra', pro: false },
     ],
   },
-  /* {
-    name: 'Matriculados',
-    icon: <LuLayoutList size={25} />,
-    subItems: [{ name: 'Matriculados', path: '/admin/matriculados', pro: false }],
-  }, */
+
   {
     name: 'Estudiantes',
     icon: <PiStudentDuotone size={25} />,
@@ -61,6 +57,11 @@ const navItems: NavItem[] = [
 ];
 
 const configItems: NavItem[] = [
+  {
+    name: 'Matriculados',
+    icon: <LuLayoutList size={25} />,
+    subItems: [{ name: 'Matriculados', path: '/admin/matriculados', pro: false }],
+  },
   {
     name: 'Certificados (Templates)',
     icon: <PiCertificateDuotone size={25} />,
