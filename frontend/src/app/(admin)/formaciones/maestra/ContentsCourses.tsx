@@ -32,7 +32,6 @@ const ContentsCourses = ({
     setLoading(true);
     try {
       const response = await get(`${contenidosFormaciones}/${data.shortname}`);
-      console.log(response.data);
       setDataSources(response.data);
     } catch (error) {
       console.error('Error fetching course contents:', error);
@@ -51,7 +50,7 @@ const ContentsCourses = ({
     <div>
       <Modals
         isModalOpen={isOpen}
-        title={`Lista de contenidos del curso: ${data?.nombre}`}
+        title={`Curso: ${data?.nombre}`}
         handleCancel={action}
         handleOk={action}
         width={800}

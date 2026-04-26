@@ -20,3 +20,10 @@ export interface TypesTraining {
   nombre: string;
   descripcion: string;
 }
+
+export interface TrainingPrograms {
+  id: number;
+  nombre: string;
+  descripcion: string;
+  is_activo: boolean;
+}

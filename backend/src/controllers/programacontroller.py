@@ -28,7 +28,7 @@ def create_programa():
             tabla='programas',
             accion=1,  # Acción de creación
             valor_old={},
-            valor_new=programa.serialize(),
+            valor_new=str(programa.serialize()),
         )
 
         return jsonify({'data': programa.serialize()}), 201
@@ -40,7 +40,7 @@ def create_programa():
 @token_required
 def get_programas():
     try:
-        programas = Programa.query.all()
+        programas = Programa.query.order_by(Programa.id).all()
         return jsonify({'data': [p.serialize() for p in programas]}), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 400
@@ -55,7 +55,7 @@ def update_programa(id):
         if not programa:
             return jsonify({'error': 'Programa no encontrado'}), 404
 
-        valor_old = programa.serialize()
+        valor_old = str(programa.serialize())
 
         programa.update({
             'nombre': dataPost.get('nombre'),
@@ -69,7 +69,34 @@ def update_programa(id):
             tabla='programas',
             accion=2,  # Acción de actualización
             valor_old=valor_old,
-            valor_new=programa.serialize(),
+            valor_new=str(programa.serialize()),
+        )
+
+        return jsonify({'data': programa.serialize()}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
+
+@app.route('/api/programas/activate/<int:id>', methods=['PATCH'])
+@token_required
+def activate_programa(id):
+    try:
+        programa = Programa.query.get(id)
+        if not programa:
+            return jsonify({'error': 'Programa no encontrado'}), 404
+
+        valor_old = str(programa.serialize())
+
+        programa.update({
+            'is_activo': not programa.is_activo
+        })
+
+        register_audit_action(
+            usuario_id=request.current_user['id'],
+            ip_address=request.remote_addr,
+            tabla='programas',
+            accion=4,  # Acción de activación/desactivación
+            valor_old=valor_old,
+            valor_new=str(programa.serialize()),
         )
 
         return jsonify({'data': programa.serialize()}), 200
