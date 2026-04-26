@@ -8,7 +8,7 @@ import { ChevronDownIcon, HorizontaLDots } from '../icons/index';
 import { RxDashboard } from 'react-icons/rx';
 import { LuFolderGit2, LuClipboardList, LuLayoutList, LuUsers } from 'react-icons/lu';
 import { PiCertificate, PiStudentDuotone, PiCertificateDuotone } from 'react-icons/pi';
-import { LiaSignatureSolid } from "react-icons/lia";
+import { LiaSignatureSolid } from 'react-icons/lia';
 
 type NavItem = {
   name: string;
@@ -35,14 +35,20 @@ const navItems: NavItem[] = [
     name: 'Formaciones',
     icon: <LuClipboardList size={25} />,
     subItems: [
+      { name: 'Programas', path: '/formaciones/programs', pro: false },
       { name: 'Tipo de Formación', path: '/formaciones/types-training', pro: false },
       { name: 'Maestra General', path: '/formaciones/maestra', pro: false },
     ],
   },
-  {
+  /* {
     name: 'Matriculados',
     icon: <LuLayoutList size={25} />,
     subItems: [{ name: 'Matriculados', path: '/admin/matriculados', pro: false }],
+  }, */
+  {
+    name: 'Estudiantes',
+    icon: <PiStudentDuotone size={25} />,
+    path: '/students',
   },
   {
     name: 'Certificados',
@@ -55,11 +61,6 @@ const navItems: NavItem[] = [
 ];
 
 const configItems: NavItem[] = [
-   {
-    name: 'Estudiantes',
-    icon: <PiStudentDuotone size={25} />,
-    path: '/students',
-  },
   {
     name: 'Certificados (Templates)',
     icon: <PiCertificateDuotone size={25} />,
@@ -78,7 +79,6 @@ const configItems: NavItem[] = [
       { name: 'Roles', path: '/config/roles', pro: false },
     ],
   },
-  
 ];
 
 const styleSidebar = {
