@@ -2,7 +2,7 @@
  * Headers Library
  */
 import axios, { AxiosRequestConfig } from 'axios';
-import { logout } from './Authentications';
+import { handleError } from './Errors';
 
 /**
  * TODO: Use parameterized configurations.
@@ -27,26 +27,20 @@ const getConfig = () => {
   };
 };
 
-const Unauthorized = () => {
-  logout();
-};
-
-export const get = async (endpoint = '', payload = '') => {
+export const get = async (endpoint = '', payload: Record<string, unknown> | string = '') => {
   try {
     let req;
     const config: AxiosRequestConfig = getConfig();
     if (payload) {
-      config['params'] = payload;
+      config.params = payload;
       req = await axios.get(endpoint, config);
     } else {
       req = await axios.get(endpoint, config);
     }
     return req.data;
   } catch (error) {
-    if (axios.isAxiosError(error) && error.response?.status === 401) {
-      Unauthorized();
-    }
-    throw error;
+    const setError = handleError(error);
+    throw setError;
   }
 };
 
@@ -71,10 +65,8 @@ export const post = async (
     }
     return req.data;
   } catch (error) {
-    if (axios.isAxiosError(error) && error.response?.status === 401) {
-      Unauthorized();
-    }
-    throw error;
+    const setError = handleError(error);
+    throw setError;
   }
 };
 
@@ -91,10 +83,8 @@ export const put = async (endpoint = '', payload = '', multipart = false) => {
     }
     return req.data;
   } catch (error) {
-    if (axios.isAxiosError(error) && error.response?.status === 401) {
-      Unauthorized();
-    }
-    throw error;
+    const setError = handleError(error);
+    throw setError;
   }
 };
 
@@ -111,24 +101,20 @@ export const patch = async (endpoint = '', payload = '', multipart = false) => {
     }
     return req.data;
   } catch (error) {
-    if (axios.isAxiosError(error) && error.response?.status === 401) {
-      Unauthorized();
-    }
-    throw error;
+    const setError = handleError(error);
+    throw setError;
   }
 };
 
-export const remove = async (endpoint = '', payload = '') => {
+export const remove = async (endpoint = '', payload: Record<string, unknown> | string = '') => {
   try {
     const config: AxiosRequestConfig = getConfig();
     if (payload) {
-      config['params'] = payload;
+      config.params = payload;
     }
     return await axios.delete(endpoint, config);
   } catch (error) {
-    if (axios.isAxiosError(error) && error.response?.status === 401) {
-      Unauthorized();
-    }
-    throw error;
+    const setError = handleError(error);
+    throw setError;
   }
 };
