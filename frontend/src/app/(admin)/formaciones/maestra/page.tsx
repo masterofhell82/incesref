@@ -2,6 +2,7 @@ import React from 'react'
 import ComponentCard from "@/components/common/ComponentCard";
 import PageBreadcrumb from "@/components/common/PageBreadCrumb";
 import { Metadata } from "next";
+import FormationsGrid from './FormationsGrid';
 
 export const metadata: Metadata = {
   title: 'Formaciones / Malla Curricular (Maestra)',
@@ -13,7 +14,7 @@ const page = () => {
       <PageBreadcrumb pageTitle="Formaciones / Malla Curricular (Maestra)" />
       <div className="space-y-6">
         <ComponentCard>
-            Maestra
+            <FormationsGrid />
         </ComponentCard>
       </div>
     </>)

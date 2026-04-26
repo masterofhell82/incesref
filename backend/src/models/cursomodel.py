@@ -36,6 +36,13 @@ class CursoModel(db.Model):
         return last_curso.id if last_curso else 0
 
     def serialize(self):
+        def to_str(dt):
+            if isinstance(dt, str):
+                return dt
+            if hasattr(dt, 'isoformat'):
+                return dt.isoformat(sep=' ', timespec='seconds')
+            return str(dt) if dt is not None else None
+
         return {
             'id': self.id,
             'nombre': self.nombre,
@@ -44,8 +51,8 @@ class CursoModel(db.Model):
             'id_programa': self.id_programa,
             'shortname': self.shortname,
             'tipo_formacion': self.tipo_formacion,
-            'create_at': self.create_at,
-            'update_at': self.update_at
+            'create_at': to_str(self.create_at),
+            'update_at': to_str(self.update_at)
         }
 
     def save(self):

@@ -24,13 +24,19 @@ class CursoContenidoModel(db.Model):
         self.updated_at = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
     def serialize(self):
+        def to_str(dt):
+            if isinstance(dt, str):
+                return dt
+            if hasattr(dt, 'isoformat'):
+                return dt.isoformat(sep=' ', timespec='seconds')
+            return str(dt) if dt is not None else None
         return {
             'id': self.id,
             'shortname_curso': self.shortname_curso,
             'contenido': self.contenido,
             'horas': self.horas,
-            'created_at': self.created_at,
-            'updated_at': self.updated_at
+            'created_at': to_str(self.created_at),
+            'updated_at': to_str(self.updated_at)
         }
 
     def save(self):

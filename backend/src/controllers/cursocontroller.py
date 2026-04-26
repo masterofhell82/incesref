@@ -11,6 +11,9 @@ from src.models.programamodel import ProgramaModel as Programa
 from src.models.cursomodel import CursoModel as Curso
 from src.models.cursoscontenidomodel import CursoContenidoModel as CursoContenido
 
+from src.services.audit_services import register_audit_action
+
+
 @app.route('/api/cursos', methods=['POST'])
 @token_required
 def create_curso():
@@ -20,13 +23,22 @@ def create_curso():
         curso = Curso(
             nombre=dataPost.get('nombre'),
             descripcion=dataPost.get('descripcion'),
-            max_participan=dataPost.get('maxParticipan'),
+            max_participan=dataPost.get('maxParticipan', 25),
             id_programa=dataPost.get('programaId'),
             shortname=dataPost.get('shortname'),
             tipo_formacion=dataPost.get('tipoFormacionId')
         )
 
         curso.save()
+
+        register_audit_action(
+            usuario_id=request.current_user['id'],
+            ip_address=request.remote_addr,
+            tabla='curso',
+            accion=1,  # Acción de creación
+            valor_old={},
+            valor_new=curso.serialize(),
+        )
 
         return jsonify({'data': curso.serialize()}), 201
     except Exception as e:
@@ -53,14 +65,16 @@ def create_curso_masive():
         saved_path = os.path.join(upload_dir, unique_name)
         uploaded_file.save(saved_path)
 
-        required_columns = {'nombre', 'descripcion', 'shortname', 'tipo_formacion', 'id_programa'}
+        required_columns = {'nombre', 'descripcion',
+                            'shortname', 'tipo_formacion', 'id_programa'}
 
         def parse_int_column(row, column, line):
             raw_value = (row.get(column) or '').strip()
             try:
                 return int(raw_value)
             except (TypeError, ValueError):
-                raise ValueError(f'Valor inválido en la línea {line}, columna {column}')
+                raise ValueError(
+                    f'Valor inválido en la línea {line}, columna {column}')
 
         cursos = []
         with open(saved_path, mode='r', encoding='utf-8-sig', newline='') as csv_file:
@@ -84,12 +98,14 @@ def create_curso_masive():
                 if not nombre or not descripcion or not shortname:
                     return jsonify({'error': f'Campos requeridos vacíos en la línea {index}'}), 400
 
-                tipo_formacion_id = parse_int_column(row, 'tipo_formacion', index)
+                tipo_formacion_id = parse_int_column(
+                    row, 'tipo_formacion', index)
                 id_programa = parse_int_column(row, 'id_programa', index)
 
                 max_participan = 25
                 if 'max_participan' in row and (row.get('max_participan') or '').strip():
-                    max_participan = parse_int_column(row, 'max_participan', index)
+                    max_participan = parse_int_column(
+                        row, 'max_participan', index)
 
                 curso = Curso(
                     nombre=nombre,
@@ -117,7 +133,8 @@ def create_curso_masive():
             try:
                 os.remove(saved_path)
             except OSError as file_error:
-                app.logger.warning(f'No se pudo eliminar el archivo temporal {saved_path}: {file_error}')
+                app.logger.warning(
+                    f'No se pudo eliminar el archivo temporal {saved_path}: {file_error}')
 
 
 @app.route('/api/cursos', methods=['GET'])
@@ -125,18 +142,63 @@ def create_curso_masive():
 def get_curso():
     try:
         curso_list = Curso.query.order_by(Curso.id.asc()).all()
-        
+
         courses_data = []
-        
+
         for curso in curso_list:
             tipo_formacion = TipoFormacion.query.get(curso.tipo_formacion)
             programa = Programa.query.get(curso.id_programa)
             curso_data = curso.serialize()
-            curso_data['is_contenido'] = bool(CursoContenido.query.filter_by(shortname_curso=curso.shortname).first())
+            curso_data['is_contenido'] = bool(CursoContenido.query.filter_by(
+                shortname_curso=curso.shortname).first())
             curso_data['tipo'] = tipo_formacion.nombre if tipo_formacion else None
             curso_data['programa'] = programa.nombre if programa else None
             courses_data.append(curso_data)
 
         return jsonify({'data': courses_data}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
+
+
+@app.route('/api/cursos/<int:id>', methods=['PUT'])
+@token_required
+def update_curso(id):
+    try:
+        dataPost = request.json
+        curso = Curso.query.get(id)
+        if not curso:
+            return jsonify({'error': 'Curso no encontrado'}), 404
+
+        valor_old = curso.serialize()
+
+        curso.update({
+            'nombre': dataPost.get('nombre', curso.nombre),
+            'descripcion': dataPost.get('descripcion', curso.descripcion),
+            'max_participan': dataPost.get('maxParticipan', curso.max_participan),
+            'id_programa': dataPost.get('programaId', curso.id_programa),
+            'shortname': dataPost.get('shortname', curso.shortname),
+            'tipo_formacion': dataPost.get('tipoFormacionId', curso.tipo_formacion)
+        })
+
+        register_audit_action(
+            usuario_id=request.current_user['id'],
+            ip_address=request.remote_addr,
+            tabla='curso',
+            accion=2,  # Acción de actualización
+            valor_old=valor_old,
+            valor_new=curso.serialize(),
+        )
+
+        return jsonify({'data': curso.serialize()}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
+
+
+@app.route('/api/cursos/validate-shortname/<string:shortname>', methods=['GET'])
+@token_required
+def validate_shortname(shortname):
+    try:
+        exists = Curso.query.filter_by(shortname=shortname).first() is not None
+        return jsonify({'exists': exists}), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 400
