@@ -22,6 +22,7 @@ def format_cedula(value):
     value = str(value)
     return '{:,}'.format(int(value)).replace(',', '.')
 
+
 def format_date(value):
     if isinstance(value, str):
         date_obj = datetime.strptime(value, '%Y-%m-%d')
@@ -40,6 +41,20 @@ def format_date_long_es(value):
     return f'{date_obj.day} de {month_name} del {date_obj.year}'
 
 
+def first_word(value):
+    if value is None:
+        return ''
+
+    text = str(value).strip()
+    if not text:
+        return ''
+
+    return text.split()[0]
+
+
+
+
 app.jinja_env.filters['format_cedula'] = format_cedula
 app.jinja_env.filters['format_date'] = format_date
 app.jinja_env.filters['format_date_long_es'] = format_date_long_es
+app.jinja_env.filters['first_word'] = first_word
