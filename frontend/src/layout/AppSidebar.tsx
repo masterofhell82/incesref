@@ -50,8 +50,8 @@ const navItems: NavItem[] = [
     name: 'Certificados',
     icon: <PiCertificate size={25} />,
     subItems: [
-      { name: 'Carga Masiva', path: '/admin/certificados/cargamasiva', pro: false },
-      { name: 'Formatos', path: '/admin/certificados/formatos', pro: false },
+      { name: 'Carga Masiva', path: '/certificates/cargamasiva', pro: false },
+      { name: 'Cursos Cerificados', path: '/certificates/courses', pro: false },
     ],
   },
 ];
@@ -65,7 +65,7 @@ const configItems: NavItem[] = [
   {
     name: 'Certificados (Templates)',
     icon: <PiCertificateDuotone size={25} />,
-    path: '/admin/certificados',
+    path: '/certificates/templates',
   },
   {
     name: 'Firmas',
