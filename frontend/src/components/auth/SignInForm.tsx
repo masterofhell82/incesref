@@ -1,7 +1,9 @@
 'use client';
 import React, { useEffect, useState } from 'react';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
 import Image from 'next/image';
-import { notification, Form, Input, Button, message } from 'antd';
+import { notification, Form, Input, Button } from 'antd';
 import { getLogin } from '@/Services/EndPoints';
 import { post } from '@/Services/HttpRequest';
 import bg165944 from '@/app/assets/imgs/165944.jpg';
@@ -13,7 +15,6 @@ import { useDispatch } from 'react-redux';
 import { setLogin } from '@/context/features/authSlice';
 
 import { AiOutlineUser } from 'react-icons/ai';
-
 import { FaRegEye, FaRegEyeSlash } from 'react-icons/fa6';
 
 const listBg = [bg165944.src, bg165796.src, bg165859.src];
@@ -23,65 +24,92 @@ const SignInForm = () => {
   const [api, contextHolder] = notification.useNotification();
   const [background, setBackground] = useState(listBg[0]);
 
-  useEffect(() => {
-    setBackground(listBg[Math.floor(Math.random() * listBg.length)]);
-  }, []);
+  const formik = useFormik({
+    initialValues: {
+      username: '',
+      password: '',
+    },
+    validationSchema: Yup.object({
+      username: Yup.string().required('Required'),
+      password: Yup.string().required('Required'),
+    }),
+    onSubmit: async (values: { username: string; password: string }) => {
+      const { username, password } = values;
 
-  const handleLogin = async (values: { username: string; password: string }) => {
-    const { username, password } = values;
+      try {
+        if (username !== '' && password !== '') {
+          const response = await post(getLogin, JSON.stringify({ username, password }));
 
-    try {
-      if (username !== '' || password !== '') {
-        const response = await post(getLogin, JSON.stringify({ username, password }));
+          const { created_at, updated_at, ...personRest } = response.person; // eslint-disable-line @typescript-eslint/no-unused-vars
 
-        const { created_at, updated_at, ...personRest } = response.person; // eslint-disable-line @typescript-eslint/no-unused-vars
+          const valueAuth = {
+            userId: response.userId,
+            username: response.username,
+            token: response.token,
+            person: personRest,
+            rol: response.rol,
+          };
 
-        const valueAuth = {
-          userId: response.userId,
-          username: response.username,
-          token: response.token,
-          person: personRest,
-          rol: response.rol,
-        };
+          const cookieString = `session=${response.token}; path=/; max-age=${180 * 60}`;
+          const auth = `authorization=${response.token.split(' ')[1]};`;
 
-        const cookieString = `session=${response.token}; path=/; max-age=${180 * 60}`;
-        const auth = `authorization=${response.token.split(' ')[1]};`;
+          // Establece la cookie en el lado del cliente
+          document.cookie = cookieString;
+          document.cookie = auth;
 
-        // Establece la cookie en el lado del cliente
-        document.cookie = cookieString;
-        document.cookie = auth;
-
-        if (typeof window !== 'undefined') {
-          localStorage.setItem('authorization', response.token);
-          sessionStorage.setItem('parameters', JSON.stringify(valueAuth));
-          // Redirige al usuario al dashboard
-          window.location.href = '/admin';
-          //dispatch(setLayout(valueLayout));
-          dispatch(setLogin(valueAuth));
+          if (typeof window !== 'undefined') {
+            localStorage.setItem('authorization', response.token);
+            sessionStorage.setItem('parameters', JSON.stringify(valueAuth));
+            // Redirige al usuario al dashboard
+            window.location.href = '/admin';
+            //dispatch(setLayout(valueLayout));
+            dispatch(setLogin(valueAuth));
+          }
+        } else {
+          api.error({
+            title: 'Error',
+            description: 'Por favor, complete todos los campos.',
+            showProgress: true,
+          });
         }
-      } else {
-        message.error('Please fill in all fields.');
-      }
-    } catch (error) {
-      if (typeof error === 'object' && error !== null) {
-        const err = error as { status?: number; response?: { status?: number } };
-        if (err.status === 401 || err.response?.status === 401) {
-          message.error('Usuario o contraseña inválidos.');
-          return;
+      } catch (error) {
+        if (typeof error === 'object' && error !== null) {
+          const err = error as { status?: number; response?: { status?: number } };
+          if (err.status === 401 || err.response?.status === 401) {
+            api.error({
+              title: 'Error',
+              description: 'Usuario o contraseña inválidos.',
+              showProgress: true,
+            });
+            return;
+          }
         }
+        api.error({
+          title: 'Error',
+          description: 'Ocurrió un error inesperado.',
+          showProgress: true,
+        });
       }
-      message.error('Ocurrió un error inesperado.');
-    }
+    },
+  });
+
+  const handleLogin = () => {
+    formik.setSubmitting(true);
+    formik.handleSubmit();
   };
 
-  const handleLoginFailed = (errorInfo: unknown) => {
-    console.error('Login failed:', errorInfo);
+  const handleLoginFailed = () => {
     api.error({
-      message: 'Error',
-      description: 'Please fill in all fields.',
+      title: 'Error',
+      description: 'Por favor, complete todos los campos.',
+      showProgress: true,
     });
     return false;
   };
+
+  useEffect(() => {
+    setBackground(listBg[Math.floor(Math.random() * listBg.length)]);
+  }, []);
 
   return (
     <>
@@ -112,7 +140,7 @@ const SignInForm = () => {
         </div>
         <Form
           size="large"
-          style={{ maxWidth: 600 }}
+          style={{ maxWidth: 600, width: '100%' }}
           layout="vertical"
           autoComplete="off"
           onFinish={handleLogin}
@@ -122,15 +150,18 @@ const SignInForm = () => {
             name="username"
             label="Usuario"
             rules={[{ required: true }]}
-            className="mb-2 block text-sm font-medium text-[#111827]"
+            className="mb-1 block text-sm font-medium text-[#111827]"
           >
-            <Input suffix={<AiOutlineUser />} />
+            <Input
+              suffix={<AiOutlineUser />}
+              onChange={(e) => formik.setFieldValue('username', e.target.value)}
+            />
           </Form.Item>
           <Form.Item
             name="password"
             label="Contraseña"
             rules={[{ required: true }]}
-            className="mb-2 block pb-6 text-sm font-medium text-[#111827]"
+            className="mb-1 block pb-6 text-sm font-medium text-[#111827]"
           >
             <Input.Password
               name="password"
@@ -138,10 +169,11 @@ const SignInForm = () => {
               autoComplete="new-password"
               iconRender={(visible) => (visible ? <FaRegEye /> : <FaRegEyeSlash />)}
               className="w-full"
+              onChange={(e) => formik.setFieldValue('password', e.target.value)}
             />
           </Form.Item>
           <Form.Item label={null} className="w-full">
-            <Button htmlType="submit" color="cyan" variant="solid" className="btn-primary w-full">
+            <Button color="cyan" variant="solid" className="btn-primary w-full" htmlType="submit">
               Login
             </Button>
           </Form.Item>
