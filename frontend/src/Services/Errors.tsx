@@ -3,7 +3,14 @@ import { logout } from './Authentications';
 
 export const handleError = (error: unknown) => {
   if (axios.isAxiosError(error) && error.response?.status === 401) {
+      const isAuthPage =
+        typeof window !== 'undefined' &&
+        (window.location.pathname.startsWith('/signin') ||
+          window.location.pathname.startsWith('/login'));
+
+      if (!isAuthPage) {
       Unauthorized();
+      }
     }
     if (axios.isAxiosError(error) && error.response?.status === 404) {
       throw error.response.data.error || 'Recurso no encontrado';
