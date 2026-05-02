@@ -57,7 +57,7 @@ def get_certificates():
         query = CursoCertificado.query
         if q:
             # Busca por coincidencia en preimpreso o curso
-            query = query.filter(CursoCertificado.preimpreso.ilike(f"%{q}%"))
+            query = query.filter(CursoCertificado.preimpreso.ilike(f"%{q}%") | CursoCertificado.nombre.ilike(f"%{q}%"))
 
         total = query.count()
         total_pages = (total + page_size - 1) // page_size
@@ -125,17 +125,11 @@ def get_certificates_by_course(preimpress):
         for cert in certificates:
             persona = Personas.query.filter_by(cedula=cert.id_persona).first()
 
-            course = VwCursoPublicado.query.filter_by(
-                id_cur_activo=cert.id_curso_activo).first()
-            concat_str = f"{cert.id}-{course.id_curso if course else ''}-{course.id_cur_activo if course else ''}-{cert.id_persona}-{course.estado if course else ''}"
-            id_certificate = base64.b64encode(
-                concat_str.encode('utf-8')).decode('utf-8')
             data.append({
+                "certificateId": cert.id,
                 "cedula": persona.cedula if persona else None,
                 "nombres": persona.nombres if persona else None,
                 "apellidos": persona.apellidos if persona else None,
-                "idCertificate": id_certificate,
-                "course": course.curso if course else None,
             })
 
         return jsonify({"data": data}), 200
