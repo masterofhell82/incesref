@@ -37,9 +37,10 @@ export const getPersonById = (id: string) => `${Config.API_URL}/person/${id}`;
 // Roles
 export const roles = `${Config.API_URL}/roles`;
 
-//Routers to Certificates
-export const getCertificates = `${Config.API_URL}/certificate`;
+//Certificates
+export const certificates = `${Config.API_URL}/certificates`;
+export const coursesCertificates = `${certificates}/courses`;
 export const getCertificateById = (id: string) => `${Config.API_URL}/certificate/${id}`;
 export const viewCertificate = (id: string) => `${Config.API_URL}/viewcertificate/${id}`;
-export const getCurrentCertificates = `${Config.API_URL}/currentcertificates`;
-export const getCertificatesByPreimpress = (preimpress: string) => `${Config.API_URL}/getcertificates/${preimpress}`;
+export const certificateTemplates = `${Config.API_URL}/certificates/templates`;
+export const getCertificatesByPreimpress = (preimpress: string) => `${Config.API_URL}/certificates/${preimpress}`;
