@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, send_from_directory
 from flask_qrcode import QRcode
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
@@ -18,6 +18,15 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 app.config["JSON_SORT_KEYS"] = False
 
 QRcode(app)
+
+
+@app.get('/favicon.ico')
+def favicon():
+    return send_from_directory(
+        os.path.join(app.root_path, 'static', 'img'),
+        'favicon.ico',
+        mimetype='image/vnd.microsoft.icon',
+    )
 
 if __name__ == '__main__':
     from src.helpers.filters import *
