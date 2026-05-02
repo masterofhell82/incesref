@@ -14,6 +14,7 @@ from src.models.personasmodel import PersonasModel as Personas
 from src.models.preimpresomodel import PreImpresoModel as PreImpreso
 from src.models.vigenciacertificadosmodels import VigenciaCertificadosModel as VigenciaCertificados
 from src.models.vw_curso_publicado import VwCursoPublicado as VwCursoPublicado
+from src.models.vw_curso_certificado import VwCursoCertificado as CursoCertificado
 
 
 def _get_pdfkit_configuration():
@@ -36,7 +37,59 @@ def _get_pdfkit_configuration():
     return pdfkit.configuration(wkhtmltopdf=wkhtmltopdf_path)
 
 
-@app.route('/api/currentcertificates', methods=['GET'])
+@app.route('/api/certificates/courses', methods=['GET'])
+def get_certificates():
+    try:
+        # Parámetros de paginación y búsqueda
+        page = request.args.get('page', default=1, type=int)
+        page_size = request.args.get('page_size', default=50, type=int)
+        q = request.args.get('q', default='', type=str).strip()
+
+        # Validaciones
+        if page < 1:
+            page = 1
+        if page_size < 1:
+            page_size = 1
+        if page_size > 200:
+            page_size = 200
+
+        # Filtro base
+        query = CursoCertificado.query
+        if q:
+            # Busca por coincidencia en preimpreso o curso
+            query = query.filter(CursoCertificado.preimpreso.ilike(f"%{q}%"))
+
+        total = query.count()
+        total_pages = (total + page_size - 1) // page_size
+
+        cursos = query.order_by(CursoCertificado.preimpreso_id.desc()).offset((page - 1) * page_size).limit(page_size).all()
+
+        courses = []
+        for curso in cursos:
+            data = {}
+            data["id"] = curso.preimpreso_id
+            data["preimpreso"] = curso.preimpreso
+            data["curso"] = curso.nombre
+            data["participantes"] = curso.certificados
+            data["fecha_inicio"] = curso.fecha_ini
+            data["fecha_fin"] = curso.fecha_fin
+            data["fecha_emision"] = curso.fecha_emision
+            courses.append(data)
+
+        meta = {
+            "page": page,
+            "page_size": page_size,
+            "total": total,
+            "total_pages": total_pages,
+            "has_next": page < total_pages,
+            "has_prev": page > 1
+        }
+
+        return jsonify({"data": courses, "meta": meta}), 200
+    except Exception as e:
+        return jsonify({'message': str(e)}), 500
+
+@app.route('/api/certificates/templates', methods=['GET'])
 def get_current_certificates():
     try:
         template_certificates = VigenciaCertificados.query.order_by(
@@ -55,7 +108,7 @@ def get_current_certificates():
         return jsonify({'message': str(e)}), 500
 
 
-@app.route('/api/getcertificates/<preimpress>', methods=['GET'])
+@app.route('/api/certificates/<preimpress>', methods=['GET'])
 # @token_required
 def get_certificates_by_course(preimpress):
     try:
@@ -114,6 +167,10 @@ def get_certificado(id_person):
 @app.route('/api/viewcertificate/<certificate>', methods=['GET'])
 def decode_certificate_id(certificate):
     try:
+        certificate_data = Certificado.query.filter_by(id=certificate).first()
+        persona = Personas.query.filter_by(cedula=certificate_data.id_persona).first()
+        print(certificate_data.serialize(), persona.serialize())
+
         cert = 'Certificado'
 
         namefile = cert + '.pdf'
@@ -121,6 +178,7 @@ def decode_certificate_id(certificate):
         os.makedirs("src/view/certificates/", exist_ok=True)
         html = render_template('/certificates/certificate.html',
                                base_url=app.config['BASE_URL'],
+                               persona=persona.serialize()
                                )
         # Configuración de pdfkit para orientación horizontal
         options = {

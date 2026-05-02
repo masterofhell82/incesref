@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Table, Input } from 'antd';
 import { IoIosSearch } from 'react-icons/io';
 
@@ -33,26 +33,21 @@ const Datatable = <T extends object = RowData>({
   loading = false,
   ...props
 }: DatatableProps<T>) => {
-  const [dataSource, setData] = useState<T[]>([...data]);
   const [q, setQ] = useState('');
 
-  const search = (rows: T[]): T[] => {
-    if (!rows.length) return [];
-    const keys = Object.keys(rows[0]);
-    return rows.filter((row) =>
-      keys.some(
-        (key) =>
-          row[key as keyof T] &&
-          row[key as keyof T]!.toString().toLowerCase().indexOf(q.toLowerCase()) > -1
-      )
-    );
-  };
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      setData(data);
+  const filteredData = useMemo(() => {
+    if (!isSearch || q.trim() === '') {
+      return data;
     }
-  }, [data]);
+    if (!data.length) return [];
+    const keys = Object.keys(data[0] as object);
+    return data.filter((row) =>
+      keys.some((key) => {
+        const value = row[key as keyof T];
+        return value && value.toString().toLowerCase().includes(q.toLowerCase());
+      })
+    );
+  }, [data, isSearch, q]);
 
   return (
     <>
@@ -89,7 +84,7 @@ const Datatable = <T extends object = RowData>({
           className="custom-table-font"
           bordered
           columns={columns as TableProps<T>['columns']}
-          dataSource={search(dataSource)}
+          dataSource={filteredData}
           size={size}
           loading={loading}
           rowKey="id"
