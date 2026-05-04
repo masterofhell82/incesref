@@ -28,6 +28,7 @@ const navItems: NavItem[] = [
     icon: <LuFolderGit2 size={25} />,
     subItems: [
       { name: 'Ambitos', path: '/centers/scopes', pro: false },
+      { name: 'Entidades de Trabajo', path: '#', pro: false },
       { name: 'Organizaciones', path: '/centers/cores', pro: false },
     ],
   },
@@ -50,7 +51,7 @@ const navItems: NavItem[] = [
     name: 'Certificados',
     icon: <PiCertificate size={25} />,
     subItems: [
-      { name: 'Carga Cursos', path: '/certificates/bulkupload', pro: false },
+      { name: 'Carga Formación', path: '/certificates/bulkupload', pro: false },
       { name: 'Cursos Certificados', path: '/certificates/courses', pro: false },
     ],
   },
