@@ -191,7 +191,7 @@ const FormCores = ({
         <form onSubmit={formik.handleSubmit} className="space-y-4">
           <div className="mt-4 flex flex-row gap-4">
             {/* codigo */}
-            <div className="max-w-xs flex-1">
+            <div className="w-1/2">
               <label className="mb-1 block" htmlFor="codigo">
                 N° de Código
               </label>
