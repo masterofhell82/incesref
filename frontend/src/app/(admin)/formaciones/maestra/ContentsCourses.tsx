@@ -34,7 +34,7 @@ const ContentsCourses = ({
       const response = await get(`${contenidosFormaciones}/${data.shortname}`);
       setDataSources(response.data);
     } catch (error) {
-      console.error('Error fetching course contents:', error);
+      console.log('Error fetching course contents:', error);
     } finally {
       setLoading(false);
     }
