@@ -37,6 +37,9 @@ export const getPersonById = (id: string) => `${Config.API_URL}/person/${id}`;
 // Roles
 export const roles = `${Config.API_URL}/roles`;
 
+// Preimpresos
+export const preimpresos = `${Config.API_URL}/preimpreso`;
+
 //Certificates
 export const certificates = `${Config.API_URL}/certificates`;
 export const coursesCertificates = `${certificates}/courses`;

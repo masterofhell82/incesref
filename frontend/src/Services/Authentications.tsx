@@ -73,6 +73,8 @@ export const verifyTokenUser = async (token: string) => {
 };
 
 export const logout = () => {
+    console.log("holas");
+    
   if (typeof window !== 'undefined') {
     sessionStorage.clear();
     localStorage.clear();
