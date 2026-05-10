@@ -3,8 +3,7 @@ from flask import jsonify, render_template, make_response, send_file, request
 import os
 import io
 import shutil
-from decorators import token_required, verify_token
-import base64
+from decorators import token_required
 import pdfkit
 
 # Models
@@ -38,6 +37,7 @@ def _get_pdfkit_configuration():
 
 
 @app.route('/api/certificates/courses', methods=['GET'])
+@token_required
 def get_certificates():
     try:
         # Parámetros de paginación y búsqueda
@@ -68,6 +68,9 @@ def get_certificates():
         for curso in cursos:
             data = {}
             data["id"] = curso.preimpreso_id
+            data["curso_activo_id"] = curso.curso_activo_id
+            data["id_cfs"] = curso.id_cfs
+            data["shortname"] = curso.shortname
             data["preimpreso"] = curso.preimpreso
             data["curso"] = curso.nombre
             data["participantes"] = curso.certificados
