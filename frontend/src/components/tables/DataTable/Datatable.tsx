@@ -87,7 +87,7 @@ const Datatable = <T extends object = RowData>({
           dataSource={filteredData}
           size={size}
           loading={loading}
-          rowKey="id"
+          rowKey={(props.rowKey as TableProps<T>['rowKey']) ?? 'id'}
         />
       </div>
     </>
