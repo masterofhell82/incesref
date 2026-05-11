@@ -70,6 +70,7 @@ def get_certificates():
             data["id"] = curso.preimpreso_id
             data["curso_activo_id"] = curso.curso_activo_id
             data["id_cfs"] = curso.id_cfs
+            data["id_estado"] = curso.estado_id
             data["shortname"] = curso.shortname
             data["preimpreso"] = curso.preimpreso
             data["curso"] = curso.nombre
@@ -112,7 +113,7 @@ def get_current_certificates():
 
 
 @app.route('/api/certificates/<preimpress>', methods=['GET'])
-# @token_required
+@token_required
 def get_certificates_by_course(preimpress):
     try:
         data = []
@@ -130,9 +131,16 @@ def get_certificates_by_course(preimpress):
 
             data.append({
                 "certificateId": cert.id,
+                "consecutivo": str(cert.consecutivo).zfill(7),
+                "tituloAsociado": cert.titulo_asociado if cert.titulo_asociado else None,
+                "nacionalidad": persona.nac if persona else None,
                 "cedula": persona.cedula if persona else None,
                 "nombres": persona.nombres if persona else None,
                 "apellidos": persona.apellidos if persona else None,
+                "genero": persona.sexo if persona else None,
+                "fechaNace": persona.fecha_nace if persona else None,
+                "telefono": persona.telefono if persona else None,
+                "correo": persona.correo if persona else None,
             })
 
         return jsonify({"data": data}), 200

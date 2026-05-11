@@ -13,6 +13,8 @@ import { TbArrowBackUpDouble, TbCertificate } from 'react-icons/tb';
 const ListCertificates = ({ data, action }: { data: CoursesCertificate; action: () => void }) => {
   const [dataSources, setDataSources] = useState<Certificate[]>([]);
   const [loading, setLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10); // Tamaño de página predeterminado
 
   const columns: TableProps<Certificate>['columns'] = [
     {
@@ -21,16 +23,33 @@ const ListCertificates = ({ data, action }: { data: CoursesCertificate; action: 
       dataIndex: 'certificateId',
       key: 'certificateId',
       align: 'center',
-      render: (_text, record, index) => <span>{index + 1}</span>,
+      render: (_text, _record, index) => (
+        <span>{(currentPage - 1) * pageSize + index + 1}</span>
+      ),
     },
     {
       width: '10%',
-      title: 'Cedula',
-      dataIndex: 'cedula',
-      key: 'cedula',
+      title: 'Consecutivo',
+      dataIndex: 'consecutivo',
+      key: 'consecutivo',
+      className: 'text-center',
+      render: (_text, record) => <span>{record?.consecutivo}</span>,
     },
     {
-      title: 'Participantes',
+      width: '15%',
+      title: 'Cédula',
+      dataIndex: 'cedula',
+      key: 'cedula',
+      className: 'text-center',
+      render: (_text, record) => (
+        <span>
+          {record?.nacionalidad ? `${record.nacionalidad}-` : ''}
+          {record?.cedula}
+        </span>
+      ),
+    },
+    {
+      title: 'Nombres y Apellidos',
       dataIndex: 'nombres',
       key: 'nombres',
       render: (_text, record) => (
@@ -105,7 +124,17 @@ const ListCertificates = ({ data, action }: { data: CoursesCertificate; action: 
         </div>
         <div className="custom-scrollbar max-w-full overflow-x-auto">
           <div className="min-w-[1000px] xl:min-w-full">
-            <Datatable<Certificate> columns={columns} data={dataSources} loading={loading} />
+            <Datatable<Certificate>
+              columns={columns}
+              data={dataSources}
+              loading={loading}
+              pagination={{
+                onChange: (page: number, size: number) => {
+                  setCurrentPage(page);
+                  setPageSize(size);
+                },
+              }}
+            />
           </div>
         </div>
       </div>

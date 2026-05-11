@@ -101,12 +101,44 @@ def create_cfs_masive():
             except OSError as file_error:
                 app.logger.warning(f'No se pudo eliminar el archivo temporal {saved_path}: {file_error}')
 
-
 @app.route('/api/cfs', methods=['GET'])
 @token_required
 def get_cfs():
     try:
         cfs_list = CFS.query.order_by(CFS.id.asc()).all()
+        cfs_result = []
+        for c in cfs_list:
+            estado = Estados.query.get(c.id_estado)
+            ambito = Ambitos.query.get(c.id_ambito)
+            cfs_data = c.serialize()
+            cfs_data['estado'] = estado.estado
+            cfs_data['ambito'] = ambito.nombre
+            cfs_result.append(cfs_data)
+        return jsonify({'data': cfs_result}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
+
+@app.route('/api/cfs/<int:id>', methods=['GET'])
+@token_required
+def get_cfs_by_id(id):
+    try:
+        cfs = CFS.query.get(id)
+        if not cfs:
+            return jsonify({'error': 'CFS no encontrado'}), 404
+        estado = Estados.query.get(cfs.id_estado)
+        ambito = Ambitos.query.get(cfs.id_ambito)
+        cfs_data = cfs.serialize()
+        cfs_data['estado'] = estado.estado
+        cfs_data['ambito'] = ambito.nombre
+        return jsonify({'data': cfs_data}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
+
+@app.route('/api/cfs/state/<int:id>', methods=['GET'])
+@token_required
+def get_cfs_by_state(id):
+    try:
+        cfs_list = CFS.query.filter_by(id_estado=id).order_by(CFS.id.asc()).all()
         cfs_result = []
         for c in cfs_list:
             estado = Estados.query.get(c.id_estado)

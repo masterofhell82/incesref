@@ -14,8 +14,10 @@ class PersonasModel(db.Model):
     correo = db.Column(db.String(150), nullable=False)
     sexo = db.Column(db.String(1))
     fecha_nace = db.Column(db.Date)
-    created_at = db.Column(db.DateTime, default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
-    updated_at = db.Column(db.DateTime, default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'), onupdate=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+    created_at = db.Column(
+        db.DateTime, default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+    updated_at = db.Column(db.DateTime, default=datetime.now().strftime(
+        '%Y-%m-%d %H:%M:%S'), onupdate=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 
     def __init__(self, cedula, nac, nombres, apellidos, telefono=None, correo=None, sexo=None, fecha_nace=None):
         self.cedula = cedula
@@ -42,16 +44,14 @@ class PersonasModel(db.Model):
             'created_at': self.created_at,
             'updated_at': self.updated_at
         }
-    
+
     def save(self):
         db.session.add(self)
         db.session.commit()
         return self
-
 
     def update(self, data):
         for key, value in data.items():
             setattr(self, key, value)
         self.updated_at = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         db.session.commit()
-
