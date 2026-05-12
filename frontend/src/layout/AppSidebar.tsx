@@ -66,7 +66,7 @@ const configItems: NavItem[] = [
   {
     name: 'Certificados (Templates)',
     icon: <PiCertificateDuotone size={25} />,
-    path: '/config/certificates/templates',
+    path: '/config/certificates',
   },
   {
     name: 'Firmas',
