@@ -51,7 +51,6 @@ const navItems: NavItem[] = [
     name: 'Certificados',
     icon: <PiCertificate size={25} />,
     subItems: [
-      { name: 'Carga Formación', path: '/certificates/bulkupload', pro: false },
       { name: 'Cursos Certificados', path: '/certificates/courses', pro: false },
     ],
   },

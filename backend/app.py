@@ -36,10 +36,12 @@ if __name__ == '__main__':
     from src.controllers.cfscontroller import *
     from src.controllers.cursocontroller import *
     from src.controllers.cursoscontenidocontroller import *
+    from src.controllers.entidadtrabajocontroller import *
     from src.controllers.geografiacontroller import *
     from src.controllers.userscontroller import *
     from src.controllers.tipoformacioncontroller import *
     from src.controllers.personcontroller import *
+    from src.controllers.preimpresocontroller import *
     from src.controllers.programacontroller import *
     from src.controllers.rolcontroller import *
     from src.controllers.userscontroller import *
