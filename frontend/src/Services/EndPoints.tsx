@@ -43,12 +43,19 @@ export const roles = `${Config.API_URL}/roles`;
 // Preimpresos
 export const preimpresos = `${Config.API_URL}/preimpreso`;
 
+
+// Cursos Activos
+export const activeCourses = `${Config.API_URL}/cursos_activos`;
+
 //Certificates
 export const certificates = `${Config.API_URL}/certificates`;
 export const coursesCertificates = `${certificates}/courses`;
 export const certificateTemplates = `${certificates}/templates`;
 export const certificatesByPreimpress = (preimpress: string) => `${Config.API_URL}/certificates/${preimpress}`;
+export const viewCertificate = (id: string) => `${Config.API_URL}/viewcertificate/${id}`;
+
+
+
 
 
 export const getCertificateById = (id: string) => `${Config.API_URL}/certificate/${id}`;
-export const viewCertificate = (id: string) => `${Config.API_URL}/viewcertificate/${id}`;

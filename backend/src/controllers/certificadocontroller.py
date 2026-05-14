@@ -72,6 +72,7 @@ def get_certificates():
             data["id_cfs"] = curso.id_cfs
             data["id_estado"] = curso.estado_id
             data["shortname"] = curso.shortname
+            data["preimpreso_id"] = curso.preimpreso_id
             data["preimpreso"] = curso.preimpreso
             data["curso"] = curso.nombre
             data["participantes"] = curso.certificados
