@@ -29,6 +29,15 @@
                 font-weight: 500;
                 font-style: normal;
             }
+
+            @font-face {
+                font-family: "Geometos";
+                src: url("{{ base_url + url_for('static', filename='fonts/Geometos.ttf') }}")
+                    format("truetype");
+                font-weight: 500;
+                font-style: normal;
+            }
+            
             @font-face {
                 font-family: "Spartan-Bold";
                 src: url("{{ base_url + url_for('static', filename='fonts/Spartan-Bold.ttf') }}")
@@ -167,9 +176,9 @@
             }
 
             .title-certifica {
-                font-size: 116px;
+                font-size: 100px;
                 color: #333565;
-                font-family: "hellas", sans-serif;
+                font-family: "Geometos", sans-serif;
                 font-synthesis: weight;
                 letter-spacing: -0.07em;
             }
@@ -198,7 +207,7 @@
             .comment {
                 text-align: center;
                 color: #3a3a3b;
-                font-size: 22px;
+                font-size: 24px;
                 font-family: "Philosopher", sans-serif;
                 white-space: normal;
                 overflow-wrap: break-word;
@@ -209,10 +218,15 @@
 
             .formation {
                 text-align: center;
-                color: #242425;
+                color: #5B5B5E;
                 font-weight: 600;
                 font-family: "clusty", sans-serif;
-                font-size: 26px;
+                font-synthesis: weight;
+                font-size: 30px;
+                overflow-wrap: break-word;
+                word-break: normal;
+                max-width: 75%;
+                margin: 0 auto;
             }
 
             .sign {
@@ -220,7 +234,7 @@
                 font-size: 20px;
                 padding-left: 120px;
                 padding-right: 120px;
-                margin-top: -25px;
+                margin-top: -40px;
             }
 
             .img-signature-float {
