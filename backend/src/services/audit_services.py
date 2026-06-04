@@ -2,6 +2,7 @@ from src.models.auditoriamodel import AuditoriaModel as Auditoria
 import ast
 import json
 import re
+import warnings
 
 IGNORED_COLUMNS = {'created_at', 'updated_at'}
 
@@ -30,37 +31,54 @@ def _normalize_structure(value):
 
 
 def _normalize_payload(value):
-    """Convierte el payload a una forma comparable (dict/list/str)."""
+    """Convierte payload str/None a dict comparable para auditoria."""
 
     if value is None:
         return {}
 
-    if isinstance(value, (dict, list)):
-        return _normalize_structure(value)
+    if not isinstance(value, str):
+        warnings.warn(
+            (
+                'Audit payload invalido: se esperaba str o None. '
+                f'Se recibio {type(value).__name__}. '
+                'Usa str(model.serialize()) o None.'
+            ),
+            stacklevel=2,
+        )
+        return {}
 
-    if isinstance(value, str):
-        raw = value.strip()
-        if raw.lower() in ('', 'none', 'null'):
-            return {}
+    raw = value.strip()
+    if raw.lower() in ('', 'none', 'null'):
+        return {}
 
-        # Algunos controladores serializan datetime.datetime(...) como string.
-        raw = re.sub(r"datetime\.datetime\([^)]*\)", "'__datetime__'", raw)
+    # Algunos controladores serializan datetime.datetime(...) como string.
+    raw = re.sub(r"datetime\.datetime\([^)]*\)", "'__datetime__'", raw)
+    raw = re.sub(r"datetime\.date\([^)]*\)", "'__date__'", raw)
 
-        try:
-            return _normalize_structure(json.loads(raw))
-        except Exception:
-            pass
+    parsed = None
 
+    try:
+        parsed = json.loads(raw)
+    except Exception:
+        pass
+
+    if parsed is None:
         try:
             parsed = ast.literal_eval(raw)
-            if isinstance(parsed, (dict, list, str, int, float, bool)):
-                return _normalize_structure(parsed)
         except Exception:
             pass
 
-        return _normalize_scalar(raw)
+    if not isinstance(parsed, dict):
+        warnings.warn(
+            (
+                'Audit payload invalido: no se pudo parsear dict. '
+                'Usa str(model.serialize()) o None.'
+            ),
+            stacklevel=2,
+        )
+        return {}
 
-    return _normalize_scalar(value)
+    return _normalize_structure(parsed)
 
 
 def _resolve_changed_columns(old_payload, new_payload):
@@ -68,8 +86,8 @@ def _resolve_changed_columns(old_payload, new_payload):
     old_norm = _normalize_payload(old_payload)
     new_norm = _normalize_payload(new_payload)
 
-    old_empty = old_norm in ({}, [], '', None)
-    new_empty = new_norm in ({}, [], '', None)
+    old_empty = old_norm == {}
+    new_empty = new_norm == {}
 
     if old_empty and not new_empty:
         return 'NEW'
@@ -83,7 +101,7 @@ def _resolve_changed_columns(old_payload, new_payload):
             key) != new_norm.get(key)]
         return ', '.join(changed) if changed else 'SAME'
 
-    return 'CHANGED'
+    return 'SAME'
 
 
 def register_audit_action(
@@ -107,8 +125,8 @@ def register_audit_action(
             - 2: UPDATE
             - 3: DELETE
             - 4: CHANGE_STATUS
-        valor_old (dict | list | None): Estado previo del registro.
-        valor_new (dict | list | None): Estado nuevo del registro.
+        valor_old (str | None): Estado previo serializado o None.
+        valor_new (str | None): Estado nuevo serializado o None.
         col_editada (str | None): Si se omite, se calcula automaticamente
             comparando valor_old y valor_new (NEW, SAME o lista de columnas).
 
@@ -120,8 +138,8 @@ def register_audit_action(
         col_editada if col_editada is not None else _resolve_changed_columns(
             valor_old, valor_new)
     )
-    safe_valor_old = valor_old if valor_old is not None else {}
-    safe_valor_new = valor_new if valor_new is not None else {}
+    safe_valor_old = valor_old
+    safe_valor_new = valor_new
 
     auditoria = Auditoria(
         usuario_id=usuario_id,
