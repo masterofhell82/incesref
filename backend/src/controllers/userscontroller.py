@@ -35,6 +35,7 @@ def get_users():
 
         user_data = {
             'id': user.id,
+            'nac': persona.nac,
             'cedula': user.id_persona,
             'nombres': persona.nombres,
             'apellidos': persona.apellidos,
@@ -120,10 +121,8 @@ def create_user():
 def update_user(user_id):
     data = request.get_json()
 
+    # Actualizar datos del usuario
     user = Usuarios.query.get(user_id)
-
-    if not user:
-        return jsonify({'message': 'Usuario no encontrado'}), 404
 
     valor_old = str(user.serialize())
 
@@ -142,7 +141,33 @@ def update_user(user_id):
         valor_new=str(user.serialize()),
     )
 
+    # Actualizar rol y estado en la tabla de usuario_rol
     set_specific_role(user.id, data.get('rolId'), data.get('estadoId'))
+
+    # Actualizar datos de la persona asociada
+    persona = Personas.query.filter_by(cedula=user.id_persona).first()
+    
+    valor_person_old = str(persona.serialize())
+    
+    persona.nac = data.get('nac', persona.nac)
+    persona.nombres = data.get('nombres', persona.nombres)
+    persona.apellidos = data.get('apellidos', persona.apellidos)
+    persona.correo = data.get('correo', persona.correo)
+    persona.telefono = data.get('telefono', persona.telefono)
+    persona.sexo = data.get('sexo', persona.sexo)
+    persona.fecha_nace = data.get('fechaNace', persona.fecha_nace)
+    persona.updated_at = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    
+    persona.save()
+
+    register_audit_action(
+        usuario_id=request.current_user['id'],
+        ip_address=g.remote_addr,
+        tabla='personas',
+        accion=2,  # Acción de actualización
+        valor_old=valor_person_old,
+        valor_new=str(persona.serialize()),
+    )
 
     return jsonify({'message': 'Usuario actualizado exitosamente'}), 200
 

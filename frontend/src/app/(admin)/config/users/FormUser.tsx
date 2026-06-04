@@ -169,7 +169,8 @@ const FormUser = ({
               </label>
               <Space.Compact>
                 <Select
-                  defaultValue="V"
+                  placeholder="--"
+                  defaultValue={formik.values.nac}
                   options={nacOptions}
                   onChange={(e) => formik.setFieldValue('nac', e)}
                 />
