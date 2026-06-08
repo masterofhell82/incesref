@@ -37,10 +37,11 @@ services:
         command: /start.sh
         networks:
             - incesnet
-            - streams_streamnet
+            - db_net
 
 networks:
     incesnet:
         driver: bridge
-    streams_streamnet:
+    db_net:
         external: true
+        name: db_db_net
