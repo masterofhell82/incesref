@@ -22,6 +22,7 @@
             .table.bg-transparent td {
                 background-color: transparent !important;
             }
+
             @font-face {
                 font-family: "hellas";
                 src: url("{{ base_url + url_for('static', filename='fonts/HFUNB.TTF') }}")
@@ -37,7 +38,7 @@
                 font-weight: 500;
                 font-style: normal;
             }
-            
+
             @font-face {
                 font-family: "Spartan-Bold";
                 src: url("{{ base_url + url_for('static', filename='fonts/Spartan-Bold.ttf') }}")
@@ -78,6 +79,76 @@
                 font-style: normal;
             }
 
+            @font-face {
+                font-family: "Montserrat";
+                src: url("{{ base_url + url_for('static', filename='fonts/Montserrat-Regular.ttf') }}")
+                    format("truetype");
+                font-weight: 400;
+                font-style: normal;
+            }
+
+            @font-face {
+                font-family: "Montserrat";
+                src: url("{{ base_url + url_for('static', filename='fonts/Montserrat-Medium.ttf') }}")
+                    format("truetype");
+                font-weight: 500;
+                font-style: normal;
+            }
+
+            @font-face {
+                font-family: "Montserrat";
+                src: url("{{ base_url + url_for('static', filename='fonts/Montserrat-SemiBold.ttf') }}")
+                    format("truetype");
+                font-weight: 600;
+                font-style: normal;
+            }
+
+            @font-face {
+                font-family: "Montserrat";
+                src: url("{{ base_url + url_for('static', filename='fonts/Montserrat-Bold.ttf') }}")
+                    format("truetype");
+                font-weight: 700;
+                font-style: normal;
+            }
+
+            @font-face {
+                font-family: "Montserrat";
+                src: url("{{ base_url + url_for('static', filename='fonts/Montserrat-Black.ttf') }}")
+                    format("truetype");
+                font-weight: 900;
+                font-style: normal;
+            }
+             @font-face {
+                font-family: "Montserrat";
+                src: url("{{ base_url + url_for('static', filename='fonts/Montserrat-ExtraBold.ttf') }}")
+                    format("truetype");
+                font-weight: 800;
+                font-style: normal;
+            }
+
+            @font-face {
+                font-family: "GreatVibes";
+                src: url("{{ base_url + url_for('static', filename='fonts/GreatVibes-Regular.ttf') }}")
+                    format("truetype");
+                font-style: normal;
+            }
+
+            @font-face {
+                font-family: "PlayfairDisplay";
+                src: url("{{ base_url + url_for('static', filename='fonts/PlayfairDisplay-Regular.ttf') }}")
+                    format("truetype");
+                font-style: normal;
+                font-weight: 400;
+            }
+
+            @font-face {
+                font-family: "PlayfairDisplay";
+                src: url("{{ base_url + url_for('static', filename='fonts/PlayfairDisplay-Bold.ttf') }}")
+                    format("truetype");
+                font-style: normal;
+                font-weight: 700;
+            }
+
             body {
                 font-family: "Arial", sans-serif;
                 margin: 0;
@@ -111,7 +182,7 @@
             }
 
             .page-background-back {
-                background-image: url("{{ base_url + url_for('static', filename='img/certificado/bg_back.webp') }}");
+                background-image: url("{{ base_url + url_for('static', filename='img/certificado/bg_front.webp') }}");
                 background-size: cover;
                 background-position: center;
                 background-repeat: no-repeat;
@@ -126,13 +197,10 @@
             }
 
             .content {
-                padding: 80px;
+                padding: 60px;
                 position: relative;
                 z-index: 1;
-            }
-
-            .orange {
-                color: #ffa500;
+                background-color: transparent !important;
             }
 
             .control-head {
@@ -178,9 +246,9 @@
             .title-certifica {
                 font-size: 100px;
                 color: #333565;
-                font-family: "Geometos", sans-serif;
+                font-family: "Montserrat", sans-serif;
+                font-weight: 800;
                 font-synthesis: weight;
-                letter-spacing: -0.07em;
             }
 
             .title-ortoga {
@@ -191,8 +259,9 @@
             }
 
             .fullnames {
-                font-family: "clusty", sans-serif;
-                font-size: 45px;
+                font-family: "Philosopher", sans-serif;
+                font-weight: 600;
+                font-size: 50px;
                 color: #333565;
             }
 
@@ -206,26 +275,27 @@
 
             .comment {
                 text-align: center;
-                color: #3a3a3b;
-                font-size: 24px;
-                font-family: "Philosopher", sans-serif;
+                color: #333565;
+                font-size: 28px;
+                font-family: "Montserrat", sans-serif;
+                
                 white-space: normal;
                 overflow-wrap: break-word;
                 word-break: normal;
-                max-width: 75%;
+                max-width: 90%;
+
                 margin: 0 auto;
             }
 
             .formation {
                 text-align: center;
                 color: #5B5B5E;
-                font-weight: 600;
-                font-family: "clusty", sans-serif;
+                font-family: "Montserrat", sans-serif;
                 font-synthesis: weight;
                 font-size: 30px;
                 overflow-wrap: break-word;
                 word-break: normal;
-                max-width: 75%;
+                max-width: 90%;
                 margin: 0 auto;
             }
 
@@ -234,7 +304,6 @@
                 font-size: 20px;
                 padding-left: 120px;
                 padding-right: 120px;
-                margin-top: -40px;
             }
 
             .img-signature-float {
@@ -251,7 +320,16 @@
                 text-align: center;
                 font-size: 18px;
                 color: #5b5b5e;
-                font-family: "clusty", sans-serif;
+                font-family: "PlayfairDisplay", serif;
+                font-weight: 600;
+            }
+
+            .position-signature {
+                text-align: center;
+                font-size: 18px;
+                color: #5b5b5e;
+                font-family: "PlayfairDisplay", serif;
+                font-weight: 400;
             }
 
             .date_emition {
