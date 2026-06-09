@@ -8,12 +8,15 @@ import pdfkit
 
 # Models
 from src.models.certificadomodel import CertificadoModel as Certificado
-from src.models.tipoformacionmodel import TipoFormacionModel as TipoFormacion
 from src.models.personasmodel import PersonasModel as Personas
+from src.models.cursomodel import CursoModel as Curso
+from src.models.cursoscontenidomodel import CursoContenidoModel as CursoContenido
+from src.models.cursoactivomodel import CursoActivoModel as CursoActivo
 from src.models.preimpresomodel import PreImpresoModel as PreImpreso
-from src.models.vigenciacertificadosmodels import VigenciaCertificadosModel as VigenciaCertificados
+from src.models.vigenciacertificadosmodel import VigenciaCertificadosModel as VigenciaCertificados
 from src.models.vw_curso_publicado import VwCursoPublicado as VwCursoPublicado
 from src.models.vw_curso_certificado import VwCursoCertificado as CursoCertificado
+from src.models.tipoformacionmodel import TipoFormacionModel as TipoFormacion
 
 
 def _get_pdfkit_configuration():
@@ -57,12 +60,14 @@ def get_certificates():
         query = CursoCertificado.query
         if q:
             # Busca por coincidencia en preimpreso o curso
-            query = query.filter(CursoCertificado.preimpreso.ilike(f"%{q}%") | CursoCertificado.nombre.ilike(f"%{q}%"))
+            query = query.filter(CursoCertificado.preimpreso.ilike(
+                f"%{q}%") | CursoCertificado.nombre.ilike(f"%{q}%"))
 
         total = query.count()
         total_pages = (total + page_size - 1) // page_size
 
-        cursos = query.order_by(CursoCertificado.preimpreso_id.desc()).offset((page - 1) * page_size).limit(page_size).all()
+        cursos = query.order_by(CursoCertificado.preimpreso_id.desc()).offset(
+            (page - 1) * page_size).limit(page_size).all()
 
         courses = []
         for curso in cursos:
@@ -87,12 +92,13 @@ def get_certificates():
             "total": total,
             "total_pages": total_pages,
             "has_next": page < total_pages,
-            "has_prev": page > 1
+            "has_prev": page > 1,
         }
 
         return jsonify({"data": courses, "meta": meta}), 200
     except Exception as e:
         return jsonify({'message': str(e)}), 500
+
 
 @app.route('/api/certificates/templates', methods=['GET'])
 def get_current_certificates():
@@ -108,6 +114,7 @@ def get_current_certificates():
                 if isinstance(v, bytes):
                     data[k] = v.decode('utf-8')
             return data
+
         return jsonify({"data": [safe_serialize(cert) for cert in template_certificates]}), 200
     except Exception as e:
         return jsonify({'message': str(e)}), 500
@@ -174,17 +181,41 @@ def get_certificado(id_person):
 def decode_certificate_id(certificate):
     try:
         certificate_data = Certificado.query.filter_by(id=certificate).first()
-        persona = Personas.query.filter_by(cedula=certificate_data.id_persona).first()
-        print(certificate_data.serialize(), persona.serialize())
+        preimpreso_data = PreImpreso.query.filter_by(
+            id_curso_activo=certificate_data.id_curso_activo).first()
+        persona = Personas.query.filter_by(
+            cedula=certificate_data.id_persona).first()
+        curso_activo = CursoActivo.query.filter_by(
+            id=certificate_data.id_curso_activo).first()
+        curso = Curso.query.filter_by(id=curso_activo.id_curso).first()
+        curso_contenido = CursoContenido.query.filter_by(
+            shortname_curso=curso.shortname).all()
+
+        curso_total_horas = sum(int(contenido.horas or 0)
+                                for contenido in curso_contenido)
+
+        correlativo = f"{str(curso_activo.id_cfs).zfill(3)}{str(curso.tipo_formacion).zfill(2)}{str(certificate_data.libro).zfill(3)}{str(certificate_data.hoja).zfill(3)}{str(certificate_data.consecutivo).zfill(7)}{curso_activo.fecha_fin.strftime('%Y')}"
 
         cert = 'Certificado'
-
         namefile = cert + '.pdf'
         namepath = "src/view/certificates/" + namefile
         os.makedirs("src/view/certificates/", exist_ok=True)
-        html = render_template('/certificates/certificate.html',
+
+        url = f"https://app.inces.net.ve/verifycertificate?={certificate}"
+
+        template = f"/certificates/{curso.tipo_formacion}.html"
+        html = render_template(template,
                                base_url=app.config['BASE_URL'],
-                               persona=persona.serialize()
+                               persona=persona.serialize(),
+                               certificate=certificate_data.serialize(),
+                               preimpreso=preimpreso_data.serialize(),
+                               curso=curso.serialize(),
+                               curso_activo=curso_activo.serialize(),
+                               curso_contenido=[contenido.serialize()
+                                                for contenido in curso_contenido],
+                               url=url,
+                               total_horas=curso_total_horas,
+                               correlativo=correlativo
                                )
         # Configuración de pdfkit para orientación horizontal
         options = {

@@ -9,7 +9,7 @@
     }
 
     .page-background-front {
-        background-image: url("{{ base_url + url_for('static', filename='img/certificado/bg_front.webp') }}");
+        background-image: url("{{ base_url + url_for('static', filename='img/certificado/02bg.webp') }}");
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
@@ -24,7 +24,7 @@
     }
 
     .page-background-back {
-        background-image: url("{{ base_url + url_for('static', filename='img/certificado/bg_front.webp') }}");
+        background-image: url("{{ base_url + url_for('static', filename='img/certificado/02bg.webp') }}");
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
@@ -41,7 +41,7 @@
     .comment {
         text-align: center;
         color: #333565;
-        font-size: 28px;
+        font-size: 34px;
         font-family: "Montserrat", sans-serif;
         white-space: normal;
         overflow-wrap: break-word;
@@ -49,9 +49,10 @@
         max-width: 90%;
         margin: 0 auto;
     }
+
     .table-content {
         margin-left: 1cm;
-        padding: 80px;
+        padding: 10px;
         position: relative;
         z-index: 1;
     }
@@ -72,6 +73,7 @@
         font-family: "Montserrat", sans-serif;
         font-size: 18px;
         border-collapse: collapse;
+        width: 100%;
     }
 
     .table_matriz table td {
@@ -82,7 +84,7 @@
     }
 
     .table_matriz table .hours {
-        background-color: #5b5b5ec2;
+        background-color: #5b5b5ecc;
         color: #fff;
         text-align: center !important;
         width: 5%;
@@ -94,34 +96,31 @@
     }
 
     .table_matriz table .colspan {
-        background-color: #5b5b5ec2;
+        background-color: #5b5b5ecc;
         color: #fff;
         text-align: center;
     }
 
     .table_matriz table .codigo {
-        background-color: #5b5b5e;
+        background-color: #5b5b5ecc;
         color: #fff;
         width: 20%;
     }
 
     .table_matriz table .numero {
-        background-color: #5b5b5e;
+        background-color: #5b5b5ecc;
         color: #fff;
         width: 5%;
     }
 
     .table_matriz table .uc {
-        background-color: #5b5b5e;
+        background-color: #5b5b5ecc;
         color: #fff;
         width: 75%;
     }
 
     .table_matriz table .rowspan {
-        padding-left: 10px;
-        padding-right: 10px;
-        width: 1000px;
-        background-color: #5b5b5e;
+        background-color: #5b5b5ecc;
         vertical-align: middle;
         text-align: center;
         color: #fff;
@@ -131,18 +130,16 @@
         font-family: "Montserrat", sans-serif;
         font-size: 14px;
         border-collapse: collapse;
-        width: 350px;
+        width: 95%;
     }
 
     .table_register table td {
-        border: 1px solid #000;
-        padding-left: 10px;
+        border: 1px solid #5b5b5e;
     }
 
     .table_register table .colspan {
-        background-color: #5b5b5e;
+        background-color: #5b5b5ecc;
         color: #fff;
-        height: 2.5%;
         text-align: center;
     }
 </style>
@@ -171,13 +168,9 @@
             </div>
         </div>
         <div class="row text-center">
-            <div class="comment">
-                Por haber demostrado en el ejercicio técnico y profesional, las
-                competencias teóricas - prácticas exigidas para el desempeño del
-                <b>PERFIL PRODUCTIVO LABORAL</b>
-            </div>
+            <div class="comment">Por haber aprobado el <b>CURSO</b></div>
             <div class="formation" style="margin-top: 30px">
-                <b>ARTESANO CONSTRUCTOR DE EDIFICACIONES DE TIERRA</b>
+                <b>{{ curso.nombre }}</b>
             </div>
         </div>
     </div>
@@ -198,7 +191,7 @@
     </div>
     <div class="row text-center">
         <div class="date_emition">
-            <span class="fwbold">Caracas</span>, {{ '2024-06-14'
+            <span class="fwbold">Caracas</span>, {{ certificate.fecha_emision
             |format_date_long_es }}
         </div>
     </div>
@@ -206,6 +199,16 @@
 
 <div class="page">
     <div class="page-background-back"></div>
+    <div class="content p-2">
+        <div class="row justify-content-center">
+            <img
+                src="{{ base_url + url_for('static', filename='img/certificado/logo.svg') }}"
+                alt="Logo"
+                class="img-fluid"
+                style="max-width: 400px"
+            />
+        </div>
+    </div>
     <div class="row table-content">
         <div class="col-8">
             <div class="table_matriz">
@@ -214,12 +217,18 @@
                         <td class="colspan">TEMAS</td>
                         <td class="hours">HORAS</td>
                     </tr>
+                    {% for contenido in curso_contenido %}
+                    <tr>
+                        <td>{{ contenido.contenido }}</td>
+                        <td class="text-center">{{ contenido.horas }}</td>
+                    </tr>
+                    {% endfor %}
                 </table>
             </div>
         </div>
         <div class="col-4">
             <div class="table_register">
-                <table class="table table-bordered">
+                <table class="table table-bordered table-sm">
                     <tr>
                         <td colspan="12" class="colspan">REGISTRO</td>
                     </tr>
@@ -229,9 +238,9 @@
                         <td colspan="4" class="col-4 colspan">CONSECUTIVO</td>
                     </tr>
                     <tr class="text-center">
-                        <td colspan="4"></td>
-                        <td colspan="4"></td>
-                        <td colspan="4"></td>
+                        <td colspan="4">{{ certificate.libro }}</td>
+                        <td colspan="4">{{ certificate.hoja }}</td>
+                        <td colspan="4">{{ certificate.consecutivo }}</td>
                     </tr>
                     <tr class="text-center">
                         <td colspan="4" class="colspan">CÓDIGO DE EJECUCIÓN</td>
@@ -239,9 +248,9 @@
                         <td colspan="4" class="colspan">FECHA DE GENERACIÓN</td>
                     </tr>
                     <tr class="text-center">
-                        <td colspan="4"></td>
-                        <td colspan="4"></td>
-                        <td colspan="4"></td>
+                        <td colspan="4">{{ preimpreso.preimpreso}}</td>
+                        <td colspan="4">{{ curso.shortname }}</td>
+                        <td colspan="4">{{ certificate.fecha_emision | format_date }}</td>
                     </tr>
                     <tr class="text-center">
                         <td colspan="4" class="colspan">DURACIÓN HORAS</td>
@@ -249,16 +258,16 @@
                         <td colspan="4" class="colspan">FECHA DE TERMINO</td>
                     </tr>
                     <tr class="text-center">
-                        <td colspan="4"></td>
-                        <td colspan="4"></td>
-                        <td colspan="4"></td>
+                        <td colspan="4">{{ total_horas }}</td>
+                        <td colspan="4">{{ curso_activo.fecha_ini | format_date }}</td>
+                        <td colspan="4">{{ curso_activo.fecha_fin | format_date }}</td>
                     </tr>
                     <tr>
                         <td colspan="12" class="colspan">CORRELATIVO</td>
                     </tr>
                     <tr>
                         <td colspan="12" class="text-center">
-                            07160101700000182026
+                            {{ correlativo }}
                         </td>
                     </tr>
                 </table>
@@ -268,10 +277,10 @@
 
     <div class="qrcode">
         <img
-            src="{{ base_url + url_for('static', filename='img/certificado/qrcode.png') }}"
+            src="{{ qrcode(url, error_correction='H', icon_img=base_url + url_for('static', filename='img/logos/minilogo.png')) }}"
             alt="QR Code"
         />
-        <a href="#" target="_blank">https://app.inces.net.ve</a>
+        <a href="{{ url }}" target="_blank">https://app.inces.net.ve</a>
     </div>
 </div>
 {% endblock %}
