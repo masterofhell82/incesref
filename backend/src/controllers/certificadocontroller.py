@@ -120,13 +120,13 @@ def get_current_certificates():
         return jsonify({'message': str(e)}), 500
 
 
-@app.route('/api/certificates/<preimpress>', methods=['GET'])
+@app.route('/api/certificates/<preimpress_id>', methods=['GET'])
 @token_required
-def get_certificates_by_course(preimpress):
+def get_certificates_by_course(preimpress_id):
     try:
         data = []
         preimpreso_data = PreImpreso.query.filter_by(
-            preimpreso=preimpress).first()
+            id=preimpress_id).first()
 
         if not preimpreso_data:
             return jsonify({'message': 'Preimpreso not found'}), 404
