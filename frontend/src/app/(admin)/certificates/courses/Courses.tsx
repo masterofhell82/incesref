@@ -2,21 +2,28 @@
 import React, { useState, useEffect } from 'react';
 import { get } from '@/Services/HttpRequest';
 import { coursesCertificates } from '@/Services/EndPoints';
-import { Input } from 'antd';
 import moment from 'moment';
+
 import { CoursesCertificate } from '@/interface/CertificatesInterfaces';
 
+import { Input, Button } from 'antd';
 import Datatable from '@/components/tables/DataTable/Datatable';
 import type { TableProps } from 'antd';
 
 import { CiViewList } from 'react-icons/ci';
+import { RiMenuAddLine } from 'react-icons/ri';
+import { TbEdit } from 'react-icons/tb';
+
 import ListCertificates from './ListCertificates';
+import BulkUpload from './BulkUpload';
 
 const Courses = () => {
   //Data to show in table.
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<CoursesCertificate[]>([]);
+  const [showDatatable, setShowDatatable] = useState(true);
   const [showListCertificates, setShowListCertificates] = useState(false);
+  const [showBulkUpload, setShowBulkUpload] = useState(false);
   const [dataUpdate, setDataUpdate] = useState<CoursesCertificate | null>(null);
   // Pagination & Search & Filters
   const [valueSearch, setValueSearch] = useState('');
@@ -32,6 +39,8 @@ const Courses = () => {
     q: valueSearch,
   });
 
+  const formatDate = (text: string) => moment.utc(text).format('DD/MM/YYYY');
+
   const columns: TableProps<CoursesCertificate>['columns'] = [
     {
       title: '#',
@@ -43,7 +52,12 @@ const Courses = () => {
         return <span>{text}</span>;
       },
     },
-    { title: 'Preimpreso', width: '15%', dataIndex: 'preimpreso', key: 'preimpreso' },
+    {
+      title: 'Preimpreso',
+      width: '15%',
+      dataIndex: 'preimpreso',
+      key: 'preimpreso',
+    },
     { title: 'Curso', dataIndex: 'curso', key: 'curso' },
     {
       title: 'Participantes',
@@ -55,19 +69,19 @@ const Courses = () => {
       title: 'Inicio',
       dataIndex: 'fecha_inicio',
       key: 'fecha_inicio',
-      render: (text: string) => moment(text).format('DD/MM/YYYY'),
+      render: (text: string) => formatDate(text),
     },
     {
       title: 'Fin',
       dataIndex: 'fecha_fin',
       key: 'fecha_fin',
-      render: (text: string) => moment(text).format('DD/MM/YYYY'),
+      render: (text: string) => formatDate(text),
     },
     {
       title: 'Emisión',
       dataIndex: 'fecha_emision',
       key: 'fecha_emision',
-      render: (text: string) => moment(text).format('DD/MM/YYYY'),
+      render: (text: string) => formatDate(text),
     },
     {
       title: 'Acciones',
@@ -77,11 +91,9 @@ const Courses = () => {
       align: 'center',
       render: (text: string, record: CoursesCertificate) => {
         return (
-          <div
-            className="flex cursor-pointer items-center justify-center gap-2"
-            onClick={() => handleListCertificates(record)}
-          >
-            <CiViewList className="text-2xl" />
+          <div className="flex cursor-pointer items-center justify-center gap-2">
+            <TbEdit className="text-2xl" onClick={() => handleEditCourse(record)} />
+            <CiViewList className="text-2xl" onClick={() => handleListCertificates(record)} />
           </div>
         );
       },
@@ -148,7 +160,30 @@ const Courses = () => {
 
   const handleListCertificates = (record: CoursesCertificate) => {
     setDataUpdate(record);
+    setShowBulkUpload(false);
     setShowListCertificates(true);
+    setShowDatatable(false);
+  };
+
+  const handleEditCourse = (record: CoursesCertificate) => {
+    setDataUpdate(record);
+    setShowListCertificates(false);
+    setShowDatatable(false);
+    setShowBulkUpload(true);
+  };
+
+  const handleAddCourse = () => {
+    setShowListCertificates(false);
+    setShowDatatable(false);
+    setShowBulkUpload(true);
+    setDataUpdate(null);
+  };
+
+  const handleClose = () => {
+    setShowListCertificates(false);
+    setShowBulkUpload(false);
+    setShowDatatable(true);
+    setDataUpdate(null);
   };
 
   useEffect(() => {
@@ -157,25 +192,37 @@ const Courses = () => {
 
   return (
     <>
-      {!showListCertificates && <Datatable<CoursesCertificate>
-        size="small"
-        columns={columns}
-        data={data}
-        loading={loading}
-        pagination={{ ...pagination, onChange: handlePageSize }}
-        isSearch={false}
-        endContent={
-          <Input.Search
-            placeholder="Buscar por preimpreso o curso"
-            allowClear
-            onSearch={handleSearch}
-            style={{ width: 300 }}
-          />
-        }
-      />}
-      {showListCertificates && dataUpdate && (
-        <ListCertificates data={dataUpdate} action={() => setShowListCertificates(false)} />
+      {showDatatable && (
+        <Datatable<CoursesCertificate>
+          size="small"
+          columns={columns}
+          data={data}
+          loading={loading}
+          pagination={{ ...pagination, onChange: handlePageSize }}
+          isSearch={false}
+          endContent={
+            <div className="flex items-center gap-2">
+              <Input.Search
+                placeholder="Buscar por preimpreso o curso"
+                allowClear
+                size="large"
+                onSearch={handleSearch}
+                style={{ width: 300 }}
+              />
+              <Button color="green" variant="outlined" size="large" onClick={handleAddCourse}>
+                Agregar
+                <RiMenuAddLine className="ml-2 text-2xl" />
+              </Button>
+            </div>
+          }
+        />
       )}
+
+      {showListCertificates && dataUpdate && (
+        <ListCertificates data={dataUpdate} action={handleClose} />
+      )}
+
+      {showBulkUpload && <BulkUpload data={dataUpdate} action={handleClose} />}
     </>
   );
 };

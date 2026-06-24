@@ -78,7 +78,7 @@ const ListCertificates = ({ data, action }: { data: CoursesCertificate; action: 
   const loadData = async () => {
     setLoading(true);
     try {
-      const response = await get(certificatesByPreimpress(data.preimpreso));
+      const response = await get(certificatesByPreimpress(data.preimpreso_id));
       setDataSources(response.data);
     } catch (error) {
       console.error('Error fetching certificates:', error);

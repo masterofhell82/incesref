@@ -1,4 +1,5 @@
 export interface CertifiedStudent {
+  certificateId: number;
   consecutivo?: number;
   nacionalidad: string;
   cedula: string;
@@ -14,6 +15,7 @@ export interface CertifiedStudent {
 export interface CoursesCertificate {
   id: number;
   preimpreso: string;
+  preimpreso_id: number;
   curso: string;
   participantes: number;
   fecha_inicio: string;
@@ -22,6 +24,7 @@ export interface CoursesCertificate {
   id_cfs: number | null;
   shortname: string;
   id_ambito: number | null;
+  entidad_trabajo_id: number | null;
 }
 
 export interface Certificate {
