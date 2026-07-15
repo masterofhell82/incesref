@@ -39,7 +39,7 @@ const Programs = () => {
       className: 'text-center',
       render: (is_activo: boolean) => {
         return (
-          <span className={`font-bold ${is_activo ? 'text-green-500' : 'text-red-500'}`}>
+          <span className={`${is_activo ? 'text-green-500' : 'text-red-500'}`}>
             {is_activo ? 'Activo' : 'Inactivo'}
           </span>
         );
