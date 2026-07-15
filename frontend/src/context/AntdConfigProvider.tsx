@@ -8,14 +8,16 @@ const AntdConfigProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     <ConfigProvider
       theme={{
         algorithm: currentTheme === 'dark' ? theme.darkAlgorithm : theme.defaultAlgorithm,
+        token: {
+          fontFamily: 'Montserrat, sans-serif',
+        },
         components: {
           Table: {
-            borderColor: currentTheme === 'dark' ? '#444' : '#e2d5c2',
+              borderColor: currentTheme === 'dark' ? '#444' : '#e2d5c2',
           },
           Pagination: {
             itemActiveBg: '#cb0c9f',
             itemActiveColor: '#fff',
-            
             itemActiveColorHover: '#fff',
           },
         },

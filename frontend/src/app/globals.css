@@ -406,10 +406,14 @@ body {
 }
 
 .custom-table-font {
-  font-size: 16px !important;
+  font-size: 14px !important;
 }
 .custom-table-font .ant-table-cell {
-  font-size: 16px !important;
+  font-size: 14px !important;
+}
+
+.ant-pagination .ant-pagination-item-active {
+  border-color: #cb0c9f !important;
 }
 
 .task {
@@ -425,6 +429,4 @@ body {
   cursor: grabbing; /* Changes the cursor to indicate dragging */
 }
 
-.ant-pagination .ant-pagination-item-active {
-  border-color: #cb0c9f !important;
-}
+
