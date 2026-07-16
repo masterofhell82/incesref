@@ -146,6 +146,7 @@ const Programs = () => {
         columns={columns}
         data={data}
         loading={loading}
+        size="small"
         endContent={
           <div className="flex items-center gap-2">
             <Button color="green" variant="outlined" size="large" onClick={handleAdd}>
