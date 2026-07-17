@@ -196,6 +196,8 @@ def decode_certificate_id(certificate):
 
         correlativo = f"{str(curso_activo.id_cfs).zfill(3)}{str(curso.tipo_formacion).zfill(2)}{str(certificate_data.libro).zfill(3)}{str(certificate_data.hoja).zfill(3)}{str(certificate_data.consecutivo).zfill(7)}{curso_activo.fecha_fin.strftime('%Y')}"
 
+        school_year = f"{certificate_data.fecha_emision.year - 1} - {certificate_data.fecha_emision.year}"
+
         cert = 'Certificado'
         namefile = cert + '.pdf'
         namepath = "src/view/certificates/" + namefile
@@ -215,8 +217,9 @@ def decode_certificate_id(certificate):
                                                 for contenido in curso_contenido],
                                url=url,
                                total_horas=curso_total_horas,
-                               correlativo=correlativo
-                               )
+                               correlativo=correlativo,
+                               school_year=school_year
+                            )
         # Configuración de pdfkit para orientación horizontal
         options = {
             'page-size': 'A4',

@@ -1,0 +1,324 @@
+{% extends 'base.html' %} {% block html_lang %}es{% endblock %} {% block head %}
+{% endblock %} {% block styles %}
+<style>
+    .page {
+        page-break-after: always;
+        width: 100%;
+        height: 960px;
+        position: relative;
+    }
+
+    .page-background-front {
+        background-image: url("{{ base_url + url_for('static', filename='img/certificado/pp_ppl.webp') }}");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        top: 25px;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        z-index: -1;
+    }
+
+    .page-background-back {
+        background-image: url("{{ base_url + url_for('static', filename='img/certificado/pp_ppl.webp') }}");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        top: 25px;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        z-index: -1;
+    }
+
+    .comment {
+        text-align: center;
+        color: #333565;
+        font-size: 34px;
+        font-family: "Montserrat", sans-serif;
+        white-space: normal;
+        overflow-wrap: break-word;
+        word-break: normal;
+        max-width: 90%;
+        margin: 0 auto;
+    }
+
+    .comment2 {
+        text-align: center;
+        color: #333565;
+        font-size: 30px;
+        font-family: "Montserrat", sans-serif;
+        white-space: normal;
+        line-height: 1.2;
+        overflow-wrap: break-word;
+        word-break: normal;
+        max-width: 80%;
+        margin: 0 auto;
+    }
+
+    .table-content {
+        margin-left: 1cm;
+        padding: 10px;
+        position: relative;
+        z-index: 1;
+    }
+
+    table {
+        --bs-border-width: 1px;
+        --bs-border-color-translucent: rgba(0, 0, 0, 0.175);
+        --bs-border-radius: 0.375rem;
+        caption-side: bottom;
+        width: 100%;
+        margin-bottom: 1rem;
+        vertical-align: top;
+        border: var(--bs-border-width) solid var(--bs-border-color-translucent) !important;
+        border-radius: var(--bs-border-radius) !important;
+    }
+
+    .table_matriz table {
+        font-family: "Montserrat", sans-serif;
+        font-size: 18px;
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    .table_matriz table td {
+        border: 1px solid #5d6b75;
+        text-align: justify;
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    .table_matriz table .hours {
+        background-color: #5d6b75cc;
+        color: #fff;
+        text-align: center !important;
+        width: 5%;
+        padding-right: 10px;
+    }
+
+    .table_matriz table .hours_d {
+        text-align: center !important;
+    }
+
+    .table_matriz table .colspan {
+        background-color: #5d6b75cc;
+        color: #fff;
+        text-align: center;
+    }
+
+    .table_matriz table .codigo {
+        background-color: #5d6b75cc;
+        color: #fff;
+        width: 20%;
+    }
+
+    .table_matriz table .numero {
+        background-color: #5d6b75cc;
+        color: #fff;
+        width: 5%;
+    }
+
+    .table_matriz table .uc {
+        background-color: #5d6b75cc;
+        color: #fff;
+        width: 75%;
+    }
+
+    .table_matriz table .rowspan {
+        background-color: #5d6b75cc;
+        vertical-align: middle;
+        text-align: center;
+        color: #fff;
+    }
+
+    .table_register table {
+        font-family: "Montserrat", sans-serif;
+        font-size: 14px;
+        border-collapse: collapse;
+        width: 95%;
+    }
+
+    .table_register table td {
+        border: 1px solid #5d6b75;
+    }
+
+    .table_register table .colspan {
+        background-color: #5d6b75cc;
+        color: #fff;
+        text-align: center;
+    }
+</style>
+{% endblock %} {% block body %}
+<div class="page">
+    <div class="page-background-front"></div>
+    <div class="content p-3">
+        <div class="row justify-content-center mt-4">
+            <img
+                src="{{ base_url + url_for('static', filename='img/certificado/logo.svg') }}"
+                alt="Logo"
+                class="img-fluid"
+                style="max-width: 400px"
+            />
+        </div>
+        <div class="row text-center" style="margin-top: -35px">
+            <div class="title-certifica text-uppercase">CERTIFICADO</div>
+        </div>
+        <div class="row text-center" style="margin-top: -30px">
+            <div class="title-ortoga">que se otorga a</div>
+            <div class="fullnames text-uppercase">
+                {{ persona.nombres | first_word }} {{ persona.apellidos }}
+            </div>
+            <div class="foid text-uppercase">
+                C.I: {{ persona.cedula |format_cedula }}
+            </div>
+        </div>
+        <div class="row text-center">
+            <div class="comment">
+                Por haber aprobado las formaciones en el
+                <b>PERFIL PRODUCTIVO</b>
+            </div>
+            <div class="formation" style="margin-top: 8px; margin-bottom: 10px">
+                <b>{{ curso.nombre }}</b>
+            </div>
+            <div class="comment2">
+                Vinculado al componente laboral de la Educación Media General en
+                la Modalidad de Jóvenes, Adultas y Adultos
+            </div>
+        </div>
+    </div>
+    <div class="row sign" style="margin-top: -20px;">
+        <div class="single-signature">
+            <div class="align-self-center text-center">
+                <!-- src="data:image/png;base64,{{ signature_gte_inst }}" -->
+                <img
+                    src="{{ base_url + url_for('static', filename='img/firma/presidenteInces.png') }}"
+                    alt="Firma"
+                    class="img-fluid img-signature-float"
+                />
+                <hr />
+                <div class="who-signature">Wuikelman Angel Paredes</div>
+                <div class="position-signature">Presidente del Inces</div>
+            </div>
+        </div>
+    </div>
+    <div class="row text-center">
+        <div class="date_emition">
+            <span class="fwbold">Caracas</span>, {{ certificate.fecha_emision
+            |format_date_long_es }}
+        </div>
+    </div>
+</div>
+
+<div class="page">
+    <div class="page-background-back"></div>
+    <div class="content p-2">
+        <div class="row justify-content-center">
+            <img
+                src="{{ base_url + url_for('static', filename='img/certificado/logo.svg') }}"
+                alt="Logo"
+                class="img-fluid"
+                style="max-width: 400px"
+            />
+        </div>
+    </div>
+    <div class="row table-content">
+        <div class="col-8">
+            <div class="table_matriz">
+                <table border="1">
+                    <tr>
+                        <td class="colspan">TEMAS</td>
+                        <td class="hours">HORAS</td>
+                    </tr>
+                    {% for contenido in curso_contenido %}
+                    <tr>
+                        <td>{{ contenido.contenido }}</td>
+                        <td class="text-center">{{ contenido.horas }}</td>
+                    </tr>
+                    {% endfor %}
+                    <tr>
+                        <td colspan="2" class="colspan">PERFIL PRODUCTIVO</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="text-center">
+                            {{ curso.nombre }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="colspan">
+                            DESCRIPCIÓN DEL PERFIL PRODUCTIVO
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="text-justify">
+                            {{ curso.descripcion }}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="table_register">
+                 <table class="table table-bordered table-sm">
+                    <tr>
+                        <td colspan="12" class="colspan">REGISTRO</td>
+                    </tr>
+                    <tr class="text-center">
+                        <td colspan="4" class="col-4 colspan">LIBRO N°</td>
+                        <td colspan="4" class="col-4 colspan">HOJA</td>
+                        <td colspan="4" class="col-4 colspan">CONSECUTIVO</td>
+                    </tr>
+                    <tr class="text-center">
+                        <td colspan="4">{{ certificate.libro }}</td>
+                        <td colspan="4">{{ certificate.hoja }}</td>
+                        <td colspan="4">{{ certificate.consecutivo }}</td>
+                    </tr>
+                    <tr class="text-center">
+                        <td colspan="4" class="colspan">CÓDIGO DE EJECUCIÓN</td>
+                        <td colspan="4" class="colspan">CÓDIGO DE FORMACIÓN</td>
+                        <td colspan="4" class="colspan">FECHA DE GENERACIÓN</td>
+                    </tr>
+                    <tr class="text-center">
+                        <td colspan="4">{{ preimpreso.preimpreso}}</td>
+                        <td colspan="4">{{ curso.shortname }}</td>
+                        <td colspan="4">{{ certificate.fecha_emision | format_date }}</td>
+                    </tr>
+                    <tr class="text-center">
+                        <td colspan="4" class="colspan">DURACIÓN HORAS</td>
+                        <td colspan="4" class="colspan">AÑO ESCOLAR</td>
+                        <td colspan="4" class="colspan">TITULO ASOCIADO</td>
+                    </tr>
+                    <tr class="text-center">
+                        <td colspan="4">{{ total_horas }}</td>
+                        <td colspan="4">{{ school_year }}</td>
+                        <td colspan="4">{{ certificate.titulo_asociado }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="12" class="colspan">CORRELATIVO</td>
+                    </tr>
+                    <tr>
+                        <td colspan="12" class="text-center">
+                            {{ correlativo }}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="qrcode">
+        <img
+            src="{{ qrcode(url, error_correction='H', icon_img=base_url + url_for('static', filename='img/logos/minilogo.png')) }}"
+            alt="QR Code"
+        />
+        <a href="{{ url }}" target="_blank">https://app.inces.net.ve</a>
+    </div>
+</div>
+{% endblock %}
