@@ -61,7 +61,7 @@ def get_certificates():
         if q:
             # Busca por coincidencia en preimpreso o curso
             query = query.filter(CursoCertificado.preimpreso.ilike(
-                f"%{q}%") | CursoCertificado.nombre.ilike(f"%{q}%"))
+                f"%{q}%") | CursoCertificado.nombre.ilike(f"%{q}%") | CursoCertificado.shortname.ilike(f"%{q}%"))
 
         total = query.count()
         total_pages = (total + page_size - 1) // page_size
@@ -205,7 +205,14 @@ def decode_certificate_id(certificate):
 
         url = f"https://app.inces.net.ve/verifycertificate?={certificate}"
 
-        template = f"/certificates/{curso.tipo_formacion}.html"
+        tipo_formacion = int(str(curso.tipo_formacion).strip())
+        id_programa = int(str(curso.id_programa).strip())
+
+        if tipo_formacion == 16 and id_programa == 2:
+            template = f"/certificates/{tipo_formacion}_{id_programa}.html"
+        else:
+            template = f"/certificates/{tipo_formacion}.html"
+
         html = render_template(template,
                                base_url=app.config['BASE_URL'],
                                persona=persona.serialize(),
@@ -219,7 +226,7 @@ def decode_certificate_id(certificate):
                                total_horas=curso_total_horas,
                                correlativo=correlativo,
                                school_year=school_year
-                            )
+                               )
         # Configuración de pdfkit para orientación horizontal
         options = {
             'page-size': 'A4',
