@@ -1,8 +1,9 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, startTransition } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { notification, Form, Input, Button } from 'antd';
 import { getLogin } from '@/Services/EndPoints';
 import { post } from '@/Services/HttpRequest';
@@ -21,6 +22,7 @@ const listBg = [bg165944.src, bg165796.src, bg165859.src];
 
 const SignInForm = () => {
   const dispatch = useDispatch();
+  const router = useRouter();
   const [api, contextHolder] = notification.useNotification();
   const [background, setBackground] = useState(listBg[0]);
 
@@ -60,10 +62,11 @@ const SignInForm = () => {
           if (typeof window !== 'undefined') {
             localStorage.setItem('authorization', response.token);
             sessionStorage.setItem('parameters', JSON.stringify(valueAuth));
-            // Redirige al usuario al dashboard
-            window.location.href = '/admin';
-            //dispatch(setLayout(valueLayout));
             dispatch(setLogin(valueAuth));
+
+            startTransition(() => {
+              router.replace('/admin');
+            });
           }
         } else {
           api.error({
