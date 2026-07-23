@@ -44,4 +44,4 @@ networks:
         driver: bridge
     db_net:
         external: true
-        name: db_db_net
+        name: ${DATABASE_NET_NAME}
