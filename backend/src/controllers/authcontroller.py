@@ -44,8 +44,6 @@ def verify_token():
 
     token = dataPost.get("token")
 
-    print(token)
-
     parts = token.split(' ')
 
     datos = decode_jwt(parts[1])

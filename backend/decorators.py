@@ -12,6 +12,8 @@ def token_required(f):
             # Obtener el token del encabezado
             token = request.headers.get('Authorization', None)
 
+            print(token)  # Agregar esta línea para depuración
+
             if not token:
                 return jsonify({'message': 'Token is missing'}), 403
 

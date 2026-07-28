@@ -8,8 +8,7 @@ def create_jwt(user):
         'id': user.id,
         'username': user.username,
         'rol': user.id_rol,
-        'system': 'streams',
-        "exp": datetime.now(timezone.utc) + timedelta(seconds=7200) if user.username == 'guess' else datetime.now(timezone.utc) + timedelta(seconds=7200)
+        "exp": datetime.now(timezone.utc) + timedelta(seconds=7200)
     }
 
     token = jwt.encode(datos, clave_secreta, algorithm="HS256")
