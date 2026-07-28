@@ -24,7 +24,7 @@ export const cfs = `${Config.API_URL}/cfs`;
 export const scopes = `${Config.API_URL}/ambitos`;
 
 // Entidades de Trabajo
-export const employerEntities = `${Config.API_URL}/entidad_trabajo`;
+export const employerEntities = `${Config.API_URL}/empleadores`;
 
 // Formaciones
 export const programas = `${Config.API_URL}/programas`;

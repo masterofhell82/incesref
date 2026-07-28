@@ -8,13 +8,17 @@ import { ChevronDownIcon, HorizontaLDots } from '../icons/index';
 import { RxDashboard } from 'react-icons/rx';
 import { LuFolderGit2, LuClipboardList, LuLayoutList, LuUsers } from 'react-icons/lu';
 import { PiCertificate, PiStudentDuotone, PiCertificateDuotone } from 'react-icons/pi';
-import { LiaSignatureSolid } from 'react-icons/lia';
+
+import { useSelector } from 'react-redux';
+import store from '@/context/store';
+type RootState = ReturnType<typeof store.getState>;
 
 type NavItem = {
   name: string;
   icon: React.ReactNode;
   path?: string;
   subItems?: { name: string; path: string; pro?: boolean; new?: boolean }[];
+  role?: string;
 };
 
 const navItems: NavItem[] = [
@@ -28,7 +32,7 @@ const navItems: NavItem[] = [
     icon: <LuFolderGit2 size={25} />,
     subItems: [
       { name: 'Ambitos', path: '/centers/scopes', pro: false },
-      { name: 'Entidades de Trabajo', path: '#', pro: false },
+      { name: 'Entidades de Trabajo', path: '/centers/employers', pro: false },
       { name: 'Organizaciones', path: '/centers/cores', pro: false },
     ],
   },
@@ -41,7 +45,6 @@ const navItems: NavItem[] = [
       { name: 'Maestra General', path: '/formaciones/maestra', pro: false },
     ],
   },
-
   {
     name: 'Estudiantes',
     icon: <PiStudentDuotone size={25} />,
@@ -50,9 +53,7 @@ const navItems: NavItem[] = [
   {
     name: 'Certificados',
     icon: <PiCertificate size={25} />,
-    subItems: [
-      { name: 'Cursos Certificados', path: '/certificates/courses', pro: false },
-    ],
+    subItems: [{ name: 'Cursos Certificados', path: '/certificates/courses', pro: false }],
   },
 ];
 
@@ -66,11 +67,6 @@ const configItems: NavItem[] = [
     name: 'Certificados (Templates)',
     icon: <PiCertificateDuotone size={25} />,
     path: '/config/certificates',
-  },
-  {
-    name: 'Firmas',
-    icon: <LiaSignatureSolid size={25} />,
-    path: '/signatures',
   },
   {
     name: 'Usuarios',
@@ -87,6 +83,7 @@ const styleSidebar = {
 };
 
 const AppSidebar: React.FC = () => {
+  const auth = useSelector((state: RootState) => state.auth);
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
   const pathname = usePathname();
 
@@ -314,16 +311,18 @@ const AppSidebar: React.FC = () => {
               </h2>
               {renderMenuItems(navItems, 'main')}
             </div>
-            <div>
-              <h2
-                className={`mb-4 flex text-xs leading-[20px] text-gray-400 uppercase ${
-                  !isExpanded && !isHovered ? 'lg:justify-center' : 'justify-start'
-                }`}
-              >
-                {isExpanded || isHovered || isMobileOpen ? 'Configuraciones' : <HorizontaLDots />}
-              </h2>
-              {renderMenuItems(configItems, 'others')}
-            </div>
+            {auth?.rol.toString() === '10' && (
+              <div>
+                <h2
+                  className={`mb-4 flex text-xs leading-[20px] text-gray-400 uppercase ${
+                    !isExpanded && !isHovered ? 'lg:justify-center' : 'justify-start'
+                  }`}
+                >
+                  {isExpanded || isHovered || isMobileOpen ? 'Configuraciones' : <HorizontaLDots />}
+                </h2>
+                {renderMenuItems(configItems, 'others')}
+              </div>
+            )}
           </div>
         </nav>
       </div>
