@@ -14,6 +14,7 @@ services:
             - PORT=3000
             - NODE_ENV=${NODE_ENV}
             - NEXT_PUBLIC_URL_API_BACKEND=${URL_API_BACKEND}
+            - NEXT_PUBLIC_DNS_DOCKER_BACKEND=${DNS_DOCKER_BACKEND}
             - TZ=America/Caracas
         networks:
             - incesnet

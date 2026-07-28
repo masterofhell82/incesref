@@ -5,7 +5,8 @@ const verifyTokenInMiddleware = async (token: string) => {
   if (!token) return false;
 
   try {
-    const url = `${process.env.NEXT_PUBLIC_URL_API_BACKEND}/api/verifytoken`;
+    const url = `${process.env.NEXT_PUBLIC_DNS_DOCKER_BACKEND}/api/verifytoken`;
+
     const response = await fetch(url, {
       method: 'POST',
       headers: {
@@ -18,7 +19,8 @@ const verifyTokenInMiddleware = async (token: string) => {
 
     return response.ok;
   } catch (error) {
-    console.error('Error in middleware token verification:', error);
+    console.log(error);
+    //console.error('Error in middleware token verification:', error);
     return false;
   }
 };
