@@ -2,7 +2,7 @@ from app import app, db
 from flask import request, jsonify
 from decorators import token_required
 import re
- 
+
 from src.models.cfsmodel import CFSModel as CFS
 from src.models.geografiamodel import EstadosModel as Estados
 from src.models.cursoactivomodel import CursoActivoModel as CursoActivo
@@ -14,16 +14,21 @@ from src.helpers.date_parser import parse_date
 '''
 Se registran los cursos activos, es decir, aquellos que fueron dictados en un periodo determinado. Además, se pueden asociar a una entidad de trabajo y a un preimpreso específico para cada curso activo.
 '''
+
+
 @app.route('/api/curso_activo/register', methods=['POST'])
 @token_required
 def register_curso_activo():
     try:
         dataPost = request.json
 
+        print("Data received for register_curso_activo:", dataPost)  # Debugging line
+
         fecha_inicio = parse_date(dataPost.get('fecha_inicio'), 'fecha_inicio')
         fecha_fin = parse_date(dataPost.get('fecha_fin'), 'fecha_fin')
-        
-        curso = Curso.query.filter_by(shortname=dataPost.get('shortname')).first()
+
+        curso = Curso.query.filter_by(
+            shortname=dataPost.get('shortname')).first()
 
         estado_abreviatura = (
             db.session.query(Estados.abreviatura)
@@ -31,9 +36,10 @@ def register_curso_activo():
             .filter(CFS.id == dataPost.get('id_cfs'))
             .scalar()
         )
+
         if not estado_abreviatura:
             return jsonify({'error': 'No existe estado asociado al CFS indicado'}), 404
-        
+
         if not curso:
             return jsonify({'error': 'No existe un curso con el shortname indicado'}), 404
 
@@ -43,7 +49,8 @@ def register_curso_activo():
             cant_participan=25,
             cant_grupo=1,
             activo=False,
-            entidad_trabajo_id=dataPost.get('entidad_trabajo_id') if dataPost.get('entidad_trabajo_id') else 0,
+            entidad_trabajo_id=dataPost.get('entidad_trabajo_id') if dataPost.get(
+                'entidad_trabajo_id') else 0,
             fecha_ini=fecha_inicio,
             fecha_fin=fecha_fin,
         )
@@ -63,21 +70,27 @@ def register_curso_activo():
         db.session.flush()
 
         preimpreso_value = (dataPost.get('preimpreso') or '').strip().upper()
-        
-        preimpreso_existente = PreImpreso.query.filter_by(preimpreso=preimpreso_value).first()
+
+        preimpreso_existente = PreImpreso.query.filter_by(
+            preimpreso=preimpreso_value).first()
+
         if preimpreso_existente:
             db.session.rollback()
-            return jsonify({'error': 'El preimpreso ya está asociado a otro curso activo'}), 409
+            return jsonify({'error': 'El preimpreso ya está asociado a una formación ejecutada'}), 409
 
         secuencia_preimpreso = preimpreso_value.split('-')[-1]
-        
+
         if not secuencia_preimpreso.isdigit():
+            db.session.rollback()
             return jsonify({'error': 'El preimpreso no tiene una secuencia numérica válida'}), 400
+
         secuencia_preimpreso = secuencia_preimpreso.zfill(5)
 
-        ultimo_codigo = PreImpreso.query.filter(PreImpreso.id_curso == curso.id, PreImpreso.codigo.like(f"%{estado_abreviatura.upper()}%")).order_by(PreImpreso.id.desc()).first()
+        ultimo_codigo = PreImpreso.query.filter(PreImpreso.id_curso == curso.id, PreImpreso.codigo.like(
+            f"%{estado_abreviatura.upper()}%")).order_by(PreImpreso.id.desc()).first()
 
         repeticion = '01'
+
         if ultimo_codigo:
             partes = str(ultimo_codigo).upper().split('-')
             if len(partes) >= 3:
@@ -97,6 +110,7 @@ def register_curso_activo():
             preimpreso=preimpreso_value,
             codigo=codigo_generado,
             id_curso=curso.id,
+            id_meta=dataPost.get('id_estado'),
         )
 
         auditoria_preimpreso = Auditoria(

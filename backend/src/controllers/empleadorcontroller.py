@@ -7,7 +7,6 @@ from src.models.empleadormodel import EmpleadorModel as Empleador
 from src.models.firmaempleadormodel import FirmaEmpleadorModel as FirmaEmpleador
 from src.models.geografiamodel import EstadosModel as Estados
 from src.models.tipocontribuyentemodel import TipoContribuyenteModel as TipoContribuyente
-
 from src.services.audit_services import register_audit_action
 
 
@@ -75,7 +74,8 @@ def get_empleadores():
                                  Empleador.correo.ilike(f'%{q}%'))
         if state:
             estado = Estados.query.filter_by(estado=state).first()
-            query = query.filter(Empleador.estado_id == estado.id) if estado else query
+            query = query.filter(Empleador.estado_id ==
+                                 estado.id) if estado else query
 
         total = query.count()
         total_pages = (total + page_size - 1) // page_size
@@ -86,10 +86,12 @@ def get_empleadores():
         dataEmpleadores = []
 
         for empleador in empleadores:
-            estado_empleador = Estados.query.filter_by(id=empleador.estado_id).first()
+            estado_empleador = Estados.query.filter_by(
+                id=empleador.estado_id).first()
             tipo_contribuyente = TipoContribuyente.query.filter_by(
                 id=empleador.tipo_contribuyente_id).first()
-            firma_empleador = FirmaEmpleador.query.filter_by(empleador_id=empleador.id).first()
+            firma_empleador = FirmaEmpleador.query.filter_by(
+                empleador_id=empleador.id).first()
 
             empleador_data = {
                 'id': empleador.id,
@@ -126,6 +128,46 @@ def get_empleadores():
         return jsonify({'error': str(e)}), 400
 
 
+@app.route('/api/empleadores/state/<int:estado_id>', methods=['GET'])
+@token_required
+def get_empleador_estados(estado_id):
+    try:
+        empleadores = Empleador.query.filter_by(estado_id=estado_id).all()
+
+        dataEmpleadores = []
+
+        for empleador in empleadores:
+            estado_empleador = Estados.query.filter_by(
+                id=empleador.estado_id).first()
+            tipo_contribuyente = TipoContribuyente.query.filter_by(
+                id=empleador.tipo_contribuyente_id).first()
+            firma_empleador = FirmaEmpleador.query.filter_by(
+                empleador_id=empleador.id).first()
+
+            empleador_data = {
+                'id': empleador.id,
+                'rif': empleador.rif,
+                'razonSocial': empleador.razon_social,
+                'tipoContribuyenteId': tipo_contribuyente.id if tipo_contribuyente else None,
+                'tipoContribuyente': tipo_contribuyente.nombre if tipo_contribuyente else None,
+                'estadoId': estado_empleador.id if estado_empleador else None,
+                'estado': estado_empleador.estado if estado_empleador else None,
+                'domicilioFiscal': empleador.domicilio_fiscal,
+                'rifRepresentante': empleador.rif_representante,
+                'representante': empleador.representante,
+                'telefonoMovil': empleador.telefono_movil,
+                'telefonoFijo': empleador.telefono_fijo,
+                'correo': empleador.correo,
+                'estatus': empleador.estatus,
+                'firma': firma_empleador.firma if firma_empleador else None
+            }
+            dataEmpleadores.append(empleador_data)
+
+        return jsonify({'data': dataEmpleadores}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
+
+
 @app.route('/api/empleadores/<int:empleador_id>', methods=['PUT'])
 @token_required
 def update_empleador(empleador_id):
@@ -156,6 +198,8 @@ def update_empleador(empleador_id):
         empleador.telefono_fijo = dataPost.get(
             'telefonoFijo', empleador.telefono_fijo)
         empleador.correo = dataPost.get('correo', empleador.correo)
+
+        empleador.updated_at = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
         db.session.commit()
 
