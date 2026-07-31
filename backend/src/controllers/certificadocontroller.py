@@ -178,7 +178,7 @@ def get_certificado(id_person):
 
 
 @app.route('/api/viewcertificate/<certificate>', methods=['GET'])
-def decode_certificate_id(certificate):
+def view_certificate(certificate):
     try:
         certificate_data = Certificado.query.filter_by(id=certificate).first()
         preimpreso_data = PreImpreso.query.filter_by(
@@ -227,6 +227,7 @@ def decode_certificate_id(certificate):
                                correlativo=correlativo,
                                school_year=school_year
                                )
+
         # Configuración de pdfkit para orientación horizontal
         options = {
             'page-size': 'A4',
