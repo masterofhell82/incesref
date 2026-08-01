@@ -252,8 +252,9 @@ def get_certificado(id_person):
             return jsonify({'message': 'Certificate not found'}), 404
 
         for cert in certificates:
+            preimpreso = PreImpreso.query.filter_by(id=cert.preimpreso_id).first()
             course = VwCursoPublicado.query.filter_by(
-                id_cur_activo=cert.id_curso_activo).first()
+                id_cur_activo=preimpreso.id_curso_activo).first()
             data.append({
                 "idCertificate": cert.id,
                 "course": course.curso if course else None
