@@ -1,5 +1,7 @@
+from datetime import datetime, timezone
+
 from app import db
-from datetime import datetime
+
 
 class TipoFormacionModel(db.Model):
     __tablename__ = 'tipo_formacion'
@@ -8,8 +10,8 @@ class TipoFormacionModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(75), nullable=False)
     descripcion = db.Column(db.String(255), nullable=True)
-    create_at = db.Column(db.DateTime, default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
-    update_at = db.Column(db.DateTime, default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+    create_at = db.Column(db.DateTime, default=datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S'))
+    update_at = db.Column(db.DateTime, default=datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S'))
 
     def __init__(self, nombre, descripcion):
         self.nombre = nombre
@@ -32,6 +34,6 @@ class TipoFormacionModel(db.Model):
     def update(self, data):
         for key, value in data.items():
             setattr(self, key, value)
-        self.update_at = datetime.now()
+        self.update_at = datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')
         db.session.commit()
         return self

@@ -1,9 +1,14 @@
-from app import app
-from flask import request, jsonify
-from decorators import token_required
-from datetime import datetime
+from datetime import datetime, timezone
 
+from app import app
+from decorators import token_required
+from flask import g, jsonify, request
+
+# models
 from src.models.tipoformacionmodel import TipoFormacionModel as TipoFormacion
+
+# services
+from src.services.audit_services import register_audit_action
 
 
 @app.route('/api/tipoformacion', methods=['POST'])
@@ -18,6 +23,16 @@ def create_tipo_formacion():
         )
 
         tipo_formacion.save()
+
+        register_audit_action(
+            usuario_id=request.current_user['id'],
+            ip_address=g.remote_addr,
+            tabla='tipo_formacion',
+            accion=1,  # Acción de creación
+            valor_old=None,
+            valor_new=str(tipo_formacion.serialize()),
+            col_editada=None
+        )
 
         return jsonify({'data': tipo_formacion.serialize()}), 201
     except Exception as e:
@@ -43,14 +58,26 @@ def update_tipo_formacion(id):
         if not tipo_formacion:
             return jsonify({'error': 'Tipo de Formación no encontrado'}), 404
 
+        valor_old = str(tipo_formacion.serialize())
+
         dataPut = request.json
 
         tipo_formacion.nombre = dataPut.get('nombre', tipo_formacion.nombre)
         tipo_formacion.descripcion = dataPut.get(
             'descripcion', tipo_formacion.descripcion)
-        tipo_formacion.update_at = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        tipo_formacion.update_at = datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')
 
         tipo_formacion.save()
+
+        register_audit_action(
+            usuario_id=request.current_user['id'],
+            ip_address=g.remote_addr,
+            tabla='tipo_formacion',
+            accion=2,  # Acción de actualización
+            valor_old=valor_old,
+            valor_new=str(tipo_formacion.serialize()),
+            col_editada=None
+        )
 
         return jsonify(tipo_formacion.serialize()), 200
     except Exception as e:
