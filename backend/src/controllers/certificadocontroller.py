@@ -1,10 +1,14 @@
-from app import app
+from app import app, db
 from flask import jsonify, render_template, make_response, send_file, request
-import os
 import io
+import os
 import shutil
 from decorators import token_required
 import pdfkit
+from datetime import datetime, timezone
+
+# services
+from src.services.certificates_services import parse_massive_certificates_csv
 
 # Models
 from src.models.certificadomodel import CertificadoModel as Certificado
@@ -39,6 +43,84 @@ def _get_pdfkit_configuration():
     return pdfkit.configuration(wkhtmltopdf=wkhtmltopdf_path)
 
 
+@app.route('/api/certificates/masive/<string:preimpress>', methods=['POST'])
+@token_required
+def create_certificate_masive(preimpress: str):
+    try:
+        file = request.files.get('file')
+        preimpreso_form = request.form.get('preimpreso', '').strip()
+
+        if not file:
+            return jsonify({'error': 'No se proporcionó el archivo CSV.'}), 400
+
+        if not preimpreso_form:
+            return jsonify({'error': 'No se proporcionó el preimpreso en el formulario.'}), 400
+
+        if preimpreso_form != preimpress.strip():
+            return jsonify({'error': 'El preimpreso del formulario no coincide con la ruta solicitada.'}), 400
+
+        data_preimpress = PreImpreso.query.filter_by(
+            preimpreso=preimpress.strip()).first()
+        if not data_preimpress:
+            return jsonify({'error': 'El preimpreso indicado no existe.'}), 404
+
+        csv_result = parse_massive_certificates_csv(file)
+
+        if not csv_result.get('ok'):
+            error_payload = {'error': csv_result.get(
+                'error', 'Error al procesar CSV.')}
+            if csv_result.get('expected') is not None:
+                error_payload['expected'] = csv_result.get('expected')
+            if csv_result.get('received') is not None:
+                error_payload['received'] = csv_result.get('received')
+            return jsonify(error_payload), int(csv_result.get('status', 400))
+
+        parsed_rows = csv_result.get('rows', [])
+
+        for row in parsed_rows:
+            persona = Personas.query.filter_by(cedula=row['cedula']).first()
+            if not persona:
+                persona = Personas(
+                    nac=row['nacionalidad'],
+                    cedula=row['cedula'],
+                    nombres=row['nombres'],
+                    apellidos=row['apellidos'],
+                    sexo=row['genero'],
+                    fecha_nace=row['nacimiento'],
+                    telefono=row['telefono'],
+                    correo=row['correo']
+                )
+                db.session.add(persona)
+                db.session.flush()
+
+            # Verificar si ya existe un certificado para esta persona y preimpreso
+            existing_certificado = Certificado.query.filter_by(
+                id_persona=persona.cedula,
+                preimpreso_id=data_preimpress.id
+            ).first()
+
+            if not existing_certificado:
+                certificado = Certificado(
+                    id_persona=persona.cedula,
+                    consecutivo=row['consecutivo'],
+                    titulo_asociado=row['codigo_asociado'],
+                    fecha_emision=datetime.now(timezone.utc).strftime('%Y-%m-%d'),
+                    preimpreso_id=data_preimpress.id,
+                )
+                db.session.add(certificado)
+
+        db.session.commit()
+
+        return jsonify({
+            'message': f'Se procesaron {len(parsed_rows)} fila(s) del CSV.',
+            'preimpreso': preimpress.strip(),
+            'rows': parsed_rows,
+        }), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
+
+
 @app.route('/api/certificates/courses', methods=['GET'])
 @token_required
 def get_certificates():
@@ -50,11 +132,11 @@ def get_certificates():
 
         # Validaciones
         if page < 1:
-            page = 1
+            page = max(page, 1)
         if page_size < 1:
-            page_size = 1
+            page_size = max(page_size, 1)
         if page_size > 200:
-            page_size = 200
+            page_size = min(page_size, 200)
 
         # Filtro base
         query = CursoCertificado.query
@@ -79,6 +161,8 @@ def get_certificates():
             data["shortname"] = curso.shortname
             data["preimpreso_id"] = curso.preimpreso_id
             data["preimpreso"] = curso.preimpreso
+            data["hoja"] = curso.hoja
+            data["libro"] = curso.libro
             data["curso"] = curso.nombre
             data["participantes"] = curso.certificados
             data["fecha_inicio"] = curso.fecha_ini
@@ -122,7 +206,7 @@ def get_current_certificates():
 
 @app.route('/api/certificates/<preimpress_id>', methods=['GET'])
 @token_required
-def get_certificates_by_course(preimpress_id):
+def get_certificates_by_preimpress(preimpress_id):
     try:
         data = []
         preimpreso_data = PreImpreso.query.filter_by(
@@ -132,7 +216,7 @@ def get_certificates_by_course(preimpress_id):
             return jsonify({'message': 'Preimpreso not found'}), 404
 
         certificates = Certificado.query.filter_by(
-            id_curso_activo=preimpreso_data.id_curso_activo).all()
+            preimpreso_id=preimpreso_data.id).all()
 
         for cert in certificates:
             persona = Personas.query.filter_by(cedula=cert.id_persona).first()
@@ -182,11 +266,11 @@ def view_certificate(certificate):
     try:
         certificate_data = Certificado.query.filter_by(id=certificate).first()
         preimpreso_data = PreImpreso.query.filter_by(
-            id_curso_activo=certificate_data.id_curso_activo).first()
+            id=certificate_data.preimpreso_id).first()
         persona = Personas.query.filter_by(
             cedula=certificate_data.id_persona).first()
         curso_activo = CursoActivo.query.filter_by(
-            id=certificate_data.id_curso_activo).first()
+            id=preimpreso_data.id_curso_activo).first()
         curso = Curso.query.filter_by(id=curso_activo.id_curso).first()
         curso_contenido = CursoContenido.query.filter_by(
             shortname_curso=curso.shortname).all()
@@ -194,7 +278,7 @@ def view_certificate(certificate):
         curso_total_horas = sum(int(contenido.horas or 0)
                                 for contenido in curso_contenido)
 
-        correlativo = f"{str(curso_activo.id_cfs).zfill(3)}{str(curso.tipo_formacion).zfill(2)}{str(certificate_data.libro).zfill(3)}{str(certificate_data.hoja).zfill(3)}{str(certificate_data.consecutivo).zfill(7)}{curso_activo.fecha_fin.strftime('%Y')}"
+        correlativo = f"{str(curso_activo.id_cfs).zfill(3)}{str(curso.tipo_formacion).zfill(2)}{str(preimpreso_data.libro).zfill(3)}{str(preimpreso_data.hoja).zfill(3)}{str(certificate_data.consecutivo).zfill(7)}{curso_activo.fecha_fin.strftime('%Y')}"
 
         school_year = f"{certificate_data.fecha_emision.year - 1} - {certificate_data.fecha_emision.year}"
 
