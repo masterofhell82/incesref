@@ -51,16 +51,16 @@ const Datatable = <T extends object = RowData>({
 
   return (
     <>
-      <div className="flex w-full flex-row items-center justify-between gap-2">
+      <div className="flex w-full flex-col gap-2 md:flex-row md:items-center md:justify-between">
         <div className="flex flex-row items-center gap-2">
           {title !== '' ? (
             <span className="text-md font-light text-gray-800 dark:text-white/90">{title}</span>
           ) : null}
         </div>
-        <div className="flex flex-row items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2 md:justify-end">
           <div>{startContent}</div>
           {isSearch && (
-            <div>
+            <div className="w-full md:w-auto">
               <Input
                 type="text"
                 placeholder="Buscar"
@@ -78,7 +78,7 @@ const Datatable = <T extends object = RowData>({
           <div>{endContent}</div>
         </div>
       </div>
-      <div className="mt-1">
+      <div className="mt-1 overflow-x-auto">
         <Table
           {...props}
           className="custom-table-font"
