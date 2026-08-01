@@ -1,5 +1,5 @@
 from app import db
-from datetime import datetime
+from datetime import datetime, timezone
 
 
 class CertificadoModel(db.Model):
@@ -13,7 +13,7 @@ class CertificadoModel(db.Model):
     titulo_asociado = db.Column(db.String(15))
     fecha_emision = db.Column(db.Date, nullable=False)
     preimpreso_id = db.Column(db.Integer, nullable=True)
-    created_at = db.Column(db.DateTime, default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+    created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S'))
 
     def __init__(self, id_persona, consecutivo, titulo_asociado, fecha_emision, preimpreso_id):
         self.id_persona = id_persona
@@ -21,7 +21,7 @@ class CertificadoModel(db.Model):
         self.titulo_asociado = titulo_asociado
         self.fecha_emision = fecha_emision
         self.preimpreso_id = preimpreso_id
-        self.created_at = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        self.created_at = datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')
 
     def serialize(self):
         return {
