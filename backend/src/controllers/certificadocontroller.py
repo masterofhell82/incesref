@@ -1,26 +1,29 @@
-from app import app, db
-from flask import jsonify, render_template, make_response, send_file, request
 import io
 import os
 import shutil
-from decorators import token_required
-import pdfkit
 from datetime import datetime, timezone
 
-# services
-from src.services.certificates_services import parse_massive_certificates_csv
+import pdfkit
+from app import app, db
+from decorators import token_required
+from flask import jsonify, make_response, render_template, request, send_file
 
 # Models
 from src.models.certificadomodel import CertificadoModel as Certificado
-from src.models.personasmodel import PersonasModel as Personas
+from src.models.cursoactivomodel import CursoActivoModel as CursoActivo
 from src.models.cursomodel import CursoModel as Curso
 from src.models.cursoscontenidomodel import CursoContenidoModel as CursoContenido
-from src.models.cursoactivomodel import CursoActivoModel as CursoActivo
+from src.models.personasmodel import PersonasModel as Personas
 from src.models.preimpresomodel import PreImpresoModel as PreImpreso
-from src.models.vigenciacertificadosmodel import VigenciaCertificadosModel as VigenciaCertificados
-from src.models.vw_curso_publicado import VwCursoPublicado as VwCursoPublicado
-from src.models.vw_curso_certificado import VwCursoCertificado as CursoCertificado
 from src.models.tipoformacionmodel import TipoFormacionModel as TipoFormacion
+from src.models.vigenciacertificadosmodel import (
+    VigenciaCertificadosModel as VigenciaCertificados,
+)
+from src.models.vw_curso_certificado import VwCursoCertificado as CursoCertificado
+from src.models.vw_curso_publicado import VwCursoPublicado
+
+# services
+from src.services.certificates_services import parse_massive_certificates_csv
 
 
 def _get_pdfkit_configuration():
@@ -282,7 +285,7 @@ def view_certificate(certificate):
 
         school_year = f"{certificate_data.fecha_emision.year - 1} - {certificate_data.fecha_emision.year}"
 
-        cert = 'Certificado'
+        cert = f"Certificado_{preimpreso_data.preimpreso}_{str(certificate_data.consecutivo).zfill(7)}"
         namefile = cert + '.pdf'
         namepath = "src/view/certificates/" + namefile
         os.makedirs("src/view/certificates/", exist_ok=True)
@@ -335,7 +338,7 @@ def view_certificate(certificate):
         os.remove(namepath)
         response = make_response(send_file(io.BytesIO(
             pdfData), mimetype='application/pdf', as_attachment=True, download_name=namefile))
-        response.headers['Content-Disposition'] = 'inline; filename=certificate.pdf'
+        response.headers['Content-Disposition'] = f'inline; filename={namefile}'
         response.headers['Content-Type'] = 'application/pdf'
 
         return response
