@@ -25,6 +25,8 @@ export interface CoursesCertificate {
   shortname: string;
   id_ambito: number | null;
   entidad_trabajo_id: number | null;
+  hoja: string;
+  libro: string;
 }
 
 export interface Certificate {

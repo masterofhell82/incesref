@@ -51,6 +51,7 @@ export const activeCourses = `${Config.API_URL}/curso_activo`;
 export const certificates = `${Config.API_URL}/certificates`;
 export const coursesCertificates = `${certificates}/courses`;
 export const certificateTemplates = `${certificates}/templates`;
+export const createCertificatesMasives = (preimpreso: string) => `${certificates}/masive/${preimpreso}`;
 export const certificatesByPreimpress = (preimpressId: number) => `${Config.API_URL}/certificates/${preimpressId}`;
 export const viewCertificate = (id: string) => `${Config.API_URL}/viewcertificate/${id}`;
 

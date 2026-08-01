@@ -54,16 +54,17 @@ const Courses = () => {
     },
     {
       title: 'Preimpreso',
-      width: '15%',
       dataIndex: 'preimpreso',
       key: 'preimpreso',
     },
+    { title: 'Código', dataIndex: 'shortname', key: 'shortname',width: '10%', },
     { title: 'Curso', dataIndex: 'curso', key: 'curso' },
     {
       title: 'Participantes',
       dataIndex: 'participantes',
       key: 'participantes',
       className: 'text-center',
+      width: '5%',
     },
     {
       title: 'Inicio',
