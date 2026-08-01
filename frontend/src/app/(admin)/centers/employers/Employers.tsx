@@ -3,13 +3,13 @@ import React, { useState, useEffect } from 'react';
 import { get } from '@/Services/HttpRequest';
 import { employerEntities, estados } from '@/Services/EndPoints';
 
-import { Button, Select, Input, notification } from 'antd';
+import { Button, Select, Input } from 'antd'; //notification
 
 import Datatable from '@/components/tables/DataTable/Datatable';
 import type { TableProps } from 'antd';
 
 import type { Option } from '@/interface/CoreInterfaces';
-import { NotificationType } from '@/interface/NotificationInterface';
+//import { NotificationType } from '@/interface/NotificationInterface';
 import { EmployersData } from '@/interface/EmployersInterfaces';
 import { GeoEstados } from '@/interface/GeographyInterface';
 
@@ -30,7 +30,7 @@ const uniqueOptions = (options: { id: number | undefined; value: string | undefi
   });
 
 const Employers = () => {
-  const [api, contextHolder] = notification.useNotification();
+  //const [api, contextHolder] = notification.useNotification();
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<EmployersData[]>([]);
   //const [dataUpdate, setDataUpdate] = useState<EmployersData | null>(null);
@@ -109,13 +109,13 @@ const Employers = () => {
     },
   ];
 
-  const openNotificationWithIcon = (type: NotificationType, title: string, description: string) => {
+  /*const openNotificationWithIcon = (type: NotificationType, title: string, description: string) => {
     api[type]({
       title,
       description,
       showProgress: true,
     });
-  };
+  };*/
 
   const loadData = async (initFilters = filters) => {
     setLoading(true);
@@ -212,7 +212,7 @@ const Employers = () => {
 
   return (
     <>
-      {contextHolder}
+      
       <Datatable<EmployersData>
         size="small"
         columns={columns}
