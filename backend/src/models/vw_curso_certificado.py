@@ -8,6 +8,8 @@ class VwCursoCertificado(db.Model):
 
     preimpreso_id = db.Column(db.Integer, primary_key=True)
     preimpreso = db.Column(db.String(100))
+    hoja = db.Column(db.String(5))
+    libro = db.Column(db.String(4))
     curso_activo_id = db.Column(db.Integer, primary_key=True)
     id_cfs = db.Column(db.Integer)
     estado_id = db.Column(db.Integer)
@@ -23,6 +25,8 @@ class VwCursoCertificado(db.Model):
         return {
             'preimpreso_id': self.preimpreso_id,
             'preimpreso': self.preimpreso,
+            'hoja': self.hoja,
+            'libro': self.libro,
             'curso_activo_id': self.curso_activo_id,
             'id_cfs': self.id_cfs,
             'estado_id': self.estado_id,
