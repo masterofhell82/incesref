@@ -141,7 +141,7 @@
 
     .table_register table {
         font-family: "Montserrat", sans-serif;
-        font-size: 12px;
+        font-size: 14px;
         border-collapse: collapse;
         width: 95%;
     }
@@ -234,33 +234,30 @@
             <div class="table_matriz">
                 <table border="1">
                     <tr>
-                        <td class="codigo">CÓDIGO</td>
                         <td class="colspan">TEMAS</td>
                         <td class="hours">HORAS</td>
                     </tr>
-                    {% for contenido in curso_contenido %}{% set
-                    partes_contenido = contenido.contenido.split('_', 1) %}
+                    {% for contenido in curso_contenido %}
                     <tr>
-                        <td>{{ partes_contenido[0] }}</td>
-                        <td>{{ partes_contenido[1] }}</td>
+                        <td>{{ contenido.contenido }}</td>
                         <td class="text-center">{{ contenido.horas }}</td>
                     </tr>
                     {% endfor %}
                     <tr>
-                        <td colspan="3" class="colspan">PERFIL PRODUCTIVO</td>
+                        <td colspan="2" class="colspan">PERFIL PRODUCTIVO</td>
                     </tr>
                     <tr>
-                        <td colspan="3" class="text-center">
+                        <td colspan="2" class="text-center">
                             {{ curso.nombre }}
                         </td>
                     </tr>
                     <tr>
-                        <td colspan="3" class="colspan">
+                        <td colspan="2" class="colspan">
                             DESCRIPCIÓN DEL PERFIL PRODUCTIVO
                         </td>
                     </tr>
                     <tr>
-                        <td colspan="3" class="text-justify">
+                        <td colspan="2" class="text-justify">
                             {{ curso.descripcion }}
                         </td>
                     </tr>
