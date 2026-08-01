@@ -292,10 +292,7 @@ def view_certificate(certificate):
         tipo_formacion = int(str(curso.tipo_formacion).strip())
         id_programa = int(str(curso.id_programa).strip())
 
-        if tipo_formacion == 16 and id_programa == 2:
-            template = f"/certificates/{tipo_formacion}_{id_programa}.html"
-        else:
-            template = f"/certificates/{tipo_formacion}.html"
+        template = f"/certificates/{tipo_formacion}_{id_programa}.html"
 
         html = render_template(template,
                                base_url=app.config['BASE_URL'],
