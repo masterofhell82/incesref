@@ -288,6 +288,8 @@ def view_certificate(certificate):
         curso_total_horas = sum(int(contenido.horas or 0)
                                 for contenido in curso_contenido)
 
+        num_curso_contenido = len(curso_contenido)
+
         correlativo = f"{str(curso_activo.id_cfs).zfill(3)}{str(curso.tipo_formacion).zfill(2)}{str(preimpreso_data.libro).zfill(3)}{str(preimpreso_data.hoja).zfill(3)}{str(certificate_data.consecutivo).zfill(7)}{curso_activo.fecha_fin.strftime('%Y')}"
 
         school_year = f"{certificate_data.fecha_emision.year - 1} - {certificate_data.fecha_emision.year}"
@@ -316,7 +318,8 @@ def view_certificate(certificate):
                                url=url,
                                total_horas=curso_total_horas,
                                correlativo=correlativo,
-                               school_year=school_year
+                               school_year=school_year,
+                               num_curso_contenido=num_curso_contenido
                                )
 
         # Configuración de pdfkit para orientación horizontal

@@ -65,7 +65,6 @@
 
     .table-content {
         margin-left: 1cm;
-        padding: 10px;
         position: relative;
         z-index: 1;
     }
@@ -84,9 +83,16 @@
 
     .table_matriz table {
         font-family: "Montserrat", sans-serif;
-        font-size: 18px;
         border-collapse: collapse;
         width: 100%;
+    }
+
+    .table_matriz table.table-small {
+        font-size: 14px;
+    }
+
+    .table_matriz table.table-large {
+        font-size: 18px;
     }
 
     .table_matriz table td {
@@ -194,7 +200,7 @@
             </div>
         </div>
     </div>
-    <div class="row sign" style="margin-top: -20px;">
+    <div class="row sign" style="margin-top: -20px">
         <div class="single-signature">
             <div class="align-self-center text-center">
                 <!-- src="data:image/png;base64,{{ signature_gte_inst }}" -->
@@ -232,7 +238,10 @@
     <div class="row table-content">
         <div class="col-8">
             <div class="table_matriz">
-                <table border="1">
+                <table
+                    border="1"
+                    class="{{ 'table-small' if num_curso_contenido > 10 else 'table-large' }}"
+                >
                     <tr>
                         <td class="codigo">CÓDIGO</td>
                         <td class="colspan">TEMAS</td>
@@ -269,7 +278,7 @@
         </div>
         <div class="col-4">
             <div class="table_register">
-                 <table class="table table-bordered table-sm">
+                <table class="table table-bordered table-sm">
                     <tr>
                         <td colspan="12" class="colspan">REGISTRO</td>
                     </tr>
@@ -291,7 +300,9 @@
                     <tr class="text-center">
                         <td colspan="4">{{ preimpreso.preimpreso}}</td>
                         <td colspan="4">{{ curso.shortname }}</td>
-                        <td colspan="4">{{ certificate.fecha_emision | format_date }}</td>
+                        <td colspan="4">
+                            {{ certificate.fecha_emision | format_date }}
+                        </td>
                     </tr>
                     <tr class="text-center">
                         <td colspan="4" class="colspan">DURACIÓN HORAS</td>
