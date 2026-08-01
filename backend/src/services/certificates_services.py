@@ -1,4 +1,5 @@
 import csv
+from datetime import date
 import io
 
 
@@ -19,7 +20,6 @@ EXPECTED_CERTIFICATES_CSV_HEADERS = [
 	'GENERO',
 	'CODIGO ASOCIADO',
 ]
-
 
 def _normalize_consecutivo(value):
 	consecutivo = (value or '').strip()
@@ -75,6 +75,27 @@ def _normalize_full_name(value):
 	return ' '.join(result)
 
 
+def _normalize_nacimiento(value):
+	nacimiento = (value or '').strip()
+	if not nacimiento:
+		raise ValueError('NACIMIENTO es requerida')
+
+	if '/' in nacimiento:
+		try:
+			day_str, month_str, year_str = nacimiento.split('/')
+			return date(int(year_str), int(month_str), int(day_str)).isoformat()
+		except ValueError:
+			pass
+
+	if '-' in nacimiento:
+		try:
+			return date.fromisoformat(nacimiento).isoformat()
+		except ValueError:
+			pass
+
+	raise ValueError('Formato de NACIMIENTO no valido. Use DD/MM/YYYY o YYYY-MM-DD')
+
+
 def parse_massive_certificates_csv(file_storage):
 	file_storage.stream.seek(0)
 	decoded_stream = io.TextIOWrapper(file_storage.stream, encoding='utf-8-sig', newline='')
@@ -102,6 +123,19 @@ def parse_massive_certificates_csv(file_storage):
 		if not any((value or '').strip() for value in row.values()):
 			continue
 
+		nacimiento_raw = (row.get('NACIMIENTO') or '').strip()
+		try:
+			nacimiento_iso = _normalize_nacimiento(nacimiento_raw)
+		except ValueError as exc:
+			return {
+				'ok': False,
+				'status': 400,
+				'error': str(exc),
+				'row': row_number,
+				'field': 'NACIMIENTO',
+				'value': nacimiento_raw,
+			}
+
 		parsed_rows.append({
 			'row': row_number,
 			'preimpreso': (row.get('PREIMPRESO') or '').strip(),
@@ -113,7 +147,7 @@ def parse_massive_certificates_csv(file_storage):
 			'apellidos': _normalize_full_name(row.get('APELLIDOS')),
 			'telefono': _normalize_telefono(row.get('TELEFONO')),
 			'correo': (row.get('CORREO') or '').strip(),
-			'nacimiento': (row.get('NACIMIENTO') or '').strip(),
+			'nacimiento': nacimiento_iso,
 			'genero': (row.get('GENERO') or '').strip(),
 			'codigo_asociado': (row.get('CODIGO ASOCIADO') or '').strip(),
 		})

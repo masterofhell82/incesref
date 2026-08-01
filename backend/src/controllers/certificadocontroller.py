@@ -76,6 +76,12 @@ def create_certificate_masive(preimpress: str):
                 error_payload['expected'] = csv_result.get('expected')
             if csv_result.get('received') is not None:
                 error_payload['received'] = csv_result.get('received')
+            if csv_result.get('row') is not None:
+                error_payload['row'] = csv_result.get('row')
+            if csv_result.get('field') is not None:
+                error_payload['field'] = csv_result.get('field')
+            if csv_result.get('value') is not None:
+                error_payload['value'] = csv_result.get('value')
             return jsonify(error_payload), int(csv_result.get('status', 400))
 
         parsed_rows = csv_result.get('rows', [])
