@@ -111,6 +111,8 @@ def register_curso_activo():
             codigo=codigo_generado,
             id_curso=curso.id,
             id_meta=dataPost.get('id_estado'),
+            hoja=dataPost.get('hoja'),
+            libro=dataPost.get('libro')
         )
 
         auditoria_preimpreso = Auditoria(
