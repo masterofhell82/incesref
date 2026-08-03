@@ -31,6 +31,7 @@ export interface CoursesCertificate {
 
 export interface Certificate {
   id: number;
+  certificateWebId: string;
   nacionalidad: string;
   cedula: string;
   nombres: string;

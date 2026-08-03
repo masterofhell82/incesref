@@ -68,7 +68,7 @@ const ListCertificates = ({ data, action }: { data: CoursesCertificate; action: 
         <div className="flex cursor-pointer items-center justify-center gap-2">
           <TbCertificate
             className="text-2xl"
-            onClick={() => handleViewCertificate(record.certificateId)}
+            onClick={() => handleViewCertificate(record.certificateWebId)}
           />
         </div>
       ),
@@ -87,9 +87,9 @@ const ListCertificates = ({ data, action }: { data: CoursesCertificate; action: 
     }
   };
 
-  const handleViewCertificate = (certificateId: string) => {
+  const handleViewCertificate = (certificateWebId: string) => {
     try {
-      const url = viewCertificate(certificateId);
+      const url = viewCertificate(certificateWebId);
       window.open(url, '_blank', 'noopener,noreferrer');
     } catch (error) {
       console.error('Error opening certificate:', error);

@@ -232,6 +232,7 @@ def get_certificates_by_preimpress(preimpress_id):
 
             data.append({
                 "certificateId": cert.id,
+                "certificateWebId": cert.web_id,
                 "consecutivo": str(cert.consecutivo).zfill(7),
                 "tituloAsociado": cert.titulo_asociado if cert.titulo_asociado else None,
                 "nacionalidad": persona.nac if persona else None,
@@ -262,7 +263,7 @@ def get_certificado(id_person):
             course = VwCursoPublicado.query.filter_by(
                 id_cur_activo=preimpreso.id_curso_activo).first()
             data.append({
-                "idCertificate": cert.id,
+                "idCertificate": cert.web_id,
                 "course": course.curso if course else None
             })
 
@@ -274,7 +275,14 @@ def get_certificado(id_person):
 @app.route('/api/viewcertificate/<certificate>', methods=['GET'])
 def view_certificate(certificate):
     try:
-        certificate_data = Certificado.query.filter_by(id=certificate).first()
+        if str(certificate).isdigit():
+            certificate_data = Certificado.query.filter_by(id=int(certificate)).first()
+        else:
+            certificate_data = Certificado.query.filter_by(web_id=certificate).first()
+
+        if not certificate_data:
+            return jsonify({'message': 'Certificate not found'}), 404
+
         preimpreso_data = PreImpreso.query.filter_by(
             id=certificate_data.preimpreso_id).first()
         persona = Personas.query.filter_by(

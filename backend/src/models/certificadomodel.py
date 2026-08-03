@@ -1,11 +1,14 @@
-from app import db
+import uuid
 from datetime import datetime, timezone
+from typing import ClassVar
+
+from app import db
 
 
 class CertificadoModel(db.Model):
 
     __tablename__ = 'certificado'
-    __table_args__ = {'schema': 'master'}
+    __table_args__: ClassVar[dict[str, str]] = {'schema': 'master'}
 
     id = db.Column(db.Integer, primary_key=True)
     id_persona = db.Column(db.String(20), nullable=False)
@@ -13,6 +16,7 @@ class CertificadoModel(db.Model):
     titulo_asociado = db.Column(db.String(15))
     fecha_emision = db.Column(db.Date, nullable=False)
     preimpreso_id = db.Column(db.Integer, nullable=True)
+    web_id = db.Column(db.String(50), nullable=False, default=lambda: str(uuid.uuid4()))
     created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S'))
 
     def __init__(self, id_persona, consecutivo, titulo_asociado, fecha_emision, preimpreso_id):
@@ -28,6 +32,7 @@ class CertificadoModel(db.Model):
             'id': self.id,
             'id_persona': self.id_persona,
             'preimpreso_id': self.preimpreso_id,
+            'web_id': self.web_id,
             'consecutivo': self.consecutivo,
             'titulo_asociado': self.titulo_asociado,
             'created_at': self.created_at,
