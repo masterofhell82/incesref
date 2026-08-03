@@ -31,7 +31,7 @@ const Landingpage = () => {
 
   return (
     <>
-      <div className="w-full p-20">
+      <div className="w-full px-20">
         <div className="my-3 flex w-full flex-col justify-items-start gap-2 md:flex-row md:gap-6">
           <Image
             src="/images/logo/MPPEducacion.png"
