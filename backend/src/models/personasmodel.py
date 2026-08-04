@@ -1,5 +1,6 @@
+from datetime import datetime, timezone
+
 from app import db
-from datetime import datetime
 
 
 class PersonasModel(db.Model):
@@ -15,9 +16,9 @@ class PersonasModel(db.Model):
     sexo = db.Column(db.String(1))
     fecha_nace = db.Column(db.Date)
     created_at = db.Column(
-        db.DateTime, default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
-    updated_at = db.Column(db.DateTime, default=datetime.now().strftime(
-        '%Y-%m-%d %H:%M:%S'), onupdate=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+        db.DateTime, default=datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S'))
+    updated_at = db.Column(db.DateTime, default=datetime.now(timezone.utc).strftime(
+        '%Y-%m-%d %H:%M:%S'), onupdate=datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S'))
 
     def __init__(self, cedula, nac, nombres, apellidos, telefono=None, correo=None, sexo=None, fecha_nace=None):
         self.cedula = cedula
@@ -28,8 +29,8 @@ class PersonasModel(db.Model):
         self.correo = correo
         self.sexo = sexo
         self.fecha_nace = fecha_nace
-        self.created_at = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        self.updated_at = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        self.created_at = datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')
+        self.updated_at = datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')
 
     def serialize(self):
         return {
@@ -40,9 +41,9 @@ class PersonasModel(db.Model):
             'telefono': self.telefono,
             'correo': self.correo,
             'sexo': self.sexo,
-            'fecha_nace': self.fecha_nace,
-            'created_at': self.created_at,
-            'updated_at': self.updated_at
+            'fechaNace': self.fecha_nace,
+            'createdAt': self.created_at,
+            'updatedAt': self.updated_at
         }
 
     def save(self):
@@ -53,5 +54,5 @@ class PersonasModel(db.Model):
     def update(self, data):
         for key, value in data.items():
             setattr(self, key, value)
-        self.updated_at = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        self.updated_at = datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')
         db.session.commit()
