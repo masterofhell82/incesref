@@ -260,11 +260,16 @@ def get_certificado(id_person):
 
         for cert in certificates:
             preimpreso = PreImpreso.query.filter_by(id=cert.preimpreso_id).first()
+            curso = Curso.query.filter_by(id=preimpreso.id_curso).first() if preimpreso else None
             course = VwCursoPublicado.query.filter_by(
                 id_cur_activo=preimpreso.id_curso_activo).first()
             data.append({
-                "idCertificate": cert.web_id,
-                "course": course.curso if course else None
+                "certificateWebId": cert.web_id,
+                "course": curso.nombre if curso else None,
+                "estado": course.estado if course else None,
+                "id": cert.id,
+                "preimpreso": preimpreso.preimpreso if preimpreso else None,
+                "shortname": curso.shortname if curso else None,
             })
 
         return jsonify({"data": data}), 200

@@ -40,8 +40,6 @@ export interface Certificate {
   consecutivo: string;
   certificateId: string;
   pre_comentario: string;
-  svg_cara_a: string;
-  svg_cara_b: string;
   is_vigente: boolean;
 }
 
