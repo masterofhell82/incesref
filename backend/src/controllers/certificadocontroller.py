@@ -8,7 +8,7 @@ from app import app, db
 from decorators import token_required
 from flask import jsonify, make_response, render_template, request, send_file
 
-# Models
+# models
 from src.models.certificadomodel import CertificadoModel as Certificado
 from src.models.cursoactivomodel import CursoActivoModel as CursoActivo
 from src.models.cursomodel import CursoModel as Curso
@@ -272,6 +272,54 @@ def get_certificado(id_person):
         return jsonify({'message': str(e)}), 500
 
 
+@app.route('/api/certificate/verify/<certificate>', methods=['GET'])
+def verify_certificate(certificate):
+    try:
+        if str(certificate).isdigit():
+            certificate_data = Certificado.query.filter_by(id=int(certificate)).first()
+        else:
+            certificate_data = Certificado.query.filter_by(web_id=certificate).first()
+
+        if not certificate_data:
+            return jsonify({'message': 'Certificate not found'}), 404
+
+        preimpreso_data = PreImpreso.query.filter_by(
+            id=certificate_data.preimpreso_id).first()
+        persona = Personas.query.filter_by(
+            cedula=certificate_data.id_persona).first()
+        curso_activo = CursoActivo.query.filter_by(
+            id=preimpreso_data.id_curso_activo).first()
+        curso = Curso.query.filter_by(id=curso_activo.id_curso).first()
+        curso_contenidos = CursoContenido.query.filter_by(shortname_curso=curso.shortname).all()
+
+        tipo_formacion = TipoFormacion.query.filter_by(id=curso.tipo_formacion).first()
+
+        total_horas = sum(int(contenido.horas or 0) for contenido in curso_contenidos)
+
+        curso_publicado = VwCursoPublicado.query.filter_by(id_cur_activo=curso_activo.id).first()
+
+        print(f"curso_publicado: {curso_publicado}")
+
+        return jsonify({
+            'nacionalidad' : persona.nac if persona else None,
+            'cedula' : persona.cedula if persona else None,
+            'fullname' : f"{persona.nombres} {persona.apellidos}".upper() if persona else None,
+            'formacion' : curso.nombre.upper() if curso else None,
+            'shortname' : curso.shortname.upper() if curso else None,
+            'preimpreso' : preimpreso_data.preimpreso if preimpreso_data else None,
+            'tipo_formacion' : tipo_formacion.nombre.upper() if tipo_formacion else None,
+            'fecha_ini' : curso_activo.fecha_ini.strftime('%d/%m/%Y') if curso_activo else None,
+            'fecha_fin' : curso_activo.fecha_fin.strftime('%d/%m/%Y') if curso_activo else None,
+            'fecha_emision' : certificate_data.fecha_emision.strftime('%d/%m/%Y') if certificate_data else None,
+            'año' : f"{curso_activo.fecha_ini.year}-{curso_activo.fecha_fin.year}" if curso_activo else None,
+            'titulo_asociado' : certificate_data.titulo_asociado if certificate_data and certificate_data.titulo_asociado else '',
+            'duracion' : total_horas,
+            'contents' : [{'contenido': c.contenido, 'horas': c.horas} for c in curso_contenidos] if curso_contenidos else [],
+            'state' : curso_publicado.estado if curso_publicado else None
+        }), 200
+    except Exception as e:
+        return jsonify({'message': str(e)}), 500
+
 @app.route('/api/viewcertificate/<certificate>', methods=['GET'])
 def view_certificate(certificate):
     try:
@@ -307,7 +355,7 @@ def view_certificate(certificate):
         namepath = "src/view/certificates/" + namefile
         os.makedirs("src/view/certificates/", exist_ok=True)
 
-        url = f"https://app.inces.net.ve/verifycertificate?={certificate}"
+        url = f"https://app.inces.net.ve/validate?certificate={certificate}"
 
         tipo_formacion = int(str(curso.tipo_formacion).strip())
         id_programa = int(str(curso.id_programa).strip())
