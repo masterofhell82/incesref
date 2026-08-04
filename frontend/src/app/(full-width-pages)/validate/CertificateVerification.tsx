@@ -175,10 +175,10 @@ const CertificateVerification = () => {
   return (
     <div className="mx-auto w-full max-w-6xl">
       <Card className="overflow-hidden border-0 !bg-transparent shadow-xl [&_.ant-card-body]:!bg-transparent [&_.ant-card-head]:!bg-transparent">
-        <div className="bg-gradient-to-r from-cyan-700 via-cyan-600 to-emerald-600 px-6 py-4 text-white md:px-10">
+        <div className="bg-gradient-to-r from-cyan-700 via-cyan-600 to-emerald-600 px-4 py-4 text-white sm:px-6 md:px-10">
           <div className="flex items-center justify-between gap-4">
             <div>
-              <h1 className="mt-1 text-2xl font-semibold md:text-3xl">
+              <h1 className="mt-1 text-xl font-semibold sm:text-2xl md:text-3xl">
                 Constancia de Verificación INCES
               </h1>
               <p className="mt-2 text-sm text-cyan-100">
@@ -188,7 +188,7 @@ const CertificateVerification = () => {
           </div>
         </div>
 
-        <div className="space-y-6 px-6 py-7 md:px-10">
+        <div className="space-y-6 px-4 py-6 sm:px-6 md:px-10">
           {!certificate ? (
             <Empty description="No hay información del certificado" />
           ) : (
@@ -234,7 +234,7 @@ const CertificateVerification = () => {
                     {formattedContents.map((item, index) => (
                       <li
                         key={`${item.label}-${index}`}
-                        className="flex items-start justify-between gap-4 px-4 py-3"
+                        className="flex flex-col items-start gap-1 px-4 py-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4"
                       >
                         <span className="text-slate-700">
                           {index + 1}. {item.label || 'Contenido no disponible'}

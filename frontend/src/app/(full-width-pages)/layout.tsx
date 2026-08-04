@@ -5,7 +5,7 @@ export default function FullWidthPageLayout({ children }: { children: React.Reac
   return (
     <div className="flex min-h-screen flex-col">
       <div className="inces-bg"></div>
-      <div className="w-full flex-1 px-20">
+      <div className="w-full flex-1 px-4 sm:px-8 md:px-20">
         <div className="my-3 flex w-full flex-col justify-items-start gap-2 md:flex-row md:gap-6">
           <Image
             src="/images/logo/MPPEducacion.png"
