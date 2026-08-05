@@ -56,10 +56,15 @@ export async function middleware(req: NextRequest) {
 export const config = {
   matcher: [
     '/signin',
-    '/admin:path*',
-    '/admin/certificados:path*',
-    '/admin/certificados/formatos:path*',
-    '/admin/certificados/cargamasiva:path*',
     '/centers/cores:path*',
+    '/centers/employers:path*',
+    '/centers/scopes:path*',
+    '/formaciones/programs:path*',
+    '/formaciones/types-training:path*',
+    '/formaciones/maestras:path*',
+    '/students:path*',
+    '/certificates/courses:path*',
+    '/config/users:path*',
+    '/config/roles:path*',
   ],
 };
