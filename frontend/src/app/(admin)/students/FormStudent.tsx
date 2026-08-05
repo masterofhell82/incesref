@@ -126,6 +126,7 @@ const FormStudent = ({
                   value={formik.values.cedula}
                   placeholder="N° de Cédula"
                   onChange={(e) => formik.setFieldValue('cedula', e.target.value)}
+                  disabled={isEdit}
                 />
               </Space.Compact>
               {formik.touched.cedula && formik.errors.cedula && (
@@ -203,9 +204,6 @@ const FormStudent = ({
                 <div className="mt-1 text-xs text-red-500">{formik.errors.apellidos}</div>
               )}
             </div>
-
-            
-           
           </div>
 
           <div className="mt-4 flex flex-row gap-4">

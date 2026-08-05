@@ -23,9 +23,9 @@ const Students = () => {
 
   const columns: TableProps<Certificate>['columns'] = [
     { title: '#', align: 'center', width: '5%', dataIndex: 'id', key: 'id' },
-    { title: 'Codigo', width: '10%', dataIndex: 'shortname', key: 'shortname' },
+    { title: 'Codigo', width: '15%', dataIndex: 'shortname', key: 'shortname' },
     { title: 'Formacion', dataIndex: 'course', key: 'course' },
-    { title: 'Preimpreso', width: '20%', dataIndex: 'preimpreso', key: 'preimpreso' },
+    { title: 'Preimpreso', width: '15%', dataIndex: 'preimpreso', key: 'preimpreso' },
     { title: 'Estado', width: '10%', dataIndex: 'estado', key: 'estado' },
     {
       title: 'Aciones',
