@@ -372,17 +372,21 @@ def view_certificate(certificate):
             .with_entities(VwCursoPublicado.estado).scalar()
         )
 
+        # Determine the template based on tipo_formacion and shortname
+        tipo_formacion = int(str(curso.tipo_formacion).strip())
+        id_programa = int(str(curso.id_programa).strip())
+        if tipo_formacion == 15 and 'PP' not in (curso.shortname or '').upper():
+            template = f"/certificates/{tipo_formacion}_{id_programa}C.html"
+        else:
+            template = f"/certificates/{tipo_formacion}_{id_programa}.html"
+
+        # Configuration of the Certificate
         cert = f"Certificado_{preimpreso_data.preimpreso}_{str(certificate_data.consecutivo).zfill(7)}"
         namefile = cert + '.pdf'
         namepath = "src/view/certificates/" + namefile
         os.makedirs("src/view/certificates/", exist_ok=True)
 
         url = f"https://app.inces.net.ve/validate?certificate={certificate}"
-
-        tipo_formacion = int(str(curso.tipo_formacion).strip())
-        id_programa = int(str(curso.id_programa).strip())
-
-        template = f"/certificates/{tipo_formacion}_{id_programa}.html"
 
         html = render_template(template,
                                base_url=app.config['BASE_URL'],
