@@ -191,7 +191,7 @@
     </div>
     <div class="row text-center">
         <div class="date_emition">
-            <span class="fwbold">Caracas</span>, {{ certificate.fecha_emision
+            <span class="fwbold">{{ estado }}</span>, {{ certificate.fecha_emision
             |format_date_long_es }}
         </div>
     </div>
@@ -250,7 +250,9 @@
                     <tr class="text-center">
                         <td colspan="4">{{ preimpreso.preimpreso}}</td>
                         <td colspan="4">{{ curso.shortname }}</td>
-                        <td colspan="4">{{ certificate.fecha_emision | format_date }}</td>
+                        <td colspan="4">
+                            {{ certificate.fecha_emision | format_date }}
+                        </td>
                     </tr>
                     <tr class="text-center">
                         <td colspan="4" class="colspan">DURACIÓN HORAS</td>
@@ -259,8 +261,12 @@
                     </tr>
                     <tr class="text-center">
                         <td colspan="4">{{ total_horas }}</td>
-                        <td colspan="4">{{ curso_activo.fecha_ini | format_date }}</td>
-                        <td colspan="4">{{ curso_activo.fecha_fin | format_date }}</td>
+                        <td colspan="4">
+                            {{ curso_activo.fecha_ini | format_date }}
+                        </td>
+                        <td colspan="4">
+                            {{ curso_activo.fecha_fin | format_date }}
+                        </td>
                     </tr>
                     <tr>
                         <td colspan="12" class="colspan">CORRELATIVO</td>

@@ -113,7 +113,8 @@ def create_certificate_masive(preimpress: str):
                     id_persona=persona.cedula,
                     consecutivo=row['consecutivo'],
                     titulo_asociado=row['codigo_asociado'],
-                    fecha_emision=datetime.now(timezone.utc).strftime('%Y-%m-%d'),
+                    fecha_emision=datetime.now(
+                        timezone.utc).strftime('%Y-%m-%d'),
                     preimpreso_id=data_preimpress.id,
                 )
                 db.session.add(certificado)
@@ -259,8 +260,10 @@ def get_certificado(id_person):
             return jsonify({'message': 'Certificate not found'}), 404
 
         for cert in certificates:
-            preimpreso = PreImpreso.query.filter_by(id=cert.preimpreso_id).first()
-            curso = Curso.query.filter_by(id=preimpreso.id_curso).first() if preimpreso else None
+            preimpreso = PreImpreso.query.filter_by(
+                id=cert.preimpreso_id).first()
+            curso = Curso.query.filter_by(
+                id=preimpreso.id_curso).first() if preimpreso else None
             course = VwCursoPublicado.query.filter_by(
                 id_cur_activo=preimpreso.id_curso_activo).first()
             data.append({
@@ -281,9 +284,11 @@ def get_certificado(id_person):
 def verify_certificate(certificate):
     try:
         if str(certificate).isdigit():
-            certificate_data = Certificado.query.filter_by(id=int(certificate)).first()
+            certificate_data = Certificado.query.filter_by(
+                id=int(certificate)).first()
         else:
-            certificate_data = Certificado.query.filter_by(web_id=certificate).first()
+            certificate_data = Certificado.query.filter_by(
+                web_id=certificate).first()
 
         if not certificate_data:
             return jsonify({'message': 'Certificate not found'}), 404
@@ -295,43 +300,50 @@ def verify_certificate(certificate):
         curso_activo = CursoActivo.query.filter_by(
             id=preimpreso_data.id_curso_activo).first()
         curso = Curso.query.filter_by(id=curso_activo.id_curso).first()
-        curso_contenidos = CursoContenido.query.filter_by(shortname_curso=curso.shortname).all()
+        curso_contenidos = CursoContenido.query.filter_by(
+            shortname_curso=curso.shortname).all()
 
-        tipo_formacion = TipoFormacion.query.filter_by(id=curso.tipo_formacion).first()
+        tipo_formacion = TipoFormacion.query.filter_by(
+            id=curso.tipo_formacion).first()
 
-        total_horas = sum(int(contenido.horas or 0) for contenido in curso_contenidos)
+        total_horas = sum(int(contenido.horas or 0)
+                          for contenido in curso_contenidos)
 
-        curso_publicado = VwCursoPublicado.query.filter_by(id_cur_activo=curso_activo.id).first()
+        curso_publicado = VwCursoPublicado.query.filter_by(
+            id_cur_activo=curso_activo.id).first()
 
         print(f"curso_publicado: {curso_publicado}")
 
         return jsonify({
-            'nacionalidad' : persona.nac if persona else None,
-            'cedula' : persona.cedula if persona else None,
-            'fullname' : f"{persona.nombres} {persona.apellidos}".upper() if persona else None,
-            'formacion' : curso.nombre.upper() if curso else None,
-            'shortname' : curso.shortname.upper() if curso else None,
-            'preimpreso' : preimpreso_data.preimpreso if preimpreso_data else None,
-            'tipo_formacion' : tipo_formacion.nombre.upper() if tipo_formacion else None,
-            'fecha_ini' : curso_activo.fecha_ini.strftime('%d/%m/%Y') if curso_activo else None,
-            'fecha_fin' : curso_activo.fecha_fin.strftime('%d/%m/%Y') if curso_activo else None,
-            'fecha_emision' : certificate_data.fecha_emision.strftime('%d/%m/%Y') if certificate_data else None,
-            'año' : f"{curso_activo.fecha_ini.year}-{curso_activo.fecha_fin.year}" if curso_activo else None,
-            'titulo_asociado' : certificate_data.titulo_asociado if certificate_data and certificate_data.titulo_asociado else '',
-            'duracion' : total_horas,
-            'contents' : [{'contenido': c.contenido, 'horas': c.horas} for c in curso_contenidos] if curso_contenidos else [],
-            'state' : curso_publicado.estado if curso_publicado else None
+            'nacionalidad': persona.nac if persona else None,
+            'cedula': persona.cedula if persona else None,
+            'fullname': f"{persona.nombres} {persona.apellidos}".upper() if persona else None,
+            'formacion': curso.nombre.upper() if curso else None,
+            'shortname': curso.shortname.upper() if curso else None,
+            'preimpreso': preimpreso_data.preimpreso if preimpreso_data else None,
+            'tipo_formacion': tipo_formacion.nombre.upper() if tipo_formacion else None,
+            'fecha_ini': curso_activo.fecha_ini.strftime('%d/%m/%Y') if curso_activo else None,
+            'fecha_fin': curso_activo.fecha_fin.strftime('%d/%m/%Y') if curso_activo else None,
+            'fecha_emision': certificate_data.fecha_emision.strftime('%d/%m/%Y') if certificate_data else None,
+            'año': f"{curso_activo.fecha_ini.year}-{curso_activo.fecha_fin.year}" if curso_activo else None,
+            'titulo_asociado': certificate_data.titulo_asociado if certificate_data and certificate_data.titulo_asociado else '',
+            'duracion': total_horas,
+            'contents': [{'contenido': c.contenido, 'horas': c.horas} for c in curso_contenidos] if curso_contenidos else [],
+            'state': curso_publicado.estado if curso_publicado else None
         }), 200
     except Exception as e:
         return jsonify({'message': str(e)}), 500
+
 
 @app.route('/api/viewcertificate/<certificate>', methods=['GET'])
 def view_certificate(certificate):
     try:
         if str(certificate).isdigit():
-            certificate_data = Certificado.query.filter_by(id=int(certificate)).first()
+            certificate_data = Certificado.query.filter_by(
+                id=int(certificate)).first()
         else:
-            certificate_data = Certificado.query.filter_by(web_id=certificate).first()
+            certificate_data = Certificado.query.filter_by(
+                web_id=certificate).first()
 
         if not certificate_data:
             return jsonify({'message': 'Certificate not found'}), 404
@@ -354,6 +366,11 @@ def view_certificate(certificate):
         correlativo = f"{str(curso_activo.id_cfs).zfill(3)}{str(curso.tipo_formacion).zfill(2)}{str(preimpreso_data.libro).zfill(3)}{str(preimpreso_data.hoja).zfill(3)}{str(certificate_data.consecutivo).zfill(7)}{curso_activo.fecha_fin.strftime('%Y')}"
 
         school_year = f"{certificate_data.fecha_emision.year - 1} - {certificate_data.fecha_emision.year}"
+
+        estado = (
+            VwCursoPublicado.query.filter_by(id_cur_activo=curso_activo.id)
+            .with_entities(VwCursoPublicado.estado).scalar()
+        )
 
         cert = f"Certificado_{preimpreso_data.preimpreso}_{str(certificate_data.consecutivo).zfill(7)}"
         namefile = cert + '.pdf'
@@ -380,7 +397,8 @@ def view_certificate(certificate):
                                total_horas=curso_total_horas,
                                correlativo=correlativo,
                                school_year=school_year,
-                               num_curso_contenido=num_curso_contenido
+                               num_curso_contenido=num_curso_contenido,
+                               estado=estado
                                )
 
         # Configuración de pdfkit para orientación horizontal
