@@ -52,11 +52,11 @@ const SignInForm = () => {
             rol: response.rol,
           };
 
-          const cookieString = `session=${response.token}; path=/; max-age=${180 * 60}`;
+          const session = `session=${response.token}; path=/; max-age=${180 * 60}`;
           const auth = `authorization=${response.token.split(' ')[1]};`;
 
           // Establece la cookie en el lado del cliente
-          document.cookie = cookieString;
+          document.cookie = session;
           document.cookie = auth;
 
           if (typeof window !== 'undefined') {

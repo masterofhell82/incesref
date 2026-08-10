@@ -1,5 +1,5 @@
 import { setLogin } from '@/context/features/authSlice';
-import { getLogin } from './EndPoints';
+import { getLogin, setLogout } from './EndPoints';
 import { post } from './HttpRequest';
 import { useDispatch } from 'react-redux';
 
@@ -47,7 +47,6 @@ export const isAuthenticated = (value = '', isLocal = true) => {
 
 export const verifyTokenUser = async (token: string) => {
   try {
-
     const url = `${process.env.NEXT_PUBLIC_URL_API_BACKEND}/api/verifytoken`;
     const response = await fetch(url, {
       method: 'POST',
@@ -72,9 +71,9 @@ export const verifyTokenUser = async (token: string) => {
   }
 };
 
-export const logout = () => {
-    console.log("holas");
-    
+export const logout = async () => {
+  await post(setLogout, JSON.stringify({ token: localStorage.getItem('authorization') }));
+
   if (typeof window !== 'undefined') {
     sessionStorage.clear();
     localStorage.clear();

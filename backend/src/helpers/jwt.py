@@ -1,18 +1,26 @@
-from app import app
-import jwt
+import uuid
 from datetime import datetime, timedelta, timezone
+
+import jwt
+from app import app
+
+TZ = timezone(timedelta(hours=-4))
 
 def create_jwt(user):
     clave_secreta = app.config['SECRET_KEY']
+    jti = str(uuid.uuid4())
+    exp = datetime.now(TZ) + timedelta(seconds=7200)
+
     datos = {
         'id': user.id,
         'username': user.username,
         'rol': user.id_rol,
-        "exp": datetime.now(timezone.utc) + timedelta(seconds=7200)
+        "jti": jti,
+        "exp": int(exp.timestamp()),
     }
 
     token = jwt.encode(datos, clave_secreta, algorithm="HS256")
-    return token
+    return token, jti, exp
 
 def decode_jwt(token):
     clave_secreta = app.config['SECRET_KEY']

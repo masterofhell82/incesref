@@ -1,26 +1,31 @@
 import { NextResponse } from 'next/server';
 import { NextRequest } from 'next/server';
 
+const clearAuthCookies = (res: NextResponse) => {
+  res.cookies.delete('session');
+  res.cookies.delete('authorization');
+};
+
 const verifyTokenInMiddleware = async (token: string) => {
   if (!token) return false;
 
   try {
     const url = `${process.env.NEXT_PUBLIC_DNS_DOCKER_BACKEND}/api/verifytoken`;
+    const bearer = token.startsWith('JWT ') ? token : `JWT ${token}`;
 
     const response = await fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `${token}`,
+        Authorization: bearer,
       },
-      body: JSON.stringify({ token }),
+      body: JSON.stringify({ token: bearer }),
       cache: 'no-store',
     });
 
     return response.ok;
-  } catch (error) {
-    console.log(error);
-    //console.error('Error in middleware token verification:', error);
+    } catch (error) {
+        console.log(error);
     return false;
   }
 };
@@ -43,7 +48,9 @@ export async function middleware(req: NextRequest) {
 
     // Para las demás rutas protegidas
     if (!auth || !isValid) {
-      return NextResponse.redirect(new URL('/signin', req.url));
+      const redirectRes = NextResponse.redirect(new URL('/signin', req.url));
+      clearAuthCookies(redirectRes);
+      return redirectRes;
     }
     return res;
   } catch (error) {

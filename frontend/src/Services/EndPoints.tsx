@@ -3,7 +3,7 @@ import Config from "./Config";
 /* Auth, Access and Users to admin app. */
 export const getLogin = `${Config.API_URL}/login`;
 
-export const setLogout = `${Config.API_URL}/logout/`;
+export const setLogout = `${Config.API_URL}/logout`;
 
 export const verifytoken = `${Config.API_URL}/verifytoken`;
 

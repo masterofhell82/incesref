@@ -1,8 +1,9 @@
-from app import app
-from flask import jsonify, request, g
-from functools import wraps
-import jwt
 import platform
+from functools import wraps
+
+import jwt
+from app import app
+from flask import g, jsonify, request
 
 
 def token_required(f):
@@ -15,16 +16,16 @@ def token_required(f):
             print(token)  # Agregar esta línea para depuración
 
             if not token:
-                return jsonify({'message': 'Token is missing'}), 403
+                return jsonify({'message': 'Token is missing'}), 401
 
             parts = token.split(' ')
 
             if parts[0] != 'JWT' or len(parts) != 2:
-                return jsonify({'message': 'Token format is invalid'}), 403
+                return jsonify({'message': 'Token format is invalid'}), 401
 
             token = parts[1]
             if not token:
-                return jsonify({'message': 'Token is empty'}), 403
+                return jsonify({'message': 'Token is empty'}), 401
 
             result = verify_token(token)
 
@@ -40,7 +41,7 @@ def token_required(f):
             return f(*args, **kwargs)
 
         except Exception as e:
-            return jsonify({'error': f'Token is invalid: {str(e)}'}), 403
+            return jsonify({'error': f"Token is invalid: {str(e)}"}), 401
 
     return decorated
 
