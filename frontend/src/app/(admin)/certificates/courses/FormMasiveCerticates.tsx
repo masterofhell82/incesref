@@ -89,6 +89,11 @@ const FormMasiveCerticates = ({
     return false;
   };
 
+  const isOnlyText = (value: string): boolean => /^[A-Za-zÁÉÍÓÚáéíóúÜüÑñ\s]+$/.test(value.trim());
+
+  const isValidDocumentId = (value: string): boolean =>
+    /^(?=.{6,20}$)[A-Za-z0-9]+$/.test(value.trim());
+
   const getRowValidationError = (row: string[], rowNumber: number): string | null => {
     const [
       rowPreimpreso,
@@ -121,16 +126,16 @@ const FormMasiveCerticates = ({
       return `La fila ${rowNumber} tiene NACIONALIDAD inválida (debe ser una sola letra).`;
     }
 
-    if (!cedula || /[\.,]/.test(cedula)) {
-      return `La fila ${rowNumber} tiene CEDULA inválida (sin puntos ni comas).`;
+    if (!cedula || !isValidDocumentId(cedula)) {
+      return `La fila ${rowNumber} tiene CEDULA inválida. Debe ser un documento sin espacios, comas, puntos, guiones ni nombres.`;
     }
 
-    if (!nombres) {
-      return `La fila ${rowNumber} tiene NOMBRES vacío.`;
+    if (!nombres || !isOnlyText(nombres)) {
+      return `La fila ${rowNumber} tiene NOMBRES inválido. Solo se permiten letras y espacios, sin números ni comas.`;
     }
 
-    if (!apellidos) {
-      return `La fila ${rowNumber} tiene APELLIDOS vacío.`;
+    if (!apellidos || !isOnlyText(apellidos)) {
+      return `La fila ${rowNumber} tiene APELLIDOS inválido. Solo se permiten letras y espacios, sin números ni comas.`;
     }
 
     if (!telefono) {
@@ -221,9 +226,6 @@ const FormMasiveCerticates = ({
         message.error(`La fila ${i + 1} tiene un número incorrecto de columnas.`);
         return false;
       }
-
-      console.log(row);
-      
 
       const rowError = getRowValidationError(row, i + 1);
       if (rowError) {
