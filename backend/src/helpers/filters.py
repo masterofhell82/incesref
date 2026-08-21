@@ -19,8 +19,17 @@ MONTHS_ES = {
 
 # filters
 def format_cedula(value):
-    value = str(value)
-    return '{:,}'.format(int(value)).replace(',', '.')
+    if value is None:
+        return ''
+
+    value = str(value).strip()
+    if not value:
+        return ''
+
+    if value.isdigit():
+        return '{:,}'.format(int(value)).replace(',', '.')
+
+    return value
 
 
 def format_date(value):
