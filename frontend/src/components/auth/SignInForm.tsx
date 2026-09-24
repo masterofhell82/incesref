@@ -131,14 +131,16 @@ const SignInForm = () => {
           zIndex: -1,
         }}
       />
-      <div className="3xl:w-1/4 3xl:p-14 mx-auto mt-40 flex w-full flex-col rounded-2xl bg-[#ffffffee] p-8 shadow-xl sm:w-[450px] md:w-1/2 md:p-10 xl:w-2/6 2xl:w-[450px] 2xl:p-12">
-        <div className="flex flex-row gap-3 pb-4">
-          <div>
+      <div className="3xl:w-1/4 3xl:p-14 mx-auto md:mt-30 flex w-full flex-col rounded-2xl bg-[#ffffffee] p-8 shadow-xl sm:w-[450px] md:w-1/2 md:p-10 xl:w-2/6 2xl:w-[450px] 2xl:p-12">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+          <div className="flex justify-center">
             <Image src="/images/logo/logo3.svg" alt="Logo" width={150} height={0} />
           </div>
-          <div className="mt-2 flex flex-col justify-center align-middle">
-            <h1 className="text-2xl font-light text-gray-900">Iniciar sesión</h1>
-            <p className="text-sm text-gray-500">Bienvenido de nuevo</p>
+          <div className="flex justify-center">
+            <div className="grid grid-cols-1 gap-1 justify-center align-middle">
+              <h1 className="text-2xl font-light text-gray-900">Iniciar sesión</h1>
+              <p className="text-sm text-gray-500">Bienvenido de nuevo</p>
+            </div>
           </div>
         </div>
         <Form
@@ -181,8 +183,7 @@ const SignInForm = () => {
             </Button>
           </Form.Item>
         </Form>
-        <div className="relative flex items-center py-8">
-          <div className="grow border-[1px] border-t border-gray-200"></div>
+        <div className="relative flex items-center py-3">
           <div className="grow border-[1px] border-t border-gray-200"></div>
         </div>
       </div>
