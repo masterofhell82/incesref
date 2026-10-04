@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta, timezone
+from typing import ClassVar
 
 from app import db
 
@@ -7,7 +8,7 @@ TZ = timezone(timedelta(hours=-4))
 
 class UserSessionModel(db.Model):
     __tablename__ = 'user_sessions'
-    __table_args__ = {'schema': 'master'}
+    __table_args__: ClassVar[dict[str, str]] = {"schema": "master"}
 
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey(

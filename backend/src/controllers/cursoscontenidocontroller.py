@@ -1,9 +1,7 @@
 from app import app
-from flask import request, jsonify
 from decorators import token_required
-
+from flask import jsonify, request
 from src.models.cursoscontenidomodel import CursoContenidoModel as CursoContenido
-
 from src.services.audit_services import register_audit_action
 
 
@@ -16,7 +14,8 @@ def create_curso_contenido():
         curso_contenido = CursoContenido(
             shortname_curso=dataPost.get('shortnameCurso'),
             contenido=dataPost.get('contenido'),
-            horas=dataPost.get('horas')
+            horas=dataPost.get('horas'),
+            enfoque=dataPost.get('enfoque')
         )
 
         curso_contenido.save()
@@ -64,7 +63,8 @@ def update_curso_contenido(id):
         curso_contenido.update({
             'shortname_curso': dataPost.get('shortnameCurso', curso_contenido.shortname_curso),
             'contenido': dataPost.get('contenido', curso_contenido.contenido),
-            'horas': dataPost.get('horas', curso_contenido.horas)
+            'horas': dataPost.get('horas', curso_contenido.horas),
+            'enfoque': dataPost.get('enfoque', curso_contenido.enfoque)
         })
 
         register_audit_action(
