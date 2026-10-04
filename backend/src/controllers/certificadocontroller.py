@@ -313,8 +313,6 @@ def verify_certificate(certificate):
         curso_publicado = VwCursoPublicado.query.filter_by(
             id_cur_activo=curso_activo.id).first()
 
-        print(f"curso_publicado: {curso_publicado}")
-
         return jsonify({
             'nacionalidad': persona.nac if persona else None,
             'cedula': persona.cedula if persona else None,
@@ -329,7 +327,7 @@ def verify_certificate(certificate):
             'año': f"{curso_activo.fecha_ini.year}-{curso_activo.fecha_fin.year}" if curso_activo else None,
             'titulo_asociado': certificate_data.titulo_asociado if certificate_data and certificate_data.titulo_asociado else '',
             'duracion': total_horas,
-            'contents': [{'contenido': c.contenido, 'horas': c.horas} for c in curso_contenidos] if curso_contenidos else [],
+            'contents': [{'contenido': c.contenido, 'horas': c.horas,'enfoque': c.enfoque} for c in curso_contenidos] if curso_contenidos else [],
             'state': curso_publicado.estado if curso_publicado else None
         }), 200
     except Exception as e:
@@ -440,5 +438,5 @@ def view_certificate(certificate):
 
         return response
     except Exception as e:
-        print(str(e))
+        # print(str(e))
         return {"error": str(e)}

@@ -11,6 +11,7 @@ import { verifyCertificate } from '@/Services/EndPoints';
 type CertificateContent = {
   contenido?: string;
   horas?: number | string;
+  enfoque?: string;
 };
 
 type VerificationResponse = {
@@ -215,7 +216,7 @@ const CertificateVerification = () => {
               </div>
 
               <section className="space-y-3">
-                <h2 className="text-lg font-semibold text-slate-800">Resultado de verificación: </h2>
+                <h2 className="text-lg font-semibold text-slate-800">Resultado de verificación</h2>
                 <p
                   className="text-justify leading-7 text-slate-700"
                   dangerouslySetInnerHTML={{ __html: verificationHtml }}
@@ -223,7 +224,8 @@ const CertificateVerification = () => {
               </section>
 
               <section className="space-y-3">
-                <h3 className="text-lg font-semibold text-slate-800">Plan de estudio: </h3>
+                <h3 className="text-lg font-semibold text-slate-800">Plan de estudio</h3>
+                <h5>Teóricas:</h5>
                 {formattedContents.length === 0 ? (
                   <Empty
                     description="Sin contenidos disponibles"
@@ -231,7 +233,34 @@ const CertificateVerification = () => {
                   />
                 ) : (
                   <ol className="divide-y divide-slate-200 overflow-hidden rounded-lg border border-slate-200 bg-white">
-                    {formattedContents.map((item, index) => (
+                    {formattedContents.map(
+                      (item, index) =>
+                        item.enfoque === 'Teorico' && (
+                          <li
+                            key={`${item.label}-${index}`}
+                            className="flex flex-col items-start gap-1 px-4 py-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4"
+                          >
+                            <span className="text-slate-700">
+                              {index + 1}. {item.label || 'Contenido no disponible'}
+                            </span>
+                            <span className="text-sm font-medium whitespace-nowrap text-slate-500">
+                              {item.horas || 0} Horas
+                            </span>
+                          </li>
+                        )
+                    )}
+                  </ol>
+                )}
+
+                <h5 className="mt-5">Prácticas:</h5>
+                {formattedContents.length === 0 ? (
+                  <Empty
+                    description="Sin contenidos disponibles"
+                    image={Empty.PRESENTED_IMAGE_SIMPLE}
+                  />
+                ) : (
+                  <ol className="divide-y divide-slate-200 overflow-hidden rounded-lg border border-slate-200 bg-white">
+                    {formattedContents.map((item, index) => item.enfoque === 'Practico' && (
                       <li
                         key={`${item.label}-${index}`}
                         className="flex flex-col items-start gap-1 px-4 py-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4"
@@ -249,7 +278,8 @@ const CertificateVerification = () => {
               </section>
 
               <div className="rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-900">
-                Registro validado para consulta pública. Distrito Capital - {moment().format('DD/MM/YYYY')}.
+                Registro validado para consulta pública. Distrito Capital -{' '}
+                {moment().format('DD/MM/YYYY')}.
               </div>
             </>
           )}
