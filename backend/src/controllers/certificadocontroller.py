@@ -13,6 +13,7 @@ from src.models.certificadomodel import CertificadoModel as Certificado
 from src.models.cursoactivomodel import CursoActivoModel as CursoActivo
 from src.models.cursomodel import CursoModel as Curso
 from src.models.cursoscontenidomodel import CursoContenidoModel as CursoContenido
+from src.models.empleadormodel import EmpleadorModel as Empleador
 from src.models.personasmodel import PersonasModel as Personas
 from src.models.preimpresomodel import PreImpresoModel as PreImpreso
 from src.models.tipoformacionmodel import TipoFormacionModel as TipoFormacion
@@ -354,9 +355,11 @@ def view_certificate(certificate):
             cedula=certificate_data.id_persona).first()
         curso_activo = CursoActivo.query.filter_by(
             id=preimpreso_data.id_curso_activo).first()
+        empleador = Empleador.query.filter_by(
+            id=curso_activo.entidad_trabajo_id).first()
         curso = Curso.query.filter_by(id=curso_activo.id_curso).first()
         curso_contenido = CursoContenido.query.filter_by(
-            shortname_curso=curso.shortname).all()
+            shortname_curso=curso.shortname, enfoque="Teorico").all()
 
         curso_total_horas = sum(int(contenido.horas or 0)
                                 for contenido in curso_contenido)
@@ -397,6 +400,7 @@ def view_certificate(certificate):
                                curso_activo=curso_activo.serialize(),
                                curso_contenido=[contenido.serialize()
                                                 for contenido in curso_contenido],
+                               empleador=empleador.serialize() if empleador else None,
                                url=url,
                                total_horas=curso_total_horas,
                                correlativo=correlativo,
@@ -436,4 +440,5 @@ def view_certificate(certificate):
 
         return response
     except Exception as e:
+        print(str(e))
         return {"error": str(e)}

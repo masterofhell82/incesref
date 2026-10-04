@@ -1,10 +1,15 @@
+from datetime import datetime, timedelta, timezone
+from typing import ClassVar
+
 from app import db
-from datetime import datetime
+
+TZ = timezone(timedelta(hours=-4))
+
 
 class EmpleadorModel(db.Model):
 
     __tablename__ = 'empleador'
-    __table_args__ = {'schema': 'master'}
+    __table_args__: ClassVar[dict[str, str]] = {'schema': 'master'}
 
     id = db.Column(db.Integer, primary_key=True)
     rif = db.Column(db.String(20), nullable=False)
@@ -19,9 +24,9 @@ class EmpleadorModel(db.Model):
     correo = db.Column(db.String(255), nullable=False)
     estatus = db.Column(db.Boolean, nullable=False, default=True)
     created_at = db.Column(
-        db.DateTime, default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
-    updated_at = db.Column(db.DateTime, default=datetime.now().strftime(
-        '%Y-%m-%d %H:%M:%S'), onupdate=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+        db.DateTime, default=datetime.now(TZ).strftime('%Y-%m-%d %H:%M:%S'))
+    updated_at = db.Column(db.DateTime, default=datetime.now(TZ).strftime(
+        '%Y-%m-%d %H:%M:%S'), onupdate=datetime.now(TZ).strftime('%Y-%m-%d %H:%M:%S'))
 
     def __init__(self, rif, razon_social, tipo_contribuyente_id, estado_id, domicilio_fiscal, rif_representante, representante, telefono_movil, telefono_fijo, correo):
         self.rif = rif
@@ -35,8 +40,8 @@ class EmpleadorModel(db.Model):
         self.telefono_fijo = telefono_fijo
         self.correo = correo
         self.estatus = True
-        self.created_at = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        self.updated_at = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        self.created_at = datetime.now(TZ).strftime('%Y-%m-%d %H:%M:%S')
+        self.updated_at = datetime.now(TZ).strftime('%Y-%m-%d %H:%M:%S')
 
     def serialize(self):
         return {
@@ -64,6 +69,6 @@ class EmpleadorModel(db.Model):
     def update(self, data):
         for key, value in data.items():
             setattr(self, key, value)
-        self.updated_at = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        self.updated_at = datetime.now(TZ).strftime('%Y-%m-%d %H:%M:%S')
         db.session.commit()
         return self

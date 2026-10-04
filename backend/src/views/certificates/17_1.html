@@ -222,8 +222,8 @@
                     <!-- src="data:image/png;base64,{{ signature_gte_inst }}" -->
                     <div class="img-signature-float mt-3" style="height: 465px;"></div>
                     <hr />
-                    <div class="who-signature">Marcos Aurelio Paredes</div>
-                    <div class="rif-text text-center">G-20000000</div>
+                    <div class="who-signature">{{ empleador.razon_social }}</div>
+                    <div class="rif-text text-center">{{ empleador.rif | format_rif }}</div>
                 </div>
             </div>
         </div>
@@ -263,6 +263,18 @@
                     </tr>
                     {% endfor %}
                 </table>
+                <table border="1">
+                    <tr>
+                        <td class="colspan">
+                            DESCRIPCIÓN DEL PERFIL DE EGRESO
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="descripcion text-justify">
+                            {{ curso.descripcion }}
+                        </td>
+                    </tr>
+                </table>
             </div>
         </div>
         <div class="col-4">
@@ -272,14 +284,12 @@
                         <td colspan="12" class="colspan">REGISTRO</td>
                     </tr>
                     <tr class="text-center">
-                        <td colspan="4" class="col-4 colspan">LIBRO N°</td>
-                        <td colspan="4" class="col-4 colspan">HOJA</td>
-                        <td colspan="4" class="col-4 colspan">CONSECUTIVO</td>
+                        <td colspan="6" class="col-6 colspan">LIBRO N°</td>
+                        <td colspan="6" class="col-6 colspan">CONSECUTIVO</td>
                     </tr>
                     <tr class="text-center">
-                        <td colspan="4">{{ preimpreso.libro }}</td>
-                        <td colspan="4">{{ preimpreso.hoja }}</td>
-                        <td colspan="4">{{ certificate.consecutivo }}</td>
+                        <td colspan="6">{{ preimpreso.libro }}</td>
+                        <td colspan="6">{{ certificate.consecutivo }}</td>
                     </tr>
                     <tr class="text-center">
                         <td colspan="4" class="colspan">CÓDIGO DE EJECUCIÓN</td>
