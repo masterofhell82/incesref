@@ -13,6 +13,7 @@ export interface TrainingCoursesContent {
     shortname_curso: string;
     contenido: string;
     horas: number;
+    enfoque: string;
 }
 
 export interface TypesTraining {
