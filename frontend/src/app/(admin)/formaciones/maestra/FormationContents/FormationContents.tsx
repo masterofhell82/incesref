@@ -27,9 +27,10 @@ const FormationContents = ({ shortname }: { shortname: string }) => {
 
   const columns: TableProps<TrainingCoursesContent>['columns'] = [
     { title: '#', align: 'center', width: '5%', dataIndex: 'id', key: 'id' },
-    { title: 'Código', width: '20%', dataIndex: 'shortname_curso', key: 'shortname_curso' },
+    { title: 'Código', width: '15%', dataIndex: 'shortname_curso', key: 'shortname_curso' },
     { title: 'Contenido', width: '50%', dataIndex: 'contenido', key: 'contenido' },
-    { title: 'Horas', width: '15%', dataIndex: 'horas', key: 'horas', align: 'center' },
+    { title: 'Enfoque', width: '10%', dataIndex: 'enfoque', key: 'enfoque', align: 'center', render: (value: string) => value === 'Teorico' ? 'Teórico' : 'Práctico' },
+    { title: 'Horas', width: '10%', dataIndex: 'horas', key: 'horas', align: 'center' },
     {
       title: 'Acciones',
       width: '10%',

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { formaciones, programas, tiposFormaciones } from '@/Services/EndPoints';
 import { get, post, put } from '@/Services/HttpRequest';
 import { useFormik } from 'formik';
@@ -25,14 +25,16 @@ const FormFormationsGrid = ({
 }) => {
   const isEdit = !!data && Object.keys(data).length > 0;
 
-  const getInitialForm = (source: TrainingCourses | null) => ({
+  const getInitialForm = useCallback((source: TrainingCourses | null) => ({
     id: source?.id ?? 0,
     nombre: source?.nombre ?? '',
     shortname: source?.shortname ?? '',
     descripcion: source?.descripcion ?? '',
-    programaId: source?.id_programa ?? null,
-    tipoFormacionId: source?.tipo_formacion ?? null,
-  });
+    programaId: source?.id_programa != null ? Number(source.id_programa) : null,
+    tipoFormacionId: source?.tipo_formacion != null ? Number(source.tipo_formacion) : null,
+  }), []);
+  
+  const [dataForm, setDataForm] = useState(getInitialForm(data));
 
   const [programOptions, setProgramOptions] = useState<Option[]>([]);
   const [typeTrainingOptions, setTypeTrainingOptions] = useState<Option[]>([]);
@@ -47,7 +49,7 @@ const FormFormationsGrid = ({
   });
 
   const formik = useFormik({
-    initialValues: getInitialForm(data),
+    initialValues: dataForm,
     enableReinitialize: true,
     validationSchema: schema,
     onSubmit: async (values) => {
@@ -125,9 +127,12 @@ const FormFormationsGrid = ({
   };
 
   useEffect(() => {
-    fetchProgramOptions();
-    fetchTypeTrainingOptions();
-  }, []);
+      fetchProgramOptions();
+      fetchTypeTrainingOptions();
+      if (data) {
+        setDataForm(getInitialForm(data));
+      }
+    }, [data, getInitialForm]);
 
   return (
     <>
@@ -141,8 +146,8 @@ const FormFormationsGrid = ({
               Completa la información principal de la malla curricular.
             </p>
           </div>
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <div>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+            <div className="md:col-span-3">
               <label className="mb-1 block text-sm font-medium" htmlFor="nombre">
                 Nombre
               </label>
@@ -187,7 +192,7 @@ const FormFormationsGrid = ({
                 options={programOptions}
                 value={formik.values.programaId ?? undefined}
                 onBlur={() => formik.setFieldTouched('programaId', true)}
-                onChange={(value) => formik.setFieldValue('programaId', value)}
+                onChange={(value) => formik.setFieldValue('programaId', value == null ? null : Number(value))}
                 status={
                   formik.touched.programaId && formik.errors.programaId ? 'error' : undefined
                 }
@@ -208,7 +213,7 @@ const FormFormationsGrid = ({
                 options={typeTrainingOptions}
                 value={formik.values.tipoFormacionId ?? undefined}
                 onBlur={() => formik.setFieldTouched('tipoFormacionId', true)}
-                onChange={(value) => formik.setFieldValue('tipoFormacionId', value)}
+                onChange={(value) => formik.setFieldValue('tipoFormacionId', value == null ? null : Number(value))}
                 status={
                   formik.touched.tipoFormacionId && formik.errors.tipoFormacionId
                     ? 'error'
@@ -221,7 +226,7 @@ const FormFormationsGrid = ({
               )}
             </div>
 
-            <div className="md:col-span-2">
+            <div className="md:col-span-3">
               <label className="mb-1 block text-sm font-medium" htmlFor="descripcion">
                 Descripción
               </label>

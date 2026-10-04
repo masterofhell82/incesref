@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { post, put } from '@/Services/HttpRequest';
 import { contenidosFormaciones } from '@/Services/EndPoints';
 import { useFormik } from 'formik';
@@ -9,7 +9,7 @@ import type { TrainingCoursesContent } from '@/interface/FormationsInterfaces';
 
 import Modals from '@/components/Modals/Modals';
 
-import { Input, Button } from 'antd';
+import { Input, Button, Select } from 'antd';
 
 const FormFormationContent = ({
   data,
@@ -25,14 +25,24 @@ const FormFormationContent = ({
   notify: (type: NotificationType, title: string, description: string) => void;
 }) => {
   const isEdit = !!data && Object.keys(data).length > 0;
-  const getInitialForm = (data: TrainingCoursesContent | null) => {
-    return {
-      id: data?.id ?? null,
-      shortnameCurso: data?.shortname_curso ?? shortname,
-      contenido: data?.contenido ?? '',
-      horas: data?.horas ?? '',
-    };
-  };
+
+  const optionEnfoques = [
+    { label: 'Teórico', value: 'Teorico' },
+    { label: 'Práctico', value: 'Practico' },
+  ];
+
+  const getInitialForm = useCallback(
+    (data: TrainingCoursesContent | null) => {
+      return {
+        id: data?.id ?? null,
+        shortnameCurso: data?.shortname_curso ?? shortname,
+        contenido: data?.contenido ?? '',
+        horas: data?.horas ?? '',
+        enfoque: data?.enfoque ?? 'Teorico',
+      };
+    },
+    [shortname],
+  );
 
   const [dataForm, setDataForm] = useState(getInitialForm(data));
 
@@ -43,6 +53,7 @@ const FormFormationContent = ({
       : Yup.string().required('El nombre del curso es requerido'),
     contenido: isEdit ? Yup.string() : Yup.string().required('El contenido es requerido'),
     horas: isEdit ? Yup.string() : Yup.string().required('Las horas son requeridas'),
+    enfoque: isEdit ? Yup.string() : Yup.string().required('El enfoque es requerido'),
   });
 
   const formik = useFormik({
@@ -73,12 +84,8 @@ const FormFormationContent = ({
   };
 
   useEffect(() => {
-    console.log(data, shortname);
-
-    if (data) {
-      setDataForm(getInitialForm(data));
-    }
-  }, [data]);
+    setDataForm(getInitialForm(data));
+  }, [data, getInitialForm]);
 
   return (
     <>
@@ -90,7 +97,7 @@ const FormFormationContent = ({
         footer={null}
       >
         <form className="space-y-6">
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
             <div>
               <label className="mb-1 block text-sm font-medium" htmlFor="nombre">
                 Shortname del curso
@@ -127,7 +134,24 @@ const FormFormationContent = ({
                 <div className="mt-1 text-xs text-red-500">{formik.errors.horas}</div>
               )}
             </div>
-            <div className="md:col-span-2">
+            <div>
+              <label className="mb-1 block text-sm font-medium" htmlFor="nombre">
+                Enfoque
+              </label>
+              <Select
+                placeholder="Seleccione un enfoque"
+                value={formik.values.enfoque}
+                onBlur={formik.handleBlur}
+                onChange={(value) => formik.setFieldValue('enfoque', value)}
+                status={formik.touched.enfoque && formik.errors.enfoque ? 'error' : undefined}
+                options={optionEnfoques}
+                className="w-full"
+              />
+              {formik.touched.enfoque && formik.errors.enfoque && (
+                <div className="mt-1 text-xs text-red-500">{formik.errors.enfoque}</div>
+              )}
+            </div>
+            <div className="md:col-span-3">
               <label className="mb-1 block text-sm font-medium" htmlFor="nombre">
                 Contenido
               </label>
