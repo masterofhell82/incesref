@@ -164,7 +164,11 @@ def get_certificates():
 
         courses = []
         for curso in cursos:
+
             data = {}
+            empleador = Empleador.query.filter_by(id=curso.entidad_trabajo_id).first()
+            course = Curso.query.filter_by(shortname=curso.shortname).first()
+
             data["id"] = curso.preimpreso_id
             data["curso_activo_id"] = curso.curso_activo_id
             data["id_cfs"] = curso.id_cfs
@@ -176,6 +180,13 @@ def get_certificates():
             data["libro"] = curso.libro
             data["curso"] = curso.nombre
             data["participantes"] = curso.certificados
+            if empleador and course.tipo_formacion == '17':
+                data["empleador"] = {
+                    "id": empleador.id if empleador else None,
+                    "razon_social": empleador.razon_social if empleador else None
+                }
+            else:
+                data["empleador"] = None
             data["fecha_inicio"] = curso.fecha_ini
             data["fecha_fin"] = curso.fecha_fin
             data["fecha_emision"] = curso.fecha_emision
@@ -327,7 +338,7 @@ def verify_certificate(certificate):
             'año': f"{curso_activo.fecha_ini.year}-{curso_activo.fecha_fin.year}" if curso_activo else None,
             'titulo_asociado': certificate_data.titulo_asociado if certificate_data and certificate_data.titulo_asociado else '',
             'duracion': total_horas,
-            'contents': [{'contenido': c.contenido, 'horas': c.horas,'enfoque': c.enfoque} for c in curso_contenidos] if curso_contenidos else [],
+            'contents': [{'contenido': c.contenido, 'horas': c.horas, 'enfoque': c.enfoque} for c in curso_contenidos] if curso_contenidos else [],
             'state': curso_publicado.estado if curso_publicado else None
         }), 200
     except Exception as e:

@@ -185,6 +185,7 @@ const Courses = () => {
     setShowBulkUpload(false);
     setShowDatatable(true);
     setDataUpdate(null);
+    loadData();
   };
 
   useEffect(() => {

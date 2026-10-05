@@ -1,15 +1,19 @@
-from app import app, db
-from flask import request, jsonify
-from decorators import token_required
 import re
 
+from app import app, db
+from decorators import token_required
+from flask import jsonify, request
+
+# Helpers and utilities
+from src.helpers.date_parser import parse_date
+
+# Models
+from src.models.auditoriamodel import AuditoriaModel as Auditoria
 from src.models.cfsmodel import CFSModel as CFS
-from src.models.geografiamodel import EstadosModel as Estados
 from src.models.cursoactivomodel import CursoActivoModel as CursoActivo
 from src.models.cursomodel import CursoModel as Curso
+from src.models.geografiamodel import EstadosModel as Estados
 from src.models.preimpresomodel import PreImpresoModel as PreImpreso
-from src.models.auditoriamodel import AuditoriaModel as Auditoria
-from src.helpers.date_parser import parse_date
 
 '''
 Se registran los cursos activos, es decir, aquellos que fueron dictados en un periodo determinado. Además, se pueden asociar a una entidad de trabajo y a un preimpreso específico para cada curso activo.

@@ -1,10 +1,12 @@
+from typing import ClassVar
+
 from app import db
 
 
 class VwCursoCertificado(db.Model):
 
     __tablename__ = 'vw_cursos_certificados'
-    __table_args__ = {'schema': 'master'}
+    __table_args__: ClassVar[dict[str, str]] = {'schema': 'master'}
 
     preimpreso_id = db.Column(db.Integer, primary_key=True)
     preimpreso = db.Column(db.String(100))
@@ -18,6 +20,7 @@ class VwCursoCertificado(db.Model):
     nombre = db.Column(db.String(150))
     certificados = db.Column(db.BigInteger)
     fecha_emision = db.Column(db.Date)
+    entidad_trabajo_id = db.Column(db.Integer)
     fecha_ini = db.Column(db.Date)
     fecha_fin = db.Column(db.Date)
 
@@ -35,6 +38,7 @@ class VwCursoCertificado(db.Model):
             'nombre': self.nombre,
             'certificados': self.certificados,
             'fecha_emision': self.fecha_emision,
+            'entidad_trabajo_id': self.entidad_trabajo_id,
             'fecha_ini': self.fecha_ini,
             'fecha_fin': self.fecha_fin
         }

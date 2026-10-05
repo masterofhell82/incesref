@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { get, post } from '@/Services/HttpRequest';
@@ -38,7 +38,6 @@ const BulkUpload = ({
     id: data?.id ?? null,
     id_estado: data?.id_estado ?? null,
     id_cfs: data?.id_cfs ?? null,
-    entidad_trabajo_id: data?.entidad_trabajo_id ?? null,
     preimpreso: data?.preimpreso ?? '',
     participantes: data?.participantes ?? 0,
     shortname: data?.shortname || undefined,
@@ -46,6 +45,7 @@ const BulkUpload = ({
     fecha_fin: data?.fecha_fin ? dayjs(data.fecha_fin) : null,
     hoja: data?.hoja ?? '',
     libro: data?.libro ?? '',
+    entidad_trabajo_id: data?.empleador?.id ?? null,
   });
 
   const [isLoading, setIsLoading] = useState(false);
@@ -76,17 +76,21 @@ const BulkUpload = ({
     validationSchema: schema,
     onSubmit: async (values) => {
       try {
+        setIsLoading(true);
         await post(`${activeCourses}/register`, JSON.stringify(values));
         message.success('Formulario validado correctamente.');
-      } catch (error) {
+        setIsLoading(false);
+    } catch (error) {
+        setIsLoading(false);
         console.error('Error al procesar el formulario:', error);
         message.error(getRequestErrorMessage(error, 'Hubo un error al procesar el formulario.'));
-      } finally {
+    } finally {
+          action?.();
       }
     },
   });
 
-  const loadSelectData = async (initialStateId?: number | null) => {
+  const loadSelectData = useCallback(async (initialStateId?: number | null) => {
     setIsLoading(true);
     try {
       const [estadosResponse, formacionesResponse] = await Promise.all([
@@ -127,7 +131,7 @@ const BulkUpload = ({
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
   const getCFSByStateId = async (estadoId: number | null) => {
     const response = await get(`${cfs}/state/${estadoId}`);
@@ -207,7 +211,11 @@ const BulkUpload = ({
     const initialForm = getInitialForm(data);
     setDataForm(initialForm);
     loadSelectData(initialForm.id_estado);
-  }, [data]);
+    if (data?.empleador) {
+      setEnableEmployer(data?.empleador ? false : true);
+      getEmployerEntities(data?.id_estado);
+    }
+  }, [data, loadSelectData]);
 
   // Sincronizar el nombre de la formación al editar
   useEffect(() => {

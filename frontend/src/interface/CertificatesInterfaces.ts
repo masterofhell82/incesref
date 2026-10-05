@@ -27,6 +27,10 @@ export interface CoursesCertificate {
   entidad_trabajo_id: number | null;
   hoja: string;
   libro: string;
+  empleador?: {
+    id: number;
+    razon_social: string;
+  } | null;
 }
 
 export interface Certificate {
