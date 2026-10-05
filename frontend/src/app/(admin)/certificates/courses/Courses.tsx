@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { get } from '@/Services/HttpRequest';
 import { coursesCertificates } from '@/Services/EndPoints';
 import moment from 'moment';
@@ -57,7 +57,7 @@ const Courses = () => {
       dataIndex: 'preimpreso',
       key: 'preimpreso',
     },
-    { title: 'Código', dataIndex: 'shortname', key: 'shortname',width: '10%', },
+    { title: 'Código', dataIndex: 'shortname', key: 'shortname', width: '10%' },
     { title: 'Curso', dataIndex: 'curso', key: 'curso' },
     {
       title: 'Participantes',
@@ -101,7 +101,7 @@ const Courses = () => {
     },
   ];
 
-  const loadData = async (initFilters = filters) => {
+  const loadData = useCallback(async (initFilters = filters) => {
     setLoading(true);
     try {
       const response = await get(
@@ -123,17 +123,28 @@ const Courses = () => {
         defaultPageSize: nextPageSize,
       }));
 
-      setFilters({
+      const newFilters = {
         page: nextPage,
         page_size: nextPageSize,
         q: initFilters.q,
+      };
+
+      setFilters((prev) => {
+        if (
+          prev.page === newFilters.page &&
+          prev.page_size === newFilters.page_size &&
+          prev.q === newFilters.q
+        ) {
+          return prev; // no hay cambios -> evitar re-render/loop
+        }
+        return newFilters;
       });
     } catch (error) {
       console.error('Error fetching data:', error);
     } finally {
       setLoading(false);
     }
-  };
+  }, [filters]);
 
   const handleSearch = (value: string) => {
     // Crear una copia actualizada de los filtros
@@ -190,7 +201,7 @@ const Courses = () => {
 
   useEffect(() => {
     loadData();
-  }, []);
+  }, [loadData]);
 
   return (
     <>

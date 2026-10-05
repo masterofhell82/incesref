@@ -86,6 +86,7 @@ const BulkUpload = ({
         message.error(getRequestErrorMessage(error, 'Hubo un error al procesar el formulario.'));
     } finally {
           action?.();
+
       }
     },
   });
@@ -372,8 +373,6 @@ const BulkUpload = ({
                     value={formik.values.hoja}
                     onBlur={async () => {
                       formik.setFieldTouched('hoja', true);
-                      await formik.validateField('hoja');
-                      handleValidationPreimpress(formik.values.hoja);
                     }}
                     onChange={(e) =>
                       formik.setFieldValue('hoja', e.target.value.toUpperCase())
@@ -396,8 +395,6 @@ const BulkUpload = ({
                     value={formik.values.libro}
                     onBlur={async () => {
                       formik.setFieldTouched('libro', true);
-                      await formik.validateField('libro');
-                      handleValidationPreimpress(formik.values.libro);
                     }}
                     onChange={(e) =>
                       formik.setFieldValue('libro', e.target.value.toUpperCase())
@@ -420,6 +417,10 @@ const BulkUpload = ({
                   <Select
                     placeholder="Seleccionar estado"
                     options={estadosOptions}
+                    showSearch={{
+                      filterOption: (input, option) =>
+                        (option?.label ?? '').toLowerCase().includes(input.toLowerCase()),
+                    }}
                     value={formik.values.id_estado ?? undefined}
                     onBlur={() => formik.setFieldTouched('id_estado', true)}
                     onChange={async (value) => {
@@ -444,6 +445,10 @@ const BulkUpload = ({
                   </label>
                   <Select
                     placeholder="Seleccionar CFS"
+                    showSearch={{
+                      filterOption: (input, option) =>
+                        (option?.label ?? '').toLowerCase().includes(input.toLowerCase()),
+                    }}
                     options={cfsOptions}
                     value={formik.values.id_cfs ?? undefined}
                     onBlur={() => formik.setFieldTouched('id_cfs', true)}
