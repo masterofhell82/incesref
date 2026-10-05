@@ -244,6 +244,7 @@ def get_certificates_by_preimpress(preimpress_id):
             persona = Personas.query.filter_by(cedula=cert.id_persona).first()
 
             data.append({
+                "key": cert.web_id,
                 "certificateId": cert.id,
                 "certificateWebId": cert.web_id,
                 "consecutivo": str(cert.consecutivo).zfill(7),

@@ -122,7 +122,7 @@ const UploadStudent = ({ data, preimpress }: { data: number | null; preimpress: 
           data={dataSources}
           loading={loading}
           size="small"
-          rowKey="certificateId"
+          rowKey="key"
           endContent={
             <div className="flex items-center gap-2">
               <Button color="default" variant="outlined" size="large" onClick={handleDownloadCsv}>
