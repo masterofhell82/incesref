@@ -168,6 +168,14 @@ const CertificateVerification = () => {
   }, [certificate]);
 
   const formattedContents = useMemo(() => formatStudyContents(contents), [contents]);
+  const theoreticalContents = useMemo(
+    () => formattedContents.filter((item) => item.enfoque === 'Teorico'),
+    [formattedContents]
+  );
+  const practicalContents = useMemo(
+    () => formattedContents.filter((item) => item.enfoque === 'Practico'),
+    [formattedContents]
+  );
 
   if (loading) {
     return <Skeleton active paragraph={{ rows: 10 }} />;
@@ -224,18 +232,18 @@ const CertificateVerification = () => {
               </section>
               <section className="space-y-3">
                 <h3 className="text-lg font-semibold text-slate-800">Plan de estudio</h3>
-                {formattedContents.length === 0 ? (
+                {theoreticalContents.length === 0 && practicalContents.length === 0 ? (
                   <Empty
                     description="Sin contenidos disponibles"
                     image={Empty.PRESENTED_IMAGE_SIMPLE}
                   />
                 ) : (
                   <>
-                    <h5>Teóricas:</h5>
-                    <ol className="divide-y divide-slate-200 overflow-hidden rounded-lg border border-slate-200 bg-white">
-                      {formattedContents.map(
-                        (item, index) =>
-                          item.enfoque === 'Teorico' && (
+                    {theoreticalContents.length > 0 && (
+                      <>
+                        <h5>Teóricas:</h5>
+                        <ol className="divide-y divide-slate-200 overflow-hidden rounded-lg border border-slate-200 bg-white">
+                          {theoreticalContents.map((item, index) => (
                             <li
                               key={`${item.label}-${index}`}
                               className="flex flex-col items-start gap-1 px-4 py-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4"
@@ -247,23 +255,15 @@ const CertificateVerification = () => {
                                 {item.horas || 0} Horas
                               </span>
                             </li>
-                          )
-                      )}
-                    </ol>
-                  </>
-                )}
-                {formattedContents.length === 0 ? (
-                  <Empty
-                    description="Sin contenidos disponibles"
-                    image={Empty.PRESENTED_IMAGE_SIMPLE}
-                  />
-                ) : (
-                  <>
-                    <h5 className="mt-5">Prácticas:</h5>
-                    <ol className="divide-y divide-slate-200 overflow-hidden rounded-lg border border-slate-200 bg-white">
-                      {formattedContents.map(
-                        (item, index) =>
-                          item.enfoque === 'Practico' && (
+                          ))}
+                        </ol>
+                      </>
+                    )}
+                    {practicalContents.length > 0 && (
+                      <>
+                        <h5 className="mt-5">Prácticas:</h5>
+                        <ol className="divide-y divide-slate-200 overflow-hidden rounded-lg border border-slate-200 bg-white">
+                          {practicalContents.map((item, index) => (
                             <li
                               key={`${item.label}-${index}`}
                               className="flex flex-col items-start gap-1 px-4 py-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4"
@@ -275,9 +275,10 @@ const CertificateVerification = () => {
                                 {item.horas || 0} Horas
                               </span>
                             </li>
-                          )
-                      )}
-                    </ol>
+                          ))}
+                        </ol>
+                      </>
+                    )}
                   </>
                 )}
               </section>
