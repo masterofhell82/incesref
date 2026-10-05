@@ -222,58 +222,63 @@ const CertificateVerification = () => {
                   dangerouslySetInnerHTML={{ __html: verificationHtml }}
                 />
               </section>
-
               <section className="space-y-3">
                 <h3 className="text-lg font-semibold text-slate-800">Plan de estudio</h3>
-                <h5>Teóricas:</h5>
                 {formattedContents.length === 0 ? (
                   <Empty
                     description="Sin contenidos disponibles"
                     image={Empty.PRESENTED_IMAGE_SIMPLE}
                   />
                 ) : (
-                  <ol className="divide-y divide-slate-200 overflow-hidden rounded-lg border border-slate-200 bg-white">
-                    {formattedContents.map(
-                      (item, index) =>
-                        item.enfoque === 'Teorico' && (
-                          <li
-                            key={`${item.label}-${index}`}
-                            className="flex flex-col items-start gap-1 px-4 py-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4"
-                          >
-                            <span className="text-slate-700">
-                              {index + 1}. {item.label || 'Contenido no disponible'}
-                            </span>
-                            <span className="text-sm font-medium whitespace-nowrap text-slate-500">
-                              {item.horas || 0} Horas
-                            </span>
-                          </li>
-                        )
-                    )}
-                  </ol>
+                  <>
+                    <h5>Teóricas:</h5>
+                    <ol className="divide-y divide-slate-200 overflow-hidden rounded-lg border border-slate-200 bg-white">
+                      {formattedContents.map(
+                        (item, index) =>
+                          item.enfoque === 'Teorico' && (
+                            <li
+                              key={`${item.label}-${index}`}
+                              className="flex flex-col items-start gap-1 px-4 py-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4"
+                            >
+                              <span className="text-slate-700">
+                                {index + 1}. {item.label || 'Contenido no disponible'}
+                              </span>
+                              <span className="text-sm font-medium whitespace-nowrap text-slate-500">
+                                {item.horas || 0} Horas
+                              </span>
+                            </li>
+                          )
+                      )}
+                    </ol>
+                  </>
                 )}
-
-                <h5 className="mt-5">Prácticas:</h5>
                 {formattedContents.length === 0 ? (
                   <Empty
                     description="Sin contenidos disponibles"
                     image={Empty.PRESENTED_IMAGE_SIMPLE}
                   />
                 ) : (
-                  <ol className="divide-y divide-slate-200 overflow-hidden rounded-lg border border-slate-200 bg-white">
-                    {formattedContents.map((item, index) => item.enfoque === 'Practico' && (
-                      <li
-                        key={`${item.label}-${index}`}
-                        className="flex flex-col items-start gap-1 px-4 py-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4"
-                      >
-                        <span className="text-slate-700">
-                          {index + 1}. {item.label || 'Contenido no disponible'}
-                        </span>
-                        <span className="text-sm font-medium whitespace-nowrap text-slate-500">
-                          {item.horas || 0} Horas
-                        </span>
-                      </li>
-                    ))}
-                  </ol>
+                  <>
+                    <h5 className="mt-5">Prácticas:</h5>
+                    <ol className="divide-y divide-slate-200 overflow-hidden rounded-lg border border-slate-200 bg-white">
+                      {formattedContents.map(
+                        (item, index) =>
+                          item.enfoque === 'Practico' && (
+                            <li
+                              key={`${item.label}-${index}`}
+                              className="flex flex-col items-start gap-1 px-4 py-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4"
+                            >
+                              <span className="text-slate-700">
+                                {index + 1}. {item.label || 'Contenido no disponible'}
+                              </span>
+                              <span className="text-sm font-medium whitespace-nowrap text-slate-500">
+                                {item.horas || 0} Horas
+                              </span>
+                            </li>
+                          )
+                      )}
+                    </ol>
+                  </>
                 )}
               </section>
 
