@@ -128,6 +128,7 @@ const ListCertificates = ({ data, action }: { data: CoursesCertificate; action: 
               columns={columns}
               data={dataSources}
               loading={loading}
+              size="small"
               pagination={{
                 onChange: (page: number, size: number) => {
                   setCurrentPage(page);
