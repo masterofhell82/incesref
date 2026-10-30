@@ -72,12 +72,33 @@ export const verifyTokenUser = async (token: string) => {
 };
 
 export const logout = async () => {
-  await post(setLogout, JSON.stringify({ token: localStorage.getItem('authorization') }));
+  if (typeof window === 'undefined') {
+    return;
+  }
 
-  if (typeof window !== 'undefined') {
+  const token = localStorage.getItem('authorization');
+
+  try {
+    if (token) {
+      const response = await fetch(setLogout, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: token,
+        },
+        body: JSON.stringify({ token }),
+      });
+
+      if (!response.ok) {
+        console.error('Logout request failed:', response.status, response.statusText);
+      }
+    }
+  } catch (error) {
+    console.error('Logout request could not be completed:', error);
+  } finally {
     sessionStorage.clear();
     localStorage.clear();
-    // Función para borrar una cookie específica
+
     const deleteCookie = (name: string) => {
       document.cookie = name + '=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
     };

@@ -10,7 +10,15 @@ const verifyTokenInMiddleware = async (token: string) => {
   if (!token) return false;
 
   try {
-    const url = `${process.env.NEXT_PUBLIC_DNS_DOCKER_BACKEND}/api/verifytoken`;
+    const backendUrl =
+      process.env.NEXT_PUBLIC_DNS_DOCKER_BACKEND || process.env.NEXT_PUBLIC_URL_API_BACKEND;
+
+    if (!backendUrl) {
+      console.error('Backend URL is not configured for middleware token verification');
+      return false;
+    }
+
+    const url = `${backendUrl.replace(/\/$/, '')}/api/verifytoken`;
     const bearer = token.startsWith('JWT ') ? token : `JWT ${token}`;
 
     const response = await fetch(url, {
@@ -24,8 +32,8 @@ const verifyTokenInMiddleware = async (token: string) => {
     });
 
     return response.ok;
-    } catch (error) {
-        console.log(error);
+  } catch (error) {
+    console.error('Error verifying token in middleware:', error);
     return false;
   }
 };
@@ -63,15 +71,15 @@ export async function middleware(req: NextRequest) {
 export const config = {
   matcher: [
     '/signin',
-    '/centers/cores:path*',
-    '/centers/employers:path*',
-    '/centers/scopes:path*',
-    '/formaciones/programs:path*',
-    '/formaciones/types-training:path*',
-    '/formaciones/maestras:path*',
-    '/students:path*',
-    '/certificates/courses:path*',
-    '/config/users:path*',
-    '/config/roles:path*',
+    '/centers/cores/:path*',
+    '/centers/employers/:path*',
+    '/centers/scopes/:path*',
+    '/formaciones/programs/:path*',
+    '/formaciones/types-training/:path*',
+    '/formaciones/maestras/:path*',
+    '/students/:path*',
+    '/certificates/courses/:path*',
+    '/config/users/:path*',
+    '/config/roles/:path*',
   ],
 };
