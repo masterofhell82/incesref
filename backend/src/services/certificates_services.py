@@ -1,6 +1,7 @@
 import csv
 from datetime import date
 import io
+import re
 
 
 PHONE_PREFIXES_WITH_LEADING_ZERO = {'422', '424', '426', '412', '414', '416'}
@@ -23,7 +24,7 @@ EXPECTED_CERTIFICATES_CSV_HEADERS = [
 
 def _normalize_consecutivo(value):
 	consecutivo = (value or '').strip()
-	if consecutivo.isdigit():
+	if re.fullmatch(r'[0-9]{1,7}', consecutivo):
 		return consecutivo.zfill(7)
 	return consecutivo
 
@@ -136,11 +137,25 @@ def parse_massive_certificates_csv(file_storage):
 				'value': nacimiento_raw,
 			}
 
+		consecutivo_raw = (row.get('CONSECUTIVO') or '').strip()
+		if not re.fullmatch(r'[0-9]{1,7}', consecutivo_raw):
+			return {
+				'ok': False,
+				'status': 400,
+				'error': (
+					'CONSECUTIVO invalido. Use solo numeros, con un maximo de 7 '
+					'digitos, por ejemplo 0000117.'
+				),
+				'row': row_number,
+				'field': 'CONSECUTIVO',
+				'value': consecutivo_raw,
+			}
+
 		parsed_rows.append({
 			'row': row_number,
 			'preimpreso': (row.get('PREIMPRESO') or '').strip(),
 			'maestra': (row.get('MAESTRA') or '').strip(),
-			'consecutivo': _normalize_consecutivo(row.get('CONSECUTIVO')),
+			'consecutivo': _normalize_consecutivo(consecutivo_raw),
 			'nacionalidad': (row.get('NACIONALIDAD') or '').strip(),
 			'cedula': (row.get('CEDULA') or '').strip(),
 			'nombres': _normalize_full_name(row.get('NOMBRES')),

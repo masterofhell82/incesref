@@ -91,6 +91,8 @@ const FormMasiveCerticates = ({
 
   const isOnlyText = (value: string): boolean => /^[A-Za-zÁÉÍÓÚáéíóúÜüÑñ\s]+$/.test(value.trim());
 
+  const isValidConsecutivo = (value: string): boolean => /^[0-9]{1,7}$/.test(value.trim());
+
   const isValidDocumentId = (value: string): boolean =>
     /^(?=.{6,20}$)[A-Za-z0-9]+$/.test(value.trim());
 
@@ -120,6 +122,10 @@ const FormMasiveCerticates = ({
 
     if (!consecutivo) {
       return `La fila ${rowNumber} tiene CONSECUTIVO vacío.`;
+    }
+
+    if (!isValidConsecutivo(consecutivo)) {
+      return `La fila ${rowNumber} tiene CONSECUTIVO inválido. Use solo números (máximo 7 dígitos), por ejemplo 0000117.`;
     }
 
     if (!/^[A-Za-z]$/.test(nacionalidad)) {
