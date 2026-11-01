@@ -105,7 +105,9 @@ const BulkUpload = ({
         estadosData.map((estado) => ({
           value: estado.id,
           label: estado.estado ?? '',
-        }))
+        })).sort((a, b) =>
+          a.label.localeCompare(b.label, 'es', { sensitivity: 'base' })
+        )
       );
 
       setFormacionesOptions(
