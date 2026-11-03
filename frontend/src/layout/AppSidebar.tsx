@@ -25,7 +25,7 @@ const navItems: NavItem[] = [
   {
     name: 'Dashboard',
     icon: <RxDashboard size={20} />,
-    path: '/admin',
+    path: '/dashboard',
   },
   {
     name: 'Organizaciones',

@@ -65,7 +65,7 @@ const SignInForm = () => {
             dispatch(setLogin(valueAuth));
 
             startTransition(() => {
-              router.replace('/admin');
+              router.replace('/dashboard');
             });
           }
         } else {
