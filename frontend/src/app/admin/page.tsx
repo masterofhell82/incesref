@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Metrics } from "@/components/ecommerce/Metrics";
+import { Metrics } from "@/components/dashboard/Metrics";
 import React from "react";
 import MonthlyTarget from "@/components/ecommerce/MonthlyTarget";
 import CertificatesUploadedChart from "@/components/dashboard/CertificatesUploadedChart";
