@@ -1,7 +1,7 @@
 
 import type { Metadata } from 'next';
 import React from "react";
-import Dashboard from './Dashboard';
+import Dashboard from './dashboard/Dashboard';
 
 export const metadata: Metadata = {
   title: 'Dashboard / INCES',

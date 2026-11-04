@@ -275,7 +275,7 @@ const AppSidebar: React.FC = () => {
         style={styleSidebar}
         className={`flex py-6 ${!isExpanded && !isHovered ? 'md:justify-start' : 'justify-center'}`}
       >
-        <Link href="/">
+        <Link href="/dashboard">
           {isExpanded || isHovered || isMobileOpen ? (
             <>
               <Image

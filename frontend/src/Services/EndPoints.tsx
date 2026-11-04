@@ -11,6 +11,11 @@ export const users = `${Config.API_URL}/users`;
 
 export const userChangePassword = `${users}/cambiar-contraseña/`;
 
+// Dashboard
+export const statistics = `${Config.API_URL}/statistics`;
+export const monthlyCertificates = `${statistics}/monthly`;
+export const lastPreimpress = `${statistics}/last-preimpress`;
+
 // Geografia
 export const estados = `${Config.API_URL}/estados`;
 export const municipios = `${Config.API_URL}/municipios`;
@@ -36,7 +41,6 @@ export const contenidosFormaciones = `${formaciones}/contenido`;
 export const getPerson = `${Config.API_URL}/person`;
 export const getPersonById = (id: string) => `${Config.API_URL}/person/${id}`;
 
-
 // Roles
 export const roles = `${Config.API_URL}/roles`;
 
@@ -55,9 +59,4 @@ export const createCertificatesMasives = (preimpreso: string) => `${certificates
 export const certificatesByPreimpress = (preimpressId: number) => `${Config.API_URL}/certificates/${preimpressId}`;
 export const viewCertificate = (id: string) => `${Config.API_URL}/viewcertificate/${id}`;
 export const verifyCertificate = (certificate: string) => `${Config.API_URL}/certificate/verify/${certificate}`;
-
-
-
-
-
 export const getCertificateById = (id: string) => `${Config.API_URL}/certificate/${id}`;
