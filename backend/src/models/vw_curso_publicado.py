@@ -1,5 +1,6 @@
 from app import db
 
+
 class VwCursoPublicado(db.Model):
 
     __tablename__ = 'vw_curso_publicado'

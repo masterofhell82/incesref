@@ -1,17 +1,20 @@
-from app import app, db
-from flask import request, jsonify
-from decorators import token_required
-from werkzeug.utils import secure_filename
+import csv
 import os
 import uuid
-import csv
 
-from src.models.tipoformacionmodel import TipoFormacionModel as TipoFormacion
-from src.models.programamodel import ProgramaModel as Programa
+from app import app, db
+from decorators import token_required
+from flask import jsonify, request
+
+# Models
 from src.models.cursomodel import CursoModel as Curso
 from src.models.cursoscontenidomodel import CursoContenidoModel as CursoContenido
+from src.models.programamodel import ProgramaModel as Programa
+from src.models.tipoformacionmodel import TipoFormacionModel as TipoFormacion
 
+# Services
 from src.services.audit_services import register_audit_action
+from werkzeug.utils import secure_filename
 
 
 @app.route('/api/cursos', methods=['POST'])

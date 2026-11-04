@@ -37,6 +37,7 @@ if __name__ == '__main__':
     from src.controllers.cursoactivocontroller import *
     from src.controllers.cursocontroller import *
     from src.controllers.cursoscontenidocontroller import *
+    from src.controllers.dashboardcontroller import *
     from src.controllers.empleadorcontroller import *
     from src.controllers.entidadtrabajocontroller import *
     from src.controllers.geografiacontroller import *
