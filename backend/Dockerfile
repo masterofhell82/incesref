@@ -1,5 +1,5 @@
 # Usa una imagen base de Python, elige la versión adecuada para tu aplicación
-FROM python:3.12-slim-bullseye
+FROM python:3.12-slim-bookworm
 
 # Establece el directorio de trabajo dentro del contenedor
 WORKDIR /app
